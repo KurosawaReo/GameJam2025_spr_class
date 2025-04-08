@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSurround : MonoBehaviour
+public class NewGameManager : MonoBehaviour
 {
-    //開始地点[];
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,6 +14,6 @@ public class PlayerSurround : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //開始地点
+        
     }
 }
