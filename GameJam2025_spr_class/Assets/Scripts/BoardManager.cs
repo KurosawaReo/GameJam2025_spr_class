@@ -29,8 +29,7 @@ public class BoardManager : MonoBehaviour
 {
     [Header("- prefab -")]
     [SerializeField] GameObject prfbBoardBack; //盤面の背景prefab.
-    [SerializeField] GameObject prfbAreaPly;   //プレイヤー陣地prefab.
-    [SerializeField] GameObject prfbAreaEnm;   //敵陣地prefab.
+    [SerializeField] GameObject prfbBoardArea; //陣地用のprefab.
     [Space]
     [SerializeField] GameObject prfbInObj;     //prefabを入れるところ.
 
@@ -71,27 +70,14 @@ public class BoardManager : MonoBehaviour
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
             for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
-                var obj = Instantiate(prfbBoardBack, prfbInObj.transform);
-
-                GameObject obj = null; //prefab情報を入れる用.
-
-                //データ別で生成.
-                switch (board[x, y].area) {
-                    case BoardArea.NONE:
-                        obj = Instantiate(prfbBoardBack, prfbInObj.transform);
-                        break;
-                    case BoardArea.PLAYER:
-                        obj = Instantiate(prfbAreaPly, prfbInObj.transform);
-                        break;
-                    case BoardArea.ENEMY:
-                        obj = Instantiate(prfbAreaEnm, prfbInObj.transform);
-                        break;
-
-                    default: Debug.LogError("[Error] 不正な値です。"); break;
-                }
+                //背景の生成.
+                var obj1 = Instantiate(prfbBoardBack, prfbInObj.transform);
+                //陣地の生成.
+                var obj2 = Instantiate(prfbBoardArea, prfbInObj.transform);
 
                 //盤面上に設置.
-                Gl_Func.PlaceOnBoard(obj, x, y);
+                Gl_Func.PlaceOnBoard(obj1, x, y);
+                Gl_Func.PlaceOnBoard(obj2, x, y);
             }
         }
     }
