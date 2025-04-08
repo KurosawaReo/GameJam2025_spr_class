@@ -3,6 +3,7 @@ using Gloval;
 
 public class PlayerData 
 {
+    //private変数.
     private Vector2Int m_pos;
 
     //初期化(コンストラクタ)

@@ -421,11 +421,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a0cb7d0a8e56c4d91d4e5d7aa7a485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prfb:
-    m_boardBack: {fileID: 2275033464550313715, guid: 5986114b2ce7fe84d971699a3a90896c, type: 3}
-    m_areaPly: {fileID: 7672894715479028013, guid: 01495535f7ce9674babedd0e67992b95, type: 3}
-    m_areaEnm: {fileID: 976499737401864378, guid: 7161c9397fc91ee48a61a7084ab7f789, type: 3}
-    m_inObj: {fileID: 2137507685}
+  prfbBoardBack: {fileID: 2275033464550313715, guid: 5986114b2ce7fe84d971699a3a90896c, type: 3}
+  prfbBoardType: {fileID: 2275033464550313715, guid: 95426e5ba4f7c5046945dfaff800faab, type: 3}
+  prfbInObj: {fileID: 2137507685}
+  imgPlyTrail: {fileID: 21300000, guid: 5e078891c2e530240904c88a50b9f677, type: 3}
+  imgPlyArea: {fileID: 21300000, guid: 3d0f7276f278eed4b828a6091571b968, type: 3}
+  imgEnm: {fileID: 21300000, guid: d3596efa4808ce242894f16847ffc5ee, type: 3}
 --- !u!4 &548676097
 Transform:
   m_ObjectHideFlags: 0

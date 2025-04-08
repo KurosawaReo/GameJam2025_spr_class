@@ -3,13 +3,14 @@ using UnityEngine;
 namespace Gloval
 {
     /// <summary>
-    /// 盤面のマス情報.
+    /// 盤面のマス種類.
     /// </summary>
-    public enum BoardArea
+    public enum BoardType
     {
-        NONE,
-        PLAYER,
-        ENEMY,
+        NONE,         //無.
+        PLAYER_TRAIL, //プレイヤーの足跡.
+        PLAYER_AREA,  //プレイヤーの陣地.
+        ENEMY,        //敵.
     }
 
     /// <summary>
@@ -22,16 +23,6 @@ namespace Gloval
 
         //public const float BOARD_LEFTUP_X = 3;  //盤面の左上座標x.
         //public const float BOARD_LEFTUP_Y = -2; //盤面の左上座標y.
-
-        /*
-        //例:
-        public static string[] TEXT =
-        {
-            "AAA",
-            "BBB",
-            "CCC",
-        };
-        */
     }
 
     /// <summary>
