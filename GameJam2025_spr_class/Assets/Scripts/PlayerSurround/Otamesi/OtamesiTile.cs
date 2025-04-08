@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+public class OtamesiTile : MonoBehaviour
 {
     public Vector2Int gridPos;
     public TileType type;
