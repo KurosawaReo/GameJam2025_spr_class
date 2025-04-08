@@ -14,6 +14,11 @@ namespace Utility
         public const float MARGIN_LEFT = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
+        // アイテムの生成間隔
+        public const float INTERVAL_ITEM_GEN = 1.0f;
+        // エリア内のアイテムの最大数
+        public const int MAX_ITEM_NUM = 10;
+
         /// <summary>
         /// 画面の左下と右上の座標を返す処理
         /// </summary>
