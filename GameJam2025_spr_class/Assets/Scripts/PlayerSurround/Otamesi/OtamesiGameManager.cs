@@ -1,13 +1,13 @@
 using System.Collections.Generic;  // ListやQueueを使うための名前空間
 using UnityEngine;                // Unityの基本機能（ゲームオブジェクト管理など）を使うため
 
-public class GameManager : MonoBehaviour
+public class OtamesiGameManager : MonoBehaviour
 {
     public GameObject tilePrefab;  // タイルのプレハブ（Inspectorでセット）
     public int width = 10;         // フィールドの横幅（10マス）
     public int height = 10;        // フィールドの縦幅（10マス）
 
-    private Tile[,] field;         // タイルを管理するための2次元配列
+    private OtamesiTile[,] field;         // タイルを管理するための2次元配列
     private Vector2Int playerPos;  // プレイヤーの現在位置（グリッド座標）
     private List<Vector2Int> trail = new List<Vector2Int>();  // プレイヤーの移動経路（線の軌跡）
 
@@ -142,10 +142,10 @@ public class GameManager : MonoBehaviour
     }
 
     // 指定されたグリッド位置のタイルを返す
-    Tile GetTile(Vector2Int pos) => field[pos.x, pos.y];
+    OtamesiTile GetTile(Vector2Int pos) => field[pos.x, pos.y];
 
     // 位置(x, y)のタイルを返す
-    Tile GetTile(int x, int y) => field[x, y];
+    OtamesiTile GetTile(int x, int y) => field[x, y];
 
     // グリッド内かどうかをチェックする
     bool InBounds(Vector2Int pos) => pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviour
     // フィールド（グリッド）を生成する関数
     void GenerateField()
     {
-        field = new Tile[width, height];  // フィールドを2次元配列として初期化
+        field = new OtamesiTile[width, height];  // フィールドを2次元配列として初期化
 
         // 横方向（x軸）のループ
         for (int x = 0; x < width; x++)
@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
             {
                 // タイルをインスタンス化して配置
                 var obj = Instantiate(tilePrefab, new Vector3(x, y, 0), Quaternion.identity);
-                var tile = obj.GetComponent<Tile>();  // Tileスクリプトを取得
+                var tile = obj.GetComponent<OtamesiTile>();  // Tileスクリプトを取得
                 tile.gridPos = new Vector2Int(x, y);  // グリッド座標を設定
                 field[x, y] = tile;  // そのタイルをフィールドに保存
                 tile.SetType(TileType.Empty);  // タイルの種類を初期状態（空）に設定
