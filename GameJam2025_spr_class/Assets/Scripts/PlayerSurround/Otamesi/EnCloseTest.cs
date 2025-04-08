@@ -1,7 +1,11 @@
 using System.Collections.Generic;  // ListやQueueを使うための名前空間
 using UnityEngine;                // Unityの基本機能（ゲームオブジェクト管理など）を使うため
 
-public class GameManager : MonoBehaviour
+/*
+   TODO: 陣地に踏み入る一歩前で囲うことに成功した地点で中を埋めたい。 
+*/
+
+public class EnCloseTest : MonoBehaviour
 {
     public GameObject tilePrefab;  // タイルのプレハブ（Inspectorでセット）
     public int width = 10;         // フィールドの横幅（10マス）
@@ -56,12 +60,10 @@ public class GameManager : MonoBehaviour
         playerPos = newPos;
         var next = GetTile(playerPos);  // 新しい位置のタイルを取得
 
-        // 次の位置が「Territory」（陣地）だった場合
-        if (next.type == TileType.Territory)
-        {
-            FillEnclosedArea();  // 塗りつぶし（囲まれた領域の処理）
-        }
-        else
+        FillEnclosedArea();  // 塗りつぶし（囲まれた領域の処理）
+        
+        // 次の位置が「Territory」（陣地）じゃない場合
+        if (next.type != TileType.Territory)
         {
             trail.Add(playerPos);  // プレイヤーの軌跡に現在位置を追加
             next.SetType(TileType.Player); // 新しい位置を「Player」に設定
