@@ -9,7 +9,7 @@ public class OtamesiGameManager : MonoBehaviour
 
     private OtamesiTile[,] field;         // タイルを管理するための2次元配列
     private Vector2Int playerPos;  // プレイヤーの現在位置（グリッド座標）
-    private List<Vector2Int> trail = new List<Vector2Int>();  // プレイヤーの移動経路（線の軌跡）
+    private List<Vector2Int> trail = new List<Vector2Int>();  // プレイヤーの移動経路（線の軌跡）?
 
     // ゲーム開始時に一度だけ呼ばれる
     void Start()
@@ -63,7 +63,7 @@ public class OtamesiGameManager : MonoBehaviour
         }
         else
         {
-            trail.Add(playerPos);  // プレイヤーの軌跡に現在位置を追加
+            trail.Add(playerPos);  // プレイヤーの軌跡に現在位置を追加?
             next.SetType(TileType.Player); // 新しい位置を「Player」に設定
         }
     }
@@ -141,10 +141,10 @@ public class OtamesiGameManager : MonoBehaviour
         }
     }
 
-    // 指定されたグリッド位置のタイルを返す
+    // 指定されたグリッド位置のタイルを返す?
     OtamesiTile GetTile(Vector2Int pos) => field[pos.x, pos.y];
 
-    // 位置(x, y)のタイルを返す
+    // 位置(x, y)のタイルを返す?
     OtamesiTile GetTile(int x, int y) => field[x, y];
 
     // グリッド内かどうかをチェックする
