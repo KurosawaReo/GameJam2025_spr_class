@@ -50,23 +50,25 @@ public class PlayerManager : MonoBehaviour
     private void InputMove()
     {
         //åªç›à íuÇéÊìæ.
-        var pos = transform.position;
-        //à⁄ìÆó .
-        pos.x += Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
-        pos.y += Input.GetAxisRaw("Vertical") * moveSpeed * Time.deltaTime;
+        Vector2 pos = transform.position;
+        //à⁄ìÆ.
+        pos += Gl_Func.InputKey4dir() * moveSpeed * Time.deltaTime;
 
-        //â°ÇÃà⁄ìÆå¿ìx(ïÑçÜÇÕÇªÇÃÇ‹Ç‹)
-        if (Mathf.Abs(pos.x) > Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE/2)
+        float limitX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2;
+        float limitY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2;
+
+        //â°ÇÃà⁄ìÆå¿äE.
+        if (Mathf.Abs(pos.x) > limitX)
         {
-            pos.x = Gl_Func.GetNumSign(pos.x) * Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE/2;
+            pos.x = Gl_Func.GetNumSign(pos.x) * limitX; //ïÑçÜÇÕÇªÇÃÇ‹Ç‹.
         }
-        //ècÇÃà⁄ìÆå¿ìx(ïÑçÜÇÕÇªÇÃÇ‹Ç‹)
-        if (Mathf.Abs(pos.y) > Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE/2)
+        //ècÇÃà⁄ìÆå¿äE.
+        if (Mathf.Abs(pos.y) > limitY)
         {
-            pos.y = Gl_Func.GetNumSign(pos.y) * Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE/2;
+            pos.y = Gl_Func.GetNumSign(pos.y) * limitY; //ïÑçÜÇÕÇªÇÃÇ‹Ç‹.
         }
 
-        //à⁄ìÆé¿çs.
+        //ç¿ïWîΩâf.
         transform.position = pos;
     }
 

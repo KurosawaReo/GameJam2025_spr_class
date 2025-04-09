@@ -58,6 +58,39 @@ namespace Gloval
         }
 
         /// <summary>
+        /// 上下左右の操作(斜め対応)
+        /// </summary>
+        /// <returns>斜め対応済みの操作量</returns>
+        public static Vector2 InputKey4dir()
+        {
+            //操作量.
+            Vector2 input = new Vector2(
+                Input.GetAxisRaw("Horizontal"), //左右.
+                Input.GetAxisRaw("Vertical")    //上下.
+            );
+
+            float sin = 0, cos = 0;
+
+            //操作してるなら.
+            if (input != Vector2.zero)
+            {
+                //角度(theta:シータ)をラジアンで求める.
+                var theta = Mathf.Atan2(input.y, input.x); //tan(タンジェント)
+
+                //xとyの移動量を求める.
+                sin = Mathf.Sin(theta); //sin = y成分.
+                cos = Mathf.Cos(theta); //cos = x成分.
+
+                //ほぼ0の値なら、0とみなす(計算上誤差があるため)
+                if (Mathf.Abs(sin) < 0.0001f) { sin = 0; }
+                if (Mathf.Abs(cos) < 0.0001f) { cos = 0; }
+            }
+
+            //計算後の移動量を返す.
+            return new Vector2(cos, sin);
+        }
+
+        /// <summary>
         /// 画面の左下と右上の座標を返す処理.
         /// </summary>
         /// <returns></returns>
