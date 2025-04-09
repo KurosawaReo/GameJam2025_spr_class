@@ -24,9 +24,10 @@ namespace Gloval
     /// </summary>
     public static class Gl_Const
     {
-        public const int BOARD_HEI = 5;
-        public const int BOARD_WID = 8;
-        public const int SQUARE_SIZE = 1; //マスのサイズ倍率.
+        // 盤面(board)に関する定数.
+        public const int   BOARD_HEI = 10;
+        public const int   BOARD_WID = 20;
+        public const float SQUARE_SIZE = 0.5f; //マスのサイズ倍率.
 
         // 画面端の余白
         public const float MARGIN_TOP = 1.0f;
@@ -45,6 +46,17 @@ namespace Gloval
     /// </summary>
     public static class Gl_Func
     {
+        /// <summary>
+        /// プラスかマイナスかを取得.
+        /// </summary>
+        /// <param name="_num">元の値</param>
+        /// <returns>符号(0/+1/-1)</returns>
+        public static int GetNumSign(float _num)
+        {
+            //0なら0、それ以外は符号を返す.
+            return (_num == 0) ? 0 : (_num > 0) ? +1 : -1;
+        }
+
         /// <summary>
         /// 画面の左下と右上の座標を返す処理.
         /// </summary>
@@ -66,10 +78,11 @@ namespace Gloval
         /// <param name="_scale">サイズ倍率</param>
         public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
         {
-            //座標を計算(中央基準)
+            //座標を取得.
             Vector2 pos = BPosToWPos(new Vector2Int(_x, _y));
             //配置.
-            _obj.transform.position = pos;
+            _obj.transform.position   = pos;
+            _obj.transform.localScale = Vector2.one * Gl_Const.SQUARE_SIZE;
         }
 
         /// <summary>
