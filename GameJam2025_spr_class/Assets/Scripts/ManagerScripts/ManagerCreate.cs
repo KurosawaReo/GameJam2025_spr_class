@@ -20,11 +20,14 @@ public class ManagerCreate : MonoBehaviour
         if (Loaded) return;
         Loaded = true;
 
-        //プレハブをインスタンス化して、DontDestroyOnLoad
-        foreach (var prefab in gameManagerPrefabs)
+        if (gameManagerPrefabs != null)
         {
-            GameObject manager = Instantiate(prefab);
-            DontDestroyOnLoad(manager);
+            //プレハブをインスタンス化して、DontDestroyOnLoad
+            foreach (var prefab in gameManagerPrefabs)
+            {
+                GameObject manager = Instantiate(prefab);
+                DontDestroyOnLoad(manager);
+            }
         }
     }
 
