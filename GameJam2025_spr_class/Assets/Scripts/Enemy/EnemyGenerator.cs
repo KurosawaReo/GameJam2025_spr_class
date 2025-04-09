@@ -65,9 +65,9 @@ public class EnemyGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// 敵の座標を取得する処理
+    /// 敵のオブジェクトを取得する処理
     /// </summary>
-    public GameObject[] GetCoordinates()
+    public GameObject[] GetEnemyObjects()
     {
         // タグ「Enemy」を持つ全てのオブジェクトの取得
         GameObject[] Square = GameObject.FindGameObjectsWithTag("Enemy");
