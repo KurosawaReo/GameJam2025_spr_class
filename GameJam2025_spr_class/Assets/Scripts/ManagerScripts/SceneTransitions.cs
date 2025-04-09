@@ -10,6 +10,20 @@ public class SceneTransitions : MonoBehaviour
                         "01",
                         "Result"};
 
+    [Header("ƒpƒ‰ƒ[ƒ^")]
+    public Image fadePanel;
+    public float fadeOutTime;
+
+    void Awake()
+    {
+        Init();
+    }
+
+
+    void Init()
+    {
+
+    }
 
     public void SceneLoad(int sceneNumber)
     {
