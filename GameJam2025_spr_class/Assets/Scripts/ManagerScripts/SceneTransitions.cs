@@ -13,25 +13,21 @@ public class SceneTransitions : MonoBehaviour
 
     public void SceneLoad(int sceneNumber)
     {
-        //GetComponent<Button>.interactable = false;
-
-
         SceneManager.LoadScene(sceneID[sceneNumber]);
     }
 
-
-    IEnumerator FadeOut()
+    public void FadeOutSceneLoad(int sceneNumber)
     {
 
 
 
 
 
+        SceneManager.LoadScene(sceneID[sceneNumber]);
 
-
-
-        yield return null;
     }
+
+
 
 
 
