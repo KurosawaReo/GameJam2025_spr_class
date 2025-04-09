@@ -18,8 +18,9 @@ namespace Gloval
     /// </summary>
     public static class Gl_Const
     {
-        public const int   BOARD_HEI = 3;
-        public const int   BOARD_WID = 5;
+        public const int BOARD_HEI = 3;
+        public const int BOARD_WID = 5;
+        public const int SQUARE_SCALE = 1; //マスのサイズ倍率.
 
         //public const float BOARD_LEFTUP_X = 3;  //盤面の左上座標x.
         //public const float BOARD_LEFTUP_Y = -2; //盤面の左上座標y.
@@ -36,13 +37,12 @@ namespace Gloval
         /// <param name="_obj">設置するオブジェクト</param>
         /// <param name="_x">盤面の座標x</param>
         /// <param name="_y">盤面の座標y</param>
+        /// <param name="_scale">サイズ倍率</param>
         public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
         {
-            //サイズ取得.
-            var size = _obj.GetComponent<SpriteRenderer>().bounds.size.x;
             //座標を計算(中央基準)
-            float x = (_x - Gl_Const.BOARD_WID/2) * size;
-            float y = (_y - Gl_Const.BOARD_HEI/2) * size;
+            float x = (_x - Gl_Const.BOARD_WID/2) * Gl_Const.SQUARE_SCALE;
+            float y = (_y - Gl_Const.BOARD_HEI/2) * Gl_Const.SQUARE_SCALE;
             //配置.
             _obj.transform.position = new Vector2(x, y);
         }

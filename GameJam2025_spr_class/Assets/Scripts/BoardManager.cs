@@ -16,7 +16,7 @@ public class BoardData
     private SpriteRenderer m_typeSR; //マスに配置するsprite(画像情報)
 
     //set, get.
-    public BoardType type 
+    public BoardType type
     {
         get => m_type;
         set => m_type = value; 
@@ -34,10 +34,10 @@ public class BoardData
 public class BoardManager : MonoBehaviour
 {
     [Header("- prefab -")]
-    [SerializeField] GameObject prfbBoardBack; //マスの背景用.
-    [SerializeField] GameObject prfbBoardType; //マスの種類用.
+    [SerializeField] GameObject prfbSqrBack; //square back:マスの背景用.
+    [SerializeField] GameObject prfbSqrType; //square type:マスの種類用.
     [Space]
-    [SerializeField] GameObject prfbInObj;     //prefabを入れる所.
+    [SerializeField] GameObject prfbInObj;   //prefabを入れる所.
 
     [Header("- image -")]
     [SerializeField] Sprite imgPlyTrail;
@@ -84,12 +84,12 @@ public class BoardManager : MonoBehaviour
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
             for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
-                var objBack = Instantiate(prfbBoardBack, prfbInObj.transform);
-                var objType = Instantiate(prfbBoardType, prfbInObj.transform);
+                var objBack = Instantiate(prfbSqrBack, prfbInObj.transform);
+                var objType = Instantiate(prfbSqrType, prfbInObj.transform);
 
                 //各マスのsprite情報を記録.
                 board[x, y].typeSR = objType.GetComponent<SpriteRenderer>();
-
+                
                 //盤面上に設置.
                 Gl_Func.PlaceOnBoard(objBack, x, y);
                 Gl_Func.PlaceOnBoard(objType, x, y);
