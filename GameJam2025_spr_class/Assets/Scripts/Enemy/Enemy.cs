@@ -128,6 +128,9 @@ public class Enemy : MonoBehaviour
         var (lb, rt) = Gl_Func.GetWorldWindowSize();
 
         
+        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
+        Debug.Log("position:"+position);
+
         var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
         var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
