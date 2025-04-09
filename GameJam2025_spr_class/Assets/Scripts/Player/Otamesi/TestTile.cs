@@ -1,6 +1,20 @@
+/*
+   - TestTile.cs -
+   プレイヤーが囲ったマスを埋めるプログラムに使う.
+   (chatGPT生成、保管用)
+*/
+#if true
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+public enum TileType
+{
+    Empty,      // .            空白
+    Trail,      // *            尻尾
+    Territory,  // #            陣地
+    Player      // P（可視化用）プレイヤー
+}
+
+public class TestTile
 {
     public Vector2Int gridPos;
     public TileType type;
@@ -24,3 +38,4 @@ public class Tile : MonoBehaviour
         }
     }
 }
+#endif
