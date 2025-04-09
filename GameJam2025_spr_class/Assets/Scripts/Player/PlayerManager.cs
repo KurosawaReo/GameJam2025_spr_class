@@ -58,9 +58,9 @@ public class PlayerManager : MonoBehaviour
         {
             //‰¼ˆÚ“®.
             pos += input.vec * moveSpeed * Time.deltaTime;
-
-            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2;
-            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2;
+            //‚Ç‚±‚Ü‚ÅˆÚ“®‚Å‚«‚é‚©.
+            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE/2 - Gl_Const.SQUARE_SIZE/2;
+            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE/2 - Gl_Const.SQUARE_SIZE / 2;
 
             //‰¡‚ÌˆÚ“®ŒÀ“x(•„†‚Í‚»‚Ì‚Ü‚Ü)
             if (Mathf.Abs(pos.x) > limX)

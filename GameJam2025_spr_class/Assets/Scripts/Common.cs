@@ -24,9 +24,9 @@ namespace Gloval
     public static class Gl_Const
     {
         // 盤面(board)に関する定数.
-        public const int   BOARD_HEI = 10;
-        public const int   BOARD_WID = 20;
-        public const float SQUARE_SIZE = 0.5f; //マスのサイズ倍率.
+        public const int   BOARD_HEI = 100;
+        public const int   BOARD_WID = 100;
+        public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
 
         // 画面端の余白
         public const float MARGIN_TOP = 1.0f;
@@ -135,16 +135,21 @@ namespace Gloval
         /// </summary>
         public static Vector2Int WPosToBPos(Vector2 _pos)
         {
-            //Unity上の座標の座標から、board配列の座標にするとどこになるか計算.
-            //(この地点では世界の中央が0)
-            int x = Mathf.RoundToInt(_pos.x / Gl_Const.SQUARE_SIZE);
-            int y = Mathf.RoundToInt(_pos.y / Gl_Const.SQUARE_SIZE);
+            //Unity上の座標から、board配列の座標にするとどこになるか計算.
+            //盤面の幅が偶数なら半マスずらす.
+            float x = (_pos.x/Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_WID % 2 == 0) ? 0.5f : 0);
+            float y = (_pos.y/Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_HEI % 2 == 0) ? 0.5f : 0);
 
-            //盤面の左上が0となるよう調整.
-            x += Gl_Const.BOARD_WID / 2;
-            y += Gl_Const.BOARD_HEI / 2;
+            //この地点では世界の中央が座標(0, 0)
+            Vector2Int bPos = new Vector2Int(
+                Mathf.RoundToInt(x),
+                Mathf.RoundToInt(y)
+            );
+            //盤面の左上が座標(0, 0)となるよう調整.
+            bPos.x += Gl_Const.BOARD_WID/2;
+            bPos.y += Gl_Const.BOARD_HEI/2;
 
-            return new Vector2Int(x, y);
+            return bPos;
         }
 
         /// <summary>
@@ -153,8 +158,8 @@ namespace Gloval
         public static Vector2 BPosToWPos(Vector2Int _pos)
         {
             //board配列の座標から、Unity上の座標にするとどこになるか計算.
-            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID / 2) * Gl_Const.SQUARE_SIZE;
-            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI / 2) * Gl_Const.SQUARE_SIZE;
+            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID/2) * Gl_Const.SQUARE_SIZE;
+            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI/2) * Gl_Const.SQUARE_SIZE;
 
             return new Vector2(x, y);
         }

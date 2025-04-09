@@ -55,12 +55,22 @@ public class BoardManager : MonoBehaviour
     /// </summary>
     private void InitBoard()
     {
-        //1マスずつ.
+        //全マスループ.
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
             for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
                 board[x, y] = new BoardData();
                 board[x, y].type = BoardType.NONE; //無に設定.
+            }
+        }
+
+        int len = 2;
+
+        //中央あたりは初期陣地にする.
+        for (int y = Gl_Const.BOARD_HEI/2-len; y < Gl_Const.BOARD_HEI/2+len; y++) {
+            for (int x = Gl_Const.BOARD_WID/2-2; x < Gl_Const.BOARD_WID/2+2; x++) {
+
+                board[x, y].type = BoardType.PLAYER_AREA;
             }
         }
     }
