@@ -9,7 +9,7 @@ namespace Utility
     {
 
         // ‰æ–Ê’[‚Ì—]”’
-        public const float MARGIN_TOP = 1.5f;
+        public const float MARGIN_TOP = 1.0f;
         public const float MARGIN_RIGHT = 1.0f;
         public const float MARGIN_LEFT = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;

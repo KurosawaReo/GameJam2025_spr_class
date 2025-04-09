@@ -127,6 +127,7 @@ public class Enemy : MonoBehaviour
         //ワールド座標の取得
         var (lb, rt) = Common.GetWorldWindowSize();
 
+        
         var randX = Random.Range(lb.x + Common.MARGIN_LEFT + 2, rt.x - Common.MARGIN_RIGHT - 2);
         var randY = Random.Range(lb.y + Common.MARGIN_BOTTOM + 2, rt.y - Common.MARGIN_TOP - 2);
 
@@ -134,10 +135,10 @@ public class Enemy : MonoBehaviour
 
         randMoveSpeedRatio = Random.Range(MIN_MOVE_SPEED_RATIO, MAX_MOVE_SPEED_RATIO);
 
-
+        
     }
 
-    // todo.プレイヤーの当たり判定
+    
 
    
 
