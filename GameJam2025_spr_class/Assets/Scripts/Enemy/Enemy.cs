@@ -11,7 +11,9 @@ public class Enemy : MonoBehaviour
         MOVE,
         
     }
-    
+
+    EnemyGenerator eg;
+
     [Tooltip("èÛë‘ïœêî"), SerializeField]
     EnemyState state = EnemyState.IDLE;
 
@@ -35,7 +37,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
     }
 
     // Update is called once per frame
@@ -125,8 +127,8 @@ public class Enemy : MonoBehaviour
         //ÉèÅ[ÉãÉhç¿ïWÇÃéÊìæ
         var (lb, rt) = Common.GetWorldWindowSize();
 
-        var randX = Random.Range(lb.x + Common.MARGIN_LEFT, rt.x - Common.MARGIN_RIGHT);
-        var randY = Random.Range(lb.y + Common.MARGIN_BOTTOM, rt.y - Common.MARGIN_TOP);
+        var randX = Random.Range(lb.x + Common.MARGIN_LEFT + 2, rt.x - Common.MARGIN_RIGHT - 2);
+        var randY = Random.Range(lb.y + Common.MARGIN_BOTTOM + 2, rt.y - Common.MARGIN_TOP - 2);
 
         targetPos = new Vector3(randX, randY, transform.position.z);
 

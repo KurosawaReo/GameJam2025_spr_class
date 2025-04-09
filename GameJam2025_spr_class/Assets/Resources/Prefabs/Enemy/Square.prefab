@@ -97,5 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200911b9c879877419a9b7b127c39fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabItem: {fileID: 402709935934785485}
   state: 0
   targetPos: {x: 0, y: 0, z: 0}

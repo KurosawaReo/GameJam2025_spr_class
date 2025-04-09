@@ -17,7 +17,7 @@ namespace Utility
         // アイテムの生成間隔
         public const float INTERVAL_ITEM_GEN = 1.0f;
         // エリア内のアイテムの最大数
-        public const int MAX_ITEM_NUM = 10;
+        public const int MAX_ITEM_NUM = 5;
 
         /// <summary>
         /// 画面の左下と右上の座標を返す処理

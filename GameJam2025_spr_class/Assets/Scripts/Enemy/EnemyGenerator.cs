@@ -30,14 +30,13 @@ public class EnemyGenerator : MonoBehaviour
     /// <summary>
     /// ÉâÉìÉ_ÉÄê∂ê¨èàóù
     /// </summary>
-    /// <param name="delay"></param>
-    /// <returns></returns>
     public IEnumerator EnemyGeneration(float delay)
     {
         var (lb, rt) = Common.GetWorldWindowSize();
 
         while (true)
         {
+            print("ìÆÇ´Ç‹ÇµÇΩ");
             if (cnt >= Common.MAX_ITEM_NUM)
             {
                 yield return new WaitForSeconds(delay);
@@ -46,15 +45,22 @@ public class EnemyGenerator : MonoBehaviour
             }
 
             // îÕàÕéwíË
-            float x = UnityEngine.Random.Range(lb.x + Common.MARGIN_LEFT, rt.x - Common.MARGIN_RIGHT);
-            float y = UnityEngine.Random.Range(lb.y + Common.MARGIN_BOTTOM, rt.y - Common.MARGIN_TOP);
+            float x = UnityEngine.Random.Range(lb.x + Common.MARGIN_LEFT + 2, rt.x - Common.MARGIN_RIGHT - 2);
+            float y = UnityEngine.Random.Range(lb.y + Common.MARGIN_BOTTOM + 2, rt.y - Common.MARGIN_TOP - 2);
 
-            transform.position = new Vector3(x, y, transform.position.z);
+            var prefab = prefabItem;
+
+            var obj = Instantiate(prefab);
+
+            obj.transform.position = new Vector3(x, y, obj.transform.position.z);
 
             cnt++;
 
             yield return new WaitForSeconds(delay);
-
+            
+            
         }
     }
+
+    
 }
