@@ -21,6 +21,9 @@ public class PlayerData
 /// </summary>
 public class PlayerManager : MonoBehaviour
 {
+    [Header("- value -")]
+    [SerializeField] float moveSpeed;
+
     void Start()
     {
         
@@ -28,6 +31,12 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        
-    }
+        var nowPos = transform.position;
+        nowPos.x += Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
+        nowPos.y += Input.GetAxisRaw("Vertical") * moveSpeed * Time.deltaTime;
+        transform.position = nowPos;
+
+        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
+        Debug.Log("position:"+position);
+    }   
 }

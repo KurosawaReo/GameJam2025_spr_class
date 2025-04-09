@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3161794314359636264}
   - component: {fileID: 6597716569798820759}
   m_Layer: 0
-  m_Name: BoardBack
+  m_Name: SquareType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

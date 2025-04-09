@@ -145,19 +145,10 @@ public class TestEnClose : MonoBehaviour
         }
     }
 
-<<<<<<< HEAD:GameJam2025_spr_class/Assets/Scripts/PlayerSurround/Otamesi/TestEnClose.cs
-    // 指定されたグリッド位置のタイルを返す
+    // 盤面から指定した位置のマス情報を返す.
+    // どちらの関数を使っても可.
     TestTile GetTile(Vector2Int pos) => field[pos.x, pos.y];
-
-    // 位置(x, y)のタイルを返す
     TestTile GetTile(int x, int y) => field[x, y];
-=======
-    // 指定されたグリッド位置のタイルを返す?
-    OtamesiTile GetTile(Vector2Int pos) => field[pos.x, pos.y];
-
-    // 位置(x, y)のタイルを返す?
-    OtamesiTile GetTile(int x, int y) => field[x, y];
->>>>>>> main:GameJam2025_spr_class/Assets/Scripts/PlayerSurround/Otamesi/OtamesiGameManager.cs
 
     // グリッド内かどうかをチェックする
     bool InBounds(Vector2Int pos) => pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
@@ -190,9 +181,5 @@ public class TestEnClose : MonoBehaviour
             Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
         };
     }
-<<<<<<< HEAD:GameJam2025_spr_class/Assets/Scripts/PlayerSurround/Otamesi/TestEnClose.cs
 }
 #endif
-=======
-}
->>>>>>> main:GameJam2025_spr_class/Assets/Scripts/PlayerSurround/Otamesi/OtamesiGameManager.cs

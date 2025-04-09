@@ -68,11 +68,11 @@ public class BoardManager : MonoBehaviour
             for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
                 board[x, y] = new BoardData();
-                board[x, y].type = BoardType.NONE; //–³‚ÉÝ’è.
+                board[x, y].type = BoardType.PLAYER_TRAIL; //–³‚ÉÝ’è.
             }
         }
-        board[0, 1].type = BoardType.PLAYER_TRAIL;
-        board[0, 2].type = BoardType.PLAYER_AREA; 
+        //board[0, 1].type = BoardType.PLAYER_TRAIL;
+        //board[0, 2].type = BoardType.PLAYER_AREA;
     }
 
     /// <summary>
