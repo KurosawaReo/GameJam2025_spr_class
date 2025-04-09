@@ -60,22 +60,22 @@ namespace Gloval
         /// <summary>
         /// 上下左右の操作(斜め対応)
         /// </summary>
-        /// <returns>斜め対応済みの操作量</returns>
-        public static Vector2 InputKey4dir()
+        /// <returns>座標(vec), 角度(ang)</returns>
+        public static (Vector2 vec, float ang) InputKey4dir()
         {
             //操作量.
-            Vector2 input = new Vector2(
+            Vector2 move = new Vector2(
                 Input.GetAxisRaw("Horizontal"), //左右.
                 Input.GetAxisRaw("Vertical")    //上下.
             );
 
-            float sin = 0, cos = 0;
+            float sin = 0, cos = 0, theta = 0;
 
-            //操作してるなら.
-            if (input != Vector2.zero)
+            //移動してるなら.
+            if (move != Vector2.zero)
             {
                 //角度(theta:シータ)をラジアンで求める.
-                var theta = Mathf.Atan2(input.y, input.x); //tan(タンジェント)
+                theta = Mathf.Atan2(move.y, move.x); //tan(タンジェント)
 
                 //xとyの移動量を求める.
                 sin = Mathf.Sin(theta); //sin = y成分.
@@ -86,8 +86,10 @@ namespace Gloval
                 if (Mathf.Abs(cos) < 0.0001f) { cos = 0; }
             }
 
-            //計算後の移動量を返す.
-            return new Vector2(cos, sin);
+            //ラジアンを角度へ変換.
+            float angle = theta * 180/Mathf.PI - 90; //上が0度になるよう90度回転.
+
+            return (new Vector2(cos, sin), angle);
         }
 
         /// <summary>

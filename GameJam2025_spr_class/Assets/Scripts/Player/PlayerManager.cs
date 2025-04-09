@@ -51,25 +51,33 @@ public class PlayerManager : MonoBehaviour
     {
         //åªç›à íuÇéÊìæ.
         Vector2 pos = transform.position;
-        //à⁄ìÆ.
-        pos += Gl_Func.InputKey4dir() * moveSpeed * Time.deltaTime;
-
-        float limitX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2;
-        float limitY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2;
-
-        //â°ÇÃà⁄ìÆå¿äE.
-        if (Mathf.Abs(pos.x) > limitX)
+        //ëÄçÏÇÃéÊìæ.
+        var input = Gl_Func.InputKey4dir();
+        
+        //ëÄçÏÇ™Ç†ÇÍÇŒ.
+        if(input.vec != Vector2.zero)
         {
-            pos.x = Gl_Func.GetNumSign(pos.x) * limitX; //ïÑçÜÇÕÇªÇÃÇ‹Ç‹.
-        }
-        //ècÇÃà⁄ìÆå¿äE.
-        if (Mathf.Abs(pos.y) > limitY)
-        {
-            pos.y = Gl_Func.GetNumSign(pos.y) * limitY; //ïÑçÜÇÕÇªÇÃÇ‹Ç‹.
-        }
+            //âºà⁄ìÆ.
+            pos += input.vec * moveSpeed * Time.deltaTime;
+            
+            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2;
+            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2;
 
-        //ç¿ïWîΩâf.
-        transform.position = pos;
+            //â°ÇÃà⁄ìÆå¿ìx(ïÑçÜÇÕÇªÇÃÇ‹Ç‹)
+            if (Mathf.Abs(pos.x) > limX)
+            {
+                pos.x = Gl_Func.GetNumSign(pos.x) * limX;
+            }
+            //ècÇÃà⁄ìÆå¿ìx(ïÑçÜÇÕÇªÇÃÇ‹Ç‹)
+            if (Mathf.Abs(pos.y) > limY)
+            {
+                pos.y = Gl_Func.GetNumSign(pos.y) * limY;
+            }
+
+            //ëÄçÏÇîΩâf.
+            transform.position    = pos;
+            transform.eulerAngles = new Vector3(0, 0, input.ang);
+        }
     }
 
     /// <summary>
