@@ -426,7 +426,6 @@ MonoBehaviour:
   prfbInObj: {fileID: 2137507685}
   imgPlyTrail: {fileID: 21300000, guid: 5e078891c2e530240904c88a50b9f677, type: 3}
   imgPlyArea: {fileID: 21300000, guid: 3d0f7276f278eed4b828a6091571b968, type: 3}
-  imgEnm: {fileID: 21300000, guid: d3596efa4808ce242894f16847ffc5ee, type: 3}
 --- !u!4 &548676097
 Transform:
   m_ObjectHideFlags: 0
@@ -641,6 +640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db471a309d72353459c1aa156fde88e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scptBrdMng: {fileID: 548676096}
   moveSpeed: 4
 --- !u!95 &730445391
 Animator:

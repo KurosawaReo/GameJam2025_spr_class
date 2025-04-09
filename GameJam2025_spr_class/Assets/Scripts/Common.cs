@@ -16,7 +16,6 @@ namespace Gloval
         NONE,         //無.
         PLAYER_TRAIL, //プレイヤーの足跡.
         PLAYER_AREA,  //プレイヤーの陣地.
-        ENEMY,        //敵.
     }
 
     /// <summary>
@@ -55,6 +54,17 @@ namespace Gloval
         {
             //0なら0、それ以外は符号を返す.
             return (_num == 0) ? 0 : (_num > 0) ? +1 : -1;
+        }
+
+        /// <summary>
+        /// 4方向を指す座標を取得.
+        /// </summary>
+        /// <returns></returns>
+        public static Vector2Int[] GetVector4dir()
+        {
+            return new Vector2Int[4] { 
+                Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right 
+            };
         }
 
         /// <summary>
@@ -126,9 +136,13 @@ namespace Gloval
         public static Vector2Int WPosToBPos(Vector2 _pos)
         {
             //Unity上の座標の座標から、board配列の座標にするとどこになるか計算.
-            //(世界の中央が0になるようにする)
-            int x = Mathf.RoundToInt(_pos.x * Gl_Const.SQUARE_SIZE);
-            int y = Mathf.RoundToInt(_pos.y * Gl_Const.SQUARE_SIZE);
+            //(この地点では世界の中央が0)
+            int x = Mathf.RoundToInt(_pos.x / Gl_Const.SQUARE_SIZE);
+            int y = Mathf.RoundToInt(_pos.y / Gl_Const.SQUARE_SIZE);
+
+            //盤面の左上が0となるよう調整.
+            x += Gl_Const.BOARD_WID / 2;
+            y += Gl_Const.BOARD_HEI / 2;
 
             return new Vector2Int(x, y);
         }
