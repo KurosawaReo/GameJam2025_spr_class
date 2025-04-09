@@ -10,7 +10,6 @@ public class EnemyGenerator : MonoBehaviour
     
     [Tooltip("生成するプレハブ"), SerializeField]
     public GameObject prefabItem;
-    
 
     // 生成する数のカウント
     int cnt = 0;
@@ -39,6 +38,9 @@ public class EnemyGenerator : MonoBehaviour
             print("動きました");
             if (cnt >= Gl_Const.MAX_ITEM_NUM)
             {
+                // 仮に呼び出している
+                //GetCoordinates();
+                
                 yield return new WaitForSeconds(delay);
                 continue;
 
@@ -62,5 +64,22 @@ public class EnemyGenerator : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// 敵の座標を取得する処理
+    /// </summary>
+    public GameObject[] GetCoordinates()
+    {
+        // タグ「Enemy」を持つ全てのオブジェクトの取得
+        GameObject[] Square = GameObject.FindGameObjectsWithTag("Enemy");
+
+        // 取得した敵オブジェクトの名前を表示
+        //foreach (GameObject enemy in Square)
+        //{
+        //    Debug.Log("シーン内の敵: " + enemy.name);
+        //}
+
+        return Square;
+    }
+
+
 }
