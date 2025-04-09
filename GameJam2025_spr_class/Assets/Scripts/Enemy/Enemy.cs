@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utility;
+using Gloval;
 
 public class Enemy : MonoBehaviour
 {
@@ -125,11 +125,11 @@ public class Enemy : MonoBehaviour
         state = EnemyState.MOVE;
         
         //ÉèÅ[ÉãÉhç¿ïWÇÃéÊìæ
-        var (lb, rt) = Common.GetWorldWindowSize();
+        var (lb, rt) = Gl_Func.GetWorldWindowSize();
 
         
-        var randX = Random.Range(lb.x + Common.MARGIN_LEFT + 2, rt.x - Common.MARGIN_RIGHT - 2);
-        var randY = Random.Range(lb.y + Common.MARGIN_BOTTOM + 2, rt.y - Common.MARGIN_TOP - 2);
+        var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
+        var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
         targetPos = new Vector3(randX, randY, transform.position.z);
 

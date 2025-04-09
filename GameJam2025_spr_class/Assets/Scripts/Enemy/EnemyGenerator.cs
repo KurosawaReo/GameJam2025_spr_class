@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utility;
+using Gloval;
 using static UnityEditor.Progress;
 
 public class EnemyGenerator : MonoBehaviour
@@ -18,7 +18,7 @@ public class EnemyGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(EnemyGeneration(Common.INTERVAL_ITEM_GEN));
+        StartCoroutine(EnemyGeneration(Gl_Const.INTERVAL_ITEM_GEN));
     }
 
     // Update is called once per frame
@@ -32,12 +32,12 @@ public class EnemyGenerator : MonoBehaviour
     /// </summary>
     public IEnumerator EnemyGeneration(float delay)
     {
-        var (lb, rt) = Common.GetWorldWindowSize();
+        var (lb, rt) = Gl_Func.GetWorldWindowSize();
 
         while (true)
         {
             print("“®‚«‚Ü‚µ‚½");
-            if (cnt >= Common.MAX_ITEM_NUM)
+            if (cnt >= Gl_Const.MAX_ITEM_NUM)
             {
                 yield return new WaitForSeconds(delay);
                 continue;
@@ -45,8 +45,8 @@ public class EnemyGenerator : MonoBehaviour
             }
 
             // ”ÍˆÍŽw’è
-            float x = UnityEngine.Random.Range(lb.x + Common.MARGIN_LEFT + 2, rt.x - Common.MARGIN_RIGHT - 2);
-            float y = UnityEngine.Random.Range(lb.y + Common.MARGIN_BOTTOM + 2, rt.y - Common.MARGIN_TOP - 2);
+            float x = UnityEngine.Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
+            float y = UnityEngine.Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
             var prefab = prefabItem;
 
