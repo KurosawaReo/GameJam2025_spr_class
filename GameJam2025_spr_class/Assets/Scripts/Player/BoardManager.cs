@@ -131,7 +131,7 @@ public class BoardManager : MonoBehaviour
                         break;
                     case BoardType.PLAYER_TRAIL:
                         board[x, y].typeSR.sprite = imgPlyTrail;
-                        board[x, y].typeSR.color  = areaColor;
+                        board[x, y].typeSR.color  = Color.white;
                         break;
                     case BoardType.PLAYER_AREA:
                         board[x, y].typeSR.sprite = imgPlyArea; 
@@ -151,14 +151,8 @@ public class BoardManager : MonoBehaviour
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         //訪れたマスの記録用.
         bool[,] isVisit = new bool[Gl_Const.BOARD_WID, Gl_Const.BOARD_HEI];
-        //初期化.
-        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
-                isVisit[x, y] = false;
-            }
-        }
-        //1つでも訪れてないマスがあるかどうか.
-        bool isNoVisit = false;
+        //囲うのに成功したかどうか.
+        bool isSurround = false;
 
         //boardの上端と下端.
         for (int x = 0; x < Gl_Const.BOARD_WID; x++)
@@ -184,7 +178,7 @@ public class BoardManager : MonoBehaviour
                 var newPos = pos + dir; //隣のマスに移動.
 
                 //盤面の中にいる and 訪れたことがないなら.
-                if (IsInBoard(newPos) && !isVisit[newPos.x, newPos.y])
+                if (Gl_Func.IsInBoard(newPos) && !isVisit[newPos.x, newPos.y])
                 {
                     TryEnqueue(queue, newPos.x, newPos.y, isVisit); //次の探索候補マス.
                 }
@@ -198,33 +192,16 @@ public class BoardManager : MonoBehaviour
                 //訪れてない無のマスがあるなら.
                 if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
                 {
-                    isNoVisit = true;
-                    break;
+                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    isSurround = true;
                 }
             }
-            //見つかったら終了.
-            if (isNoVisit) { break; }
         }
 
-        //訪れてないマスがあるなら.
-        if (isNoVisit)
+        //囲うのに成功したなら.
+        if (isSurround)
         {
-            //全マスループ.
-            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-                for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
-
-                    //プレイヤーの痕跡マス.
-                    if (board[x, y].type == BoardType.PLAYER_TRAIL)
-                    {
-                        board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
-                    }
-                    //訪れてない無のマス(=囲われた範囲)
-                    else if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
-                    {
-                        board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
-                    }
-                }
-            }
+            FillTrail();
         }
     }
 
@@ -243,12 +220,20 @@ public class BoardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// board配列の中かどうか.
+    /// 痕跡をエリアに置き換える.
     /// </summary>
-    /// <returns></returns>
-    private bool IsInBoard(Vector2Int _pos)
+    public void FillTrail()
     {
-        return (_pos.x >= 0) && (_pos.x < Gl_Const.BOARD_WID) && 
-               (_pos.y >= 0) && (_pos.y < Gl_Const.BOARD_HEI);
+        //全マスループ.
+        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+
+                //プレイヤーの痕跡マス.
+                if (board[x, y].type == BoardType.PLAYER_TRAIL)
+                {
+                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                }
+            }
+        }
     }
 }

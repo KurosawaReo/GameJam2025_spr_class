@@ -23,7 +23,7 @@ namespace Gloval
     /// </summary>
     public static class Gl_Const
     {
-        // 盤面(board)に関する定数.
+        // 盤面(board)関係.
         public const int   BOARD_HEI = 100;
         public const int   BOARD_WID = 100;
         public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
@@ -33,6 +33,9 @@ namespace Gloval
         public const float MARGIN_RIGHT = -2f;
         public const float MARGIN_LEFT = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
+
+        // プレイヤー関係.
+        public const int   PLAYER_TRAIL_SIZE = 2; //プレイヤー足跡のサイズ(中心から何ドット広げるか)
 
         // アイテムの生成間隔.
         public const float INTERVAL_ITEM_GEN = 1.0f;
@@ -45,6 +48,103 @@ namespace Gloval
     /// </summary>
     public static class Gl_Func
     {
+        /// <summary>
+        /// 画面の左下と右上の座標を返す処理.
+        /// </summary>
+        /// <returns></returns>
+        public static (Vector3, Vector3) GetWorldWindowSize()
+        {
+            Vector3 leftBottom = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+            return (leftBottom, rightTop);
+        }
+
+        /// <summary>
+        /// 盤面データを元に設置.
+        /// </summary>
+        /// <param name="_obj">設置するオブジェクト</param>
+        /// <param name="_x">盤面の座標x</param>
+        /// <param name="_y">盤面の座標y</param>
+        /// <param name="_scale">サイズ倍率</param>
+        public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
+        {
+            //座標を取得.
+            Vector2 pos = BPosToWPos(new Vector2Int(_x, _y));
+            //配置.
+            _obj.transform.position = pos;
+            _obj.transform.localScale = Vector2.one * Gl_Const.SQUARE_SIZE;
+        }
+
+        /// <summary>
+        /// 盤面より外に出ていたら座標を修正する.
+        /// </summary>
+        /// <param name="pos">元の座標</param>
+        /// <returns>変更した座標</returns>
+        public static Vector2 LimPosInBoard(Vector2 pos)
+        {
+            //どこまで移動できるか.
+            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+
+            //横の移動限度(符号はそのまま)
+            if (Mathf.Abs(pos.x) > limX)
+            {
+                pos.x = GetNumSign(pos.x) * limX;
+            }
+            //縦の移動限度(符号はそのまま)
+            if (Mathf.Abs(pos.y) > limY)
+            {
+                pos.y = GetNumSign(pos.y) * limY;
+            }
+
+            return pos; //修正した座標を返す.
+        }
+
+        /// <summary>
+        /// board配列の中かどうか.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsInBoard(Vector2Int _pos)
+        {
+            return (_pos.x >= 0) && (_pos.x < Gl_Const.BOARD_WID) &&
+                   (_pos.y >= 0) && (_pos.y < Gl_Const.BOARD_HEI);
+        }
+
+        /// <summary>
+        /// world座標をboard座標に変換.
+        /// </summary>
+        public static Vector2Int WPosToBPos(Vector2 _pos)
+        {
+            //Unity上の座標から、board配列の座標にするとどこになるか計算.
+            //盤面の幅が偶数なら半マスずらす.
+            float x = (_pos.x / Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_WID % 2 == 0) ? 0.5f : 0);
+            float y = (_pos.y / Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_HEI % 2 == 0) ? 0.5f : 0);
+
+            //この地点では世界の中央が座標(0, 0)
+            Vector2Int bPos = new Vector2Int(
+                Mathf.RoundToInt(x),
+                Mathf.RoundToInt(y)
+            );
+            //盤面の左上が座標(0, 0)となるよう調整.
+            bPos.x += Gl_Const.BOARD_WID / 2;
+            bPos.y += Gl_Const.BOARD_HEI / 2;
+
+            return bPos;
+        }
+
+        /// <summary>
+        /// board座標をworld座標に変換.
+        /// </summary>
+        public static Vector2 BPosToWPos(Vector2Int _pos)
+        {
+            //board配列の座標から、Unity上の座標にするとどこになるか計算.
+            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID / 2) * Gl_Const.SQUARE_SIZE;
+            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI / 2) * Gl_Const.SQUARE_SIZE;
+
+            return new Vector2(x, y);
+        }
+
         /// <summary>
         /// プラスかマイナスかを取得.
         /// </summary>
@@ -100,93 +200,6 @@ namespace Gloval
             float angle = theta * 180/Mathf.PI - 90; //上が0度になるよう90度回転.
 
             return (new Vector2(cos, sin), angle);
-        }
-
-        /// <summary>
-        /// 盤面より外に出ていたら座標を修正する.
-        /// </summary>
-        /// <param name="pos">元の座標</param>
-        /// <returns>変更した座標</returns>
-        public static Vector2 LimPosInBoard(Vector2 pos)
-        {
-            //どこまで移動できるか.
-            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
-            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
-
-            //横の移動限度(符号はそのまま)
-            if (Mathf.Abs(pos.x) > limX)
-            {
-                pos.x = GetNumSign(pos.x) * limX;
-            }
-            //縦の移動限度(符号はそのまま)
-            if (Mathf.Abs(pos.y) > limY)
-            {
-                pos.y = GetNumSign(pos.y) * limY;
-            }
-
-            return pos; //修正した座標を返す.
-        }
-
-        /// <summary>
-        /// 画面の左下と右上の座標を返す処理.
-        /// </summary>
-        /// <returns></returns>
-        public static (Vector3, Vector3) GetWorldWindowSize()
-        {
-            Vector3 leftBottom = Camera.main.ScreenToWorldPoint(Vector3.zero);
-            Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
-
-            return (leftBottom, rightTop);
-        }
-
-        /// <summary>
-        /// 盤面データを元に設置.
-        /// </summary>
-        /// <param name="_obj">設置するオブジェクト</param>
-        /// <param name="_x">盤面の座標x</param>
-        /// <param name="_y">盤面の座標y</param>
-        /// <param name="_scale">サイズ倍率</param>
-        public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
-        {
-            //座標を取得.
-            Vector2 pos = BPosToWPos(new Vector2Int(_x, _y));
-            //配置.
-            _obj.transform.position   = pos;
-            _obj.transform.localScale = Vector2.one * Gl_Const.SQUARE_SIZE;
-        }
-
-        /// <summary>
-        /// world座標をboard座標に変換.
-        /// </summary>
-        public static Vector2Int WPosToBPos(Vector2 _pos)
-        {
-            //Unity上の座標から、board配列の座標にするとどこになるか計算.
-            //盤面の幅が偶数なら半マスずらす.
-            float x = (_pos.x/Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_WID % 2 == 0) ? 0.5f : 0);
-            float y = (_pos.y/Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_HEI % 2 == 0) ? 0.5f : 0);
-
-            //この地点では世界の中央が座標(0, 0)
-            Vector2Int bPos = new Vector2Int(
-                Mathf.RoundToInt(x),
-                Mathf.RoundToInt(y)
-            );
-            //盤面の左上が座標(0, 0)となるよう調整.
-            bPos.x += Gl_Const.BOARD_WID/2;
-            bPos.y += Gl_Const.BOARD_HEI/2;
-
-            return bPos;
-        }
-
-        /// <summary>
-        /// board座標をworld座標に変換.
-        /// </summary>
-        public static Vector2 BPosToWPos(Vector2Int _pos)
-        {
-            //board配列の座標から、Unity上の座標にするとどこになるか計算.
-            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID/2) * Gl_Const.SQUARE_SIZE;
-            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI/2) * Gl_Const.SQUARE_SIZE;
-
-            return new Vector2(x, y);
         }
 
         /// <summary>

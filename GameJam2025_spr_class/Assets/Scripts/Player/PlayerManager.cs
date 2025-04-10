@@ -5,14 +5,14 @@
 using UnityEngine;
 using Gloval;
 
-public class PlayerData 
+public class PlayerData
 {
-    public Vector2Int bPos { get; set; }
+    public Vector2Int beforeBPos { get; set; }
 
     //初期化(コンストラクタ)
-    public PlayerData(Vector2Int _bPos)
+    public PlayerData(Vector2Int _beforeBPos)
     {
-        bPos = _bPos;
+        beforeBPos = _beforeBPos;
     }
 }
 
@@ -28,9 +28,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float moveSpeed;
 
     ////プレイヤーデータ.
-    //PlayerData player = new PlayerData(
-    //    new Vector2Int(0, 0)  //boardPos.
-    //);
+    PlayerData player = new PlayerData(
+        new Vector2Int(0, 0)  //beforeBPos.
+    );
 
     void Update()
     {
@@ -68,13 +68,43 @@ public class PlayerManager : MonoBehaviour
     private void PlayerTrail()
     {
         //プレイヤーのいるboard座標取得.
-        var bpos = Gl_Func.WPosToBPos(transform.position);
+        var bPos = Gl_Func.WPosToBPos(transform.position);
 
-        //現在マスが無なら.
-        if(scptBrdMng.Board[bpos.x, bpos.y].type == BoardType.NONE)
+        //座標が変化した(=移動したなら)
+        if (player.beforeBPos != bPos)
         {
-            scptBrdMng.Board[bpos.x, bpos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
-            scptBrdMng.SurroundTrail(); //囲う処理.
+            player.beforeBPos = bPos; //座標更新.
+
+            //陣地の中にいる間.
+            if (scptBrdMng.Board[bPos.x, bPos.y].type == BoardType.PLAYER_AREA)
+            {
+                scptBrdMng.FillTrail(); //痕跡をエリアにする.
+            }
+            //陣地にいない間.
+            else
+            {
+                //プレイヤーの位置を中心にループ.
+                for (int i = -Gl_Const.PLAYER_TRAIL_SIZE / 2; i < Gl_Const.PLAYER_TRAIL_SIZE / 2; i++)
+                {
+                    for (int j = -Gl_Const.PLAYER_TRAIL_SIZE / 2; j < Gl_Const.PLAYER_TRAIL_SIZE / 2; j++)
+                    {
+                        var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
+
+                        //盤面外ならスキップ.
+                        if (!Gl_Func.IsInBoard(tmpBPos))
+                        {
+                            continue;
+                        }
+                        //仮移動したマスが無なら.
+                        if (scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type == BoardType.NONE)
+                        {
+                            scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
+                        }
+                    }
+                }
+
+                scptBrdMng.SurroundTrail(); //囲う処理.
+            }
         }
     }
 
