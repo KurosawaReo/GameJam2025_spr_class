@@ -201,7 +201,7 @@ public class BoardManager : MonoBehaviour
         //囲うのに成功したなら.
         if (isSurround)
         {
-            FillTrail();
+            FillTrail(BoardType.PLAYER_AREA); //痕跡をエリアで埋める.
         }
     }
 
@@ -220,9 +220,10 @@ public class BoardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 痕跡をエリアに置き換える.
+    /// プレイヤーの痕跡を置き換える.
     /// </summary>
-    public void FillTrail()
+    /// <param name="_type">置き換えるタイプ</param>
+    public void FillTrail(BoardType _type)
     {
         //全マスループ.
         for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
@@ -231,7 +232,7 @@ public class BoardManager : MonoBehaviour
                 //プレイヤーの痕跡マス.
                 if (board[x, y].type == BoardType.PLAYER_TRAIL)
                 {
-                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    board[x, y].type = _type; //埋める.
                 }
             }
         }

@@ -20,7 +20,7 @@ public class DataManager : MonoBehaviour
 
 
     string filePath;
-    string jsonPath = "Resources/Jsons/";
+    //string jsonPath = "Resources/Jsons/";
     string jsonName = "Score.Json";
 
 

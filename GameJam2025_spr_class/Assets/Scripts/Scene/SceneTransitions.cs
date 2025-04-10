@@ -8,11 +8,10 @@ public class SceneTransitions : MonoBehaviour
 {
     string[] sceneID = {"Title",
                         "StageSelect",
-                        "Stage01"};
+                        "GameScene"};
 
     public void SceneLoad(int sceneNumber)
     {
-        Debug.Log("num:"+sceneNumber);
         SceneManager.LoadScene(sceneID[sceneNumber]);
     }
 }

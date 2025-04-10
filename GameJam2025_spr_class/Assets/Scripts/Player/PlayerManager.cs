@@ -83,16 +83,15 @@ public class PlayerManager : MonoBehaviour
             //陣地の中にいる間.
             if (scptBrdMng.Board[bPos.x, bPos.y].type == BoardType.PLAYER_AREA)
             {
-                scptBrdMng.FillTrail(); //痕跡をエリアにする.
+                scptBrdMng.FillTrail(BoardType.PLAYER_AREA); //痕跡をエリアで埋める.
             }
             //陣地にいない間.
             else
             {
                 //プレイヤーの位置を中心にループ.
-                for (int i = -Gl_Const.PLAYER_TRAIL_SIZE / 2; i < Gl_Const.PLAYER_TRAIL_SIZE / 2; i++)
-                {
-                    for (int j = -Gl_Const.PLAYER_TRAIL_SIZE / 2; j < Gl_Const.PLAYER_TRAIL_SIZE / 2; j++)
-                    {
+                for (int i = -Gl_Const.PLAYER_TRAIL_SIZE/2; i < Gl_Const.PLAYER_TRAIL_SIZE/2; i++) {
+                    for (int j = -Gl_Const.PLAYER_TRAIL_SIZE/2; j < Gl_Const.PLAYER_TRAIL_SIZE/2; j++) {
+
                         var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
 
                         //盤面外ならスキップ.
@@ -118,6 +117,11 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     public void PlayerDeath()
     {
+        //痕跡を無に置き換える.
+        scptBrdMng.FillTrail(BoardType.NONE);
+        //死亡処理.
         scptGameMng.PlayerDead();
+        
+        Destroy(gameObject); //自身を消滅.
     }
 }
