@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestUdon/01.unity
     guid: abae1f7681fed5443ab7269a3074b5d4
+  - enabled: 1
+    path: Assets/Scenes/TestUdon/03.unity
+    guid: e0ea77ef197a58f4aa3702ec81880cb4
   m_configObjects: {}
