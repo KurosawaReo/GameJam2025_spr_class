@@ -14,9 +14,6 @@ public class EnemyGenerator : MonoBehaviour
     [Tooltip("GameManagerのscript"), SerializeField]
     GameManager scptGameMng;
 
-    // 生成する数のカウント
-    int cnt = 0;
-
     void Start()
     {
         StartCoroutine(WaitStart()); 
@@ -40,38 +37,52 @@ public class EnemyGenerator : MonoBehaviour
         }
 
         //実行.
-        StartCoroutine(EnemyGeneration(Gl_Const.INTERVAL_ITEM_GEN));
+        StartCoroutine(EnemyGeneration());
     }
 
     /// <summary>
     /// ランダム生成処理
     /// </summary>
-    public IEnumerator EnemyGeneration(float delay)
+    public IEnumerator EnemyGeneration()
     {
+        //最初に何体か出す.
+        for (int i = 0; i < Gl_Const.START_ENEMY_NUM; i++) 
+        {
+            EnemySpawnExe();
+            yield return new WaitForSeconds(0.1f);
+        }
+
         //ゲーム終了するまでループ.
         while (!scptGameMng.gameOverFlag)
         {
-            print("動きました");
-            if (cnt >= Gl_Const.MAX_ENEMY_NUM)
+            //最大出現数になってるなら待機.
+            if (scptGameMng.GetEnemyCount() >= Gl_Const.MAX_ENEMY_NUM)
             {
-                // 仮に呼び出している
-                //GetEnemyObjects();
-
-                yield return new WaitForSeconds(delay);
+                yield return null;
                 continue;
-
             }
-            
-            var prefab = prefabItem;
 
-            var obj = Instantiate(prefab, prefabInObj.transform);
-
-            obj.transform.position = Gl_Func.RandEnemySpawnPos();
-
-            cnt++;
-
+            //遅延時間の抽選.
+            float delay = UnityEngine.Random.Range(
+                Gl_Const.ENEMY_SPAWN_MIN_INTERVAL,
+                Gl_Const.ENEMY_SPAWN_MAX_INTERVAL
+            );
             yield return new WaitForSeconds(delay);
+
+            //敵を追加.
+            EnemySpawnExe();
         }
+    }
+
+    /// <summary>
+    /// 敵を出現.
+    /// </summary>
+    public void EnemySpawnExe()
+    {
+        //敵出現.
+        var obj = Instantiate(prefabItem, prefabInObj.transform);
+        //座標を抽選して配置.
+        obj.transform.position = Gl_Func.RandEnemySpawnPos();
     }
 
     /// <summary>
@@ -81,12 +92,6 @@ public class EnemyGenerator : MonoBehaviour
     {
         // タグ「Enemy」を持つ全てのオブジェクトの取得
         GameObject[] Square = GameObject.FindGameObjectsWithTag("Enemy");
-
-        // 取得した敵オブジェクトの名前を表示
-        //foreach (GameObject enemy in Square)
-        //{
-        //    Debug.Log("シーン内の敵: " + enemy.name);
-        //}
 
         return Square;
     }

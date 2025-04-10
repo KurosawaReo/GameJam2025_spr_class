@@ -7,7 +7,7 @@ public class BlackOutNext : MonoBehaviour
 {
     BlackOutMove blackOutMove;
     NextStage nextStage;
-    [SerializeField] SceneTransitions transitions;
+    [SerializeField] SceneTransitions scptSceneTrans;
 
     // Start is called before the first frame update
     void Start()
@@ -21,19 +21,24 @@ public class BlackOutNext : MonoBehaviour
         var obj = GameObject.Find("TitleBlockPanel");
     }
 
-    void BlackOutEvent()
+    public void BlackOutEvent()
     {
         blackOutMove.blackOutObjNum++;
         blackOutMove.BlackOutObjOn();
     }
 
-    void BlackOutEnd()
+    /// <summary>
+    /// 多分ブラックアウトが終わったら実行される.
+    /// </summary>
+    public void BlackOutEnd()
     {
         blackOutMove.blackOutObjEndNum++;
-        Debug.Log("blackOutObjEndNum" + blackOutMove.blackOutObjEndNum + "blackOutObj.Length" + blackOutMove.blackOutObj.Length);
+        //Debug.Log("blackOutObjEndNum" + blackOutMove.blackOutObjEndNum + "blackOutObj.Length" + blackOutMove.blackOutObj.Length);
+
+        //全てのブラックアウトブロックが黒くなったら.
         if (blackOutMove.blackOutObjEndNum >= blackOutMove.blackOutObj.Length)
         {
-            transitions.SceneLoad(nextStage.StageNum);
-        }    
+            scptSceneTrans.SceneLoad(nextStage.NextSceneNum); //シーン移動.
+        }
     }
 }

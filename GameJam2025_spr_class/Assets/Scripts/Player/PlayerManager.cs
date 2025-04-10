@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using Gloval;
+using System.Xml.Serialization;
 
 public class PlayerData
 {
@@ -85,8 +86,21 @@ public class PlayerManager : MonoBehaviour
             {
                 case BoardType.PLAYER_AREA:
                 {
-                    //痕跡をエリアで埋める.
-                    scptBrdMng.ReplaceAllBoard(BoardType.PLAYER_TRAIL, BoardType.PLAYER_AREA);
+                    scptBrdMng.SurroundTrail(); //囲う処理.
+
+
+                    //全マスループ.
+                    for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+                        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+
+                            //足元と痕跡をエリアで埋める.
+                            if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT ||
+                                scptBrdMng.Board[x, y].type == BoardType.PLAYER_TRAIL)
+                            {
+                                scptBrdMng.Board[x, y].type = BoardType.PLAYER_AREA;
+                            }
+                        }
+                    }
                     break;
                 }
                 case BoardType.PLAYER_TRAIL:
@@ -94,6 +108,7 @@ public class PlayerManager : MonoBehaviour
                     PlayerDeath();     //死亡処理.
                     break;
                 }
+                case BoardType.PLAYER_FOOT:
                 case BoardType.NONE:
                 {
                     PlayerTrail(bPos); //痕跡処理.
@@ -110,37 +125,48 @@ public class PlayerManager : MonoBehaviour
     private void PlayerTrail(Vector2Int bPos)
     {
         //プレイヤー周辺のマスループ.
-        for (int y = bPos.y-5; y < bPos.y+5; y++) {
-            for (int x = bPos.x-5; x < bPos.x+5; x++) {
+        for (int y = bPos.y-7; y < bPos.y+7; y++) {
+            for (int x = bPos.x-7; x < bPos.x+7; x++) {
 
-                //足元を足跡に置き換える.
-                if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT)
+                //盤面外ならスキップ.
+                if (!Gl_Func.IsInBoard(new Vector2Int(x, y)))
                 {
-                    scptBrdMng.Board[x, y].type = BoardType.PLAYER_TRAIL;
+                    continue;
                 }
+
+                //足元じゃなくなるマスを変える.
+                if(x < bPos.x - Gl_Const.PLAYER_TRAIL_SIZE ||
+                   x > bPos.x + Gl_Const.PLAYER_TRAIL_SIZE ||
+                   y < bPos.y - Gl_Const.PLAYER_TRAIL_SIZE ||
+                   y > bPos.y + Gl_Const.PLAYER_TRAIL_SIZE
+                ){
+                    //足元を痕跡に置き換える.
+                    if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT)
+                    {
+                        scptBrdMng.Board[x, y].type = BoardType.PLAYER_TRAIL;
+                    }
+                }  
             }
         }
 
-        //現在位置を中心にループ.
-        for (int i = -Gl_Const.PLAYER_TRAIL_SIZE/2; i < Gl_Const.PLAYER_TRAIL_SIZE/2; i++) {
-            for (int j = -Gl_Const.PLAYER_TRAIL_SIZE/2; j < Gl_Const.PLAYER_TRAIL_SIZE/2; j++) {
-
-                var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
+        //一定の範囲に足元マスを塗る.
+        for (int y = bPos.y-Gl_Const.PLAYER_TRAIL_SIZE; y < bPos.y+Gl_Const.PLAYER_TRAIL_SIZE; y++) {
+            for (int x = bPos.x-Gl_Const.PLAYER_TRAIL_SIZE; x < bPos.x+Gl_Const.PLAYER_TRAIL_SIZE; x++) {
 
                 //盤面外ならスキップ.
-                if (!Gl_Func.IsInBoard(tmpBPos))
+                if (!Gl_Func.IsInBoard(new Vector2Int(x, y)))
                 {
                     continue;
                 }
                 //仮移動したマスが無なら.
-                if (scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type == BoardType.NONE)
+                if (scptBrdMng.Board[x, y].type == BoardType.NONE)
                 {
-                    scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type = BoardType.PLAYER_FOOT; //足元にする.
+                    scptBrdMng.Board[x, y].type = BoardType.PLAYER_FOOT; //足元にする.
                 }
             }
         }
 
-        scptBrdMng.SurroundTrail(); //囲う処理.
+        //scptBrdMng.SurroundTrail(); //囲う処理.
     }
 
     /// <summary>

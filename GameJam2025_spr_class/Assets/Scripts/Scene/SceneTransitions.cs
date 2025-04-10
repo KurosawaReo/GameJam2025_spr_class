@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+/*
+   - SceneTransitions.cs -
+   シーン移動用.
+   シーン名を同じにさせないと動かなくなる.
+*/
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class SceneTransitions : MonoBehaviour
 {
-    string[] sceneID = {"Title",
+    string[] sceneID = {"TitleScene",
                         "StageSelect",
                         "GameScene"};
 

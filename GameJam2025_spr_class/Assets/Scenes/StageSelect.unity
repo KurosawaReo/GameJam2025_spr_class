@@ -626,7 +626,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 463700703461102612, guid: 22231c309ed887d48a55bc0c259faea6, type: 3}
       propertyPath: onBool
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 463700703461102612, guid: 22231c309ed887d48a55bc0c259faea6, type: 3}
       propertyPath: StageNum
@@ -1163,7 +1163,7 @@ SceneRoots:
   - {fileID: 1578179030}
   - {fileID: 1760226599}
   - {fileID: 797258471}
+  - {fileID: 1231575583}
   - {fileID: 806658908}
   - {fileID: 1415768884}
   - {fileID: 344051823}
-  - {fileID: 1231575583}

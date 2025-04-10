@@ -15,8 +15,19 @@ namespace Gloval
     {
         NONE,         //無.
         PLAYER_FOOT,  //プレイヤーの足元(現在位置)
-        PLAYER_TRAIL, //プレイヤーの足跡.
+        PLAYER_TRAIL, //プレイヤーの痕跡.
         PLAYER_AREA,  //プレイヤーの陣地.
+    }
+
+    /// <summary>
+    /// プレイしてるゲームモード.
+    /// </summary>
+    public enum ModeName
+    {
+        [InspectorName("時間制限モード"), Tooltip("時間制限モード")] 
+        TimeUp,
+        [InspectorName("殲滅モード"),     Tooltip("殲滅モード")] 
+        AllBreak
     }
 
     /// <summary>
@@ -24,25 +35,29 @@ namespace Gloval
     /// </summary>
     public static class Gl_Const
     {
-        // 盤面(board)関係.
+        //盤面(board)関係.
         public const int   BOARD_HEI      = 100;
         public const int   BOARD_WID      = 100;
         public const float SQUARE_SIZE    = 0.1f; //マスのサイズ倍率.
-        public const int   INIT_AREA_SIZE = 3;    //初期陣地エリアのサイズ(中心から何ドット広げるか)
+        public const int   INIT_AREA_SIZE = 4;    //初期陣地エリアのサイズ(中心から何ドット広げるか)
 
-        // 敵生成関係.
+        //プレイヤー関係.
+        public const int   PLAYER_TRAIL_SIZE = 1; //痕跡のサイズ(中心から何ドット広げるか)
+
+        //敵関係.
         public const float MARGIN_TOP    = -2f;   //↓画面の余白.
         public const float MARGIN_RIGHT  = -2f;
         public const float MARGIN_LEFT   = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
-        // プレイヤー関係.
-        public const int   PLAYER_TRAIL_SIZE = 2; //足跡のサイズ(中心から何ドット広げるか)
-
-        // アイテムの生成間隔.
-        public const float INTERVAL_ITEM_GEN = 1.0f;
-        // エリア内の敵の最大数.
-        public const int   MAX_ENEMY_NUM = 5;
+        public const float ENEMY_MAX_MOVE_SPEED  = 0.8f;    //移動速度乱数の最大値.
+        public const float ENEMY_MIN_MOVE_SPEED  = 0.1f;    //移動速度乱数の最小値.
+        public const float ENEMY_GOAL_STOP_RANGE = 0.02f;   //目標地点に着いたら移動停止する範囲.
+        
+        public const int   START_ENEMY_NUM = 3;              //最初の敵の出現数.
+        public const int   MAX_ENEMY_NUM  = 10;             //敵の同時最大出現数.
+        public const float ENEMY_SPAWN_MAX_INTERVAL = 1.0f; //敵の生成間隔乱数の最大値.
+        public const float ENEMY_SPAWN_MIN_INTERVAL = 5.0f; //敵の生成間隔乱数の最小値.
     }
 
     /// <summary>

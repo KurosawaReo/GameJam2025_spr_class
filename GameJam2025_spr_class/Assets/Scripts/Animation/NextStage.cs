@@ -8,7 +8,7 @@ using UnityEngine;
 public class NextStage : MonoBehaviour
 {
     [SerializeField]
-    public int StageNum = 1;
+    public int NextSceneNum = 1; //この番号のシーンへ移動.
 
     [SerializeField]
     public bool onBool; //trueなら、SPACEを押すとアニメーション再生.
