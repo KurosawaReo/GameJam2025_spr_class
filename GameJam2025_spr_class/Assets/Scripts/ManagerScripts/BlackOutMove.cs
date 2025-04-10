@@ -9,7 +9,9 @@ public class BlackOutMove : MonoBehaviour
 
     Animator animator;
 
-    public int blackOutObjNum;
+    public int blackOutObjNum;  //“®‚«o‚µ‚Ä‚é‚Ì‚Í‰½ŒÂ–Ú‚©
+
+    public int blackOutObjEndNum;            //“®‚«I‚¦‚½‚Ì‚Í‰½ŒÂ–Ú‚©
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +42,14 @@ public class BlackOutMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        ButtonOn();
+    }
+
+    void ButtonOn()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            BlackOutObjOn();
+        }
     }
 }

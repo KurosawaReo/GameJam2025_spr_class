@@ -13,11 +13,6 @@ public class BlockAnimEvent : MonoBehaviour
         Init();
     }
 
-    void DebugInit()
-    {
-        
-    }
-
     void Init()
     {
         var obj = GameObject.Find("TitleBlockPanel");
@@ -26,6 +21,7 @@ public class BlockAnimEvent : MonoBehaviour
 
     void MoveEvent()
     {
+
         animator = GetComponent<Animator>();
         blockMove.AnimEnd();
     }

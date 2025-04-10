@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlackOutNext : MonoBehaviour
 {
     BlackOutMove blackOutMove;
-    SceneTransitions transitions;
+    [SerializeField] SceneTransitions transitions;
 
     // Start is called before the first frame update
     void Start()
@@ -24,9 +24,11 @@ public class BlackOutNext : MonoBehaviour
 
     void BlackOutEnd()
     {
-        if(blackOutMove.blackOutObjNum >= blackOutMove.blackOutObj.Length)
+        blackOutMove.blackOutObjEndNum++;
+        Debug.Log("blackOutObjEndNum" + blackOutMove.blackOutObjEndNum + "blackOutObj.Length" + blackOutMove.blackOutObj.Length);
+        if (blackOutMove.blackOutObjEndNum >= blackOutMove.blackOutObj.Length)
         {
-            //SceneTransitions.SceneLoad();
+            transitions.SceneLoad(1);
         }    
     }
 }
