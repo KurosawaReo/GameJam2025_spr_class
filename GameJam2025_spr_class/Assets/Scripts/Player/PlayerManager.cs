@@ -40,7 +40,7 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         InputMove();
-        PlyTrail();
+        PlayerTrail();
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// プレイヤーの痕跡を残す処理.
     /// </summary>
-    private void PlyTrail()
+    private void PlayerTrail()
     {
         //プレイヤーのいるboard座標取得.
         var bpos = Gl_Func.WPosToBPos(transform.position);
@@ -93,5 +93,13 @@ public class PlayerManager : MonoBehaviour
             scptBrdMng.Board[bpos.x, bpos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
             scptBrdMng.SurroundTrail(); //囲う処理.
         }
+    }
+
+    /// <summary>
+    /// プレイヤー死亡.
+    /// </summary>
+    public void PlayerDeath()
+    {
+
     }
 }
