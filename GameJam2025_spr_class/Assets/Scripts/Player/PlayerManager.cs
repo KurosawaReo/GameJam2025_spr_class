@@ -22,6 +22,7 @@ public class PlayerData
 public class PlayerManager : MonoBehaviour
 {
     [Header("- script -")]
+    [SerializeField] GameManager  scptGameMng;
     [SerializeField] BoardManager scptBrdMng;
 
     [Header("- value -")]
@@ -34,8 +35,12 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        InputMove();
-        PlayerTrail();
+        //ゲーム中のみ.
+        if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
+        {
+            InputMove();
+            PlayerMove();
+        }
     }
 
     /// <summary>
@@ -63,9 +68,9 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// プレイヤーの痕跡を残す処理.
+    /// プレイヤーの移動処理.
     /// </summary>
-    private void PlayerTrail()
+    private void PlayerMove()
     {
         //プレイヤーのいるboard座標取得.
         var bPos = Gl_Func.WPosToBPos(transform.position);
@@ -75,37 +80,67 @@ public class PlayerManager : MonoBehaviour
         {
             player.beforeBPos = bPos; //座標更新.
 
-            //陣地の中にいる間.
-            if (scptBrdMng.Board[bPos.x, bPos.y].type == BoardType.PLAYER_AREA)
+            //今いるマスのタイプ別処理.
+            switch (scptBrdMng.Board[bPos.x, bPos.y].type)
             {
-                scptBrdMng.FillTrail(); //痕跡をエリアにする.
-            }
-            //陣地にいない間.
-            else
-            {
-                //プレイヤーの位置を中心にループ.
-                for (int i = -Gl_Const.PLAYER_TRAIL_SIZE / 2; i < Gl_Const.PLAYER_TRAIL_SIZE / 2; i++)
+                case BoardType.PLAYER_AREA:
                 {
-                    for (int j = -Gl_Const.PLAYER_TRAIL_SIZE / 2; j < Gl_Const.PLAYER_TRAIL_SIZE / 2; j++)
-                    {
-                        var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
-
-                        //盤面外ならスキップ.
-                        if (!Gl_Func.IsInBoard(tmpBPos))
-                        {
-                            continue;
-                        }
-                        //仮移動したマスが無なら.
-                        if (scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type == BoardType.NONE)
-                        {
-                            scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
-                        }
-                    }
+                    //痕跡をエリアで埋める.
+                    scptBrdMng.ReplaceAllBoard(BoardType.PLAYER_TRAIL, BoardType.PLAYER_AREA);
+                    break;
                 }
-
-                scptBrdMng.SurroundTrail(); //囲う処理.
+                case BoardType.PLAYER_TRAIL:
+                {
+                    PlayerDeath();     //死亡処理.
+                    break;
+                }
+                case BoardType.NONE:
+                {
+                    PlayerTrail(bPos); //痕跡処理.
+                    break;
+                }
             }
         }
+    }
+
+    /// <summary>
+    /// プレイヤーの痕跡処理.
+    /// </summary>
+    /// <param name="bPos">ボード座標</param>
+    private void PlayerTrail(Vector2Int bPos)
+    {
+        //プレイヤー周辺のマスループ.
+        for (int y = bPos.y-5; y < bPos.y+5; y++) {
+            for (int x = bPos.x-5; x < bPos.x+5; x++) {
+
+                //足元を足跡に置き換える.
+                if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT)
+                {
+                    scptBrdMng.Board[x, y].type = BoardType.PLAYER_TRAIL;
+                }
+            }
+        }
+
+        //現在位置を中心にループ.
+        for (int i = -Gl_Const.PLAYER_TRAIL_SIZE/2; i < Gl_Const.PLAYER_TRAIL_SIZE/2; i++) {
+            for (int j = -Gl_Const.PLAYER_TRAIL_SIZE/2; j < Gl_Const.PLAYER_TRAIL_SIZE/2; j++) {
+
+                var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
+
+                //盤面外ならスキップ.
+                if (!Gl_Func.IsInBoard(tmpBPos))
+                {
+                    continue;
+                }
+                //仮移動したマスが無なら.
+                if (scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type == BoardType.NONE)
+                {
+                    scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type = BoardType.PLAYER_FOOT; //足元にする.
+                }
+            }
+        }
+
+        scptBrdMng.SurroundTrail(); //囲う処理.
     }
 
     /// <summary>
@@ -113,6 +148,11 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     public void PlayerDeath()
     {
-
+        //痕跡を無に置き換える.
+        scptBrdMng.ReplaceAllBoard(BoardType.PLAYER_TRAIL, BoardType.NONE);
+        //死亡処理.
+        scptGameMng.PlayerDead();
+        
+        Destroy(gameObject); //自身を消滅.
     }
 }

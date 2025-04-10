@@ -14,6 +14,7 @@ namespace Gloval
     public enum BoardType
     {
         NONE,         //無.
+        PLAYER_FOOT,  //プレイヤーの足元(現在位置)
         PLAYER_TRAIL, //プレイヤーの足跡.
         PLAYER_AREA,  //プレイヤーの陣地.
     }
@@ -24,23 +25,24 @@ namespace Gloval
     public static class Gl_Const
     {
         // 盤面(board)関係.
-        public const int   BOARD_HEI = 100;
-        public const int   BOARD_WID = 100;
-        public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
+        public const int   BOARD_HEI      = 100;
+        public const int   BOARD_WID      = 100;
+        public const float SQUARE_SIZE    = 0.1f; //マスのサイズ倍率.
+        public const int   INIT_AREA_SIZE = 3;    //初期陣地エリアのサイズ(中心から何ドット広げるか)
 
-        // 画面端の余白.
-        public const float MARGIN_TOP = 1.0f;
-        public const float MARGIN_RIGHT = 1.0f;
-        public const float MARGIN_LEFT = 1.0f;
+        // 敵生成関係.
+        public const float MARGIN_TOP    = -2f;   //↓画面の余白.
+        public const float MARGIN_RIGHT  = -2f;
+        public const float MARGIN_LEFT   = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
         // プレイヤー関係.
-        public const int   PLAYER_TRAIL_SIZE = 2; //プレイヤー足跡のサイズ(中心から何ドット広げるか)
+        public const int   PLAYER_TRAIL_SIZE = 2; //足跡のサイズ(中心から何ドット広げるか)
 
         // アイテムの生成間隔.
         public const float INTERVAL_ITEM_GEN = 1.0f;
-        // エリア内のアイテムの最大数.
-        public const int MAX_ITEM_NUM = 5;
+        // エリア内の敵の最大数.
+        public const int   MAX_ENEMY_NUM = 5;
     }
 
     /// <summary>
@@ -200,6 +202,26 @@ namespace Gloval
             float angle = theta * 180/Mathf.PI - 90; //上が0度になるよう90度回転.
 
             return (new Vector2(cos, sin), angle);
+        }
+
+        /// <summary>
+        /// 敵の出現座標の抽選.
+        /// </summary>
+        /// <returns></returns>
+        public static Vector2 RandEnemySpawnPos()
+        {
+            //ワールド座標の取得.
+            var (lb, rt) = GetWorldWindowSize();
+
+            //距離の抽選.
+            var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
+            var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
+            //プラスかマイナスかの抽選.
+            var randMoveX = Random.Range(randX, -randX);
+            var randMoveY = Random.Range(randY, -randY);
+
+            //座標の抽選結果を返す.
+            return new Vector2(randMoveX, randMoveY);
         }
 
         /// <summary>

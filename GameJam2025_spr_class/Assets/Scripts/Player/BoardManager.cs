@@ -45,6 +45,7 @@ public class BoardManager : MonoBehaviour
     void Start()
     {
         RandAreaColor();
+
         InitBoard();
         BoardGenerate();
     }
@@ -81,11 +82,14 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        int len = 2;
-
+        //中央の範囲.
+        int stY = Gl_Const.BOARD_HEI/2 - Gl_Const.INIT_AREA_SIZE;
+        int edY = Gl_Const.BOARD_HEI/2 + Gl_Const.INIT_AREA_SIZE;
+        int stX = Gl_Const.BOARD_WID/2 - Gl_Const.INIT_AREA_SIZE;
+        int edX = Gl_Const.BOARD_WID/2 + Gl_Const.INIT_AREA_SIZE;
         //中央あたりは初期陣地にする.
-        for (int y = Gl_Const.BOARD_HEI/2-len; y < Gl_Const.BOARD_HEI/2+len; y++) {
-            for (int x = Gl_Const.BOARD_WID/2-2; x < Gl_Const.BOARD_WID/2+2; x++) {
+        for (int y = stY; y < edY; y++) {
+            for (int x = stX; x < edX; x++) {
 
                 board[x, y].type = BoardType.PLAYER_AREA;
             }
@@ -129,10 +133,12 @@ public class BoardManager : MonoBehaviour
                     case BoardType.NONE:
                         board[x, y].typeSR.sprite = null; 
                         break;
+
                     case BoardType.PLAYER_TRAIL:
                         board[x, y].typeSR.sprite = imgPlyTrail;
                         board[x, y].typeSR.color  = Color.white;
                         break;
+
                     case BoardType.PLAYER_AREA:
                         board[x, y].typeSR.sprite = imgPlyArea; 
                         board[x, y].typeSR.color  = areaColor;
@@ -186,8 +192,8 @@ public class BoardManager : MonoBehaviour
         }
 
         //全マスループ.
-        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
                 //訪れてない無のマスがあるなら.
                 if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
@@ -201,7 +207,18 @@ public class BoardManager : MonoBehaviour
         //囲うのに成功したなら.
         if (isSurround)
         {
-            FillTrail();
+            //全マスループ.
+            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+                for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+
+                    //足元と痕跡をエリアで埋める.
+                    if (board[x, y].type == BoardType.PLAYER_FOOT ||
+                        board[x, y].type == BoardType.PLAYER_TRAIL)
+                    {
+                        board[x, y].type = BoardType.PLAYER_AREA;
+                    }
+                }
+            }
         }
     }
 
@@ -220,18 +237,20 @@ public class BoardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 痕跡をエリアに置き換える.
+    /// 盤面の全マスのタイプを置き換え.
     /// </summary>
-    public void FillTrail()
+    /// <param name="_befType">元のタイプ</param>
+    /// <param name="_aftType">置き換えるタイプ</param>
+    public void ReplaceAllBoard(BoardType _befType, BoardType _aftType)
     {
         //全マスループ.
-        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
-                //プレイヤーの痕跡マス.
-                if (board[x, y].type == BoardType.PLAYER_TRAIL)
+                //元のタイプ.
+                if (board[x, y].type == _befType)
                 {
-                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    board[x, y].type = _aftType; //置き換える.
                 }
             }
         }
