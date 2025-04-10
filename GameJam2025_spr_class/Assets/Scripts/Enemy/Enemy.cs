@@ -139,10 +139,20 @@ public class Enemy : MonoBehaviour
         Vector2 pos = transform.position;
         pos = Gl_Func.LimPosInBoard(pos);
         transform.position = pos;
-        
-        targetPos = Gl_Func.RandEnemySpawnPos();
-        targetPos = Gl_Func.LimPosInBoard(targetPos);
-        
+
+        //目標地点の抽選.
+        {
+            int rndX = Random.Range(0, Gl_Const.BOARD_WID - 1);
+            int rndY = Random.Range(0, Gl_Const.BOARD_HEI - 1);
+
+            //その座標が無マスなら.
+            if (bm.Board[rndX, rndY].type == BoardType.NONE)
+            {
+                var wPos = Gl_Func.BPosToWPos(new Vector2Int(rndX, rndY));
+                targetPos = Gl_Func.LimPosInBoard(wPos);
+            }
+        }
+
         randMoveSpeedRatio = Random.Range(
             Gl_Const.ENEMY_MIN_MOVE_SPEED, Gl_Const.ENEMY_MAX_MOVE_SPEED
         );

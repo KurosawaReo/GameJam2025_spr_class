@@ -56,8 +56,8 @@ namespace Gloval
         
         public const int   START_ENEMY_NUM = 3;              //最初の敵の出現数.
         public const int   MAX_ENEMY_NUM  = 10;             //敵の同時最大出現数.
-        public const float ENEMY_SPAWN_MAX_INTERVAL = 1.0f; //敵の生成間隔乱数の最大値.
-        public const float ENEMY_SPAWN_MIN_INTERVAL = 5.0f; //敵の生成間隔乱数の最小値.
+        public const float ENEMY_SPAWN_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
+        public const float ENEMY_SPAWN_MIN_INTERVAL = 0.5f; //敵の生成間隔乱数の最小値.
     }
 
     /// <summary>
@@ -218,43 +218,6 @@ namespace Gloval
 
             return (new Vector2(cos, sin), angle);
         }
-
-        /// <summary>
-        /// 敵の出現座標の抽選.
-        /// </summary>
-        /// <returns></returns>
-        public static Vector2 RandEnemySpawnPos()
-        {
-            //ワールド座標の取得.
-            var (lb, rt) = GetWorldWindowSize();
-
-            //距離の抽選.
-            var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
-            var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
-            //プラスかマイナスかの抽選.
-            var randMoveX = Random.Range(randX, -randX);
-            var randMoveY = Random.Range(randY, -randY);
-
-            //座標の抽選結果を返す.
-            return new Vector2(randMoveX, randMoveY);
-        }
-
-        /// <summary>
-        /// ゲームプレイ終了.
-        /// </summary>
-        public static void QuitGame()
-        {
-            //Unityエディタ実行中.
-            if (Application.isEditor)
-            {
-                UnityEditor.EditorApplication.isPlaying = false;
-            }
-            //ビルド後.
-            else
-            {
-                Application.Quit();
-            }
-        }
     }
 }
 
@@ -287,5 +250,24 @@ public class Common : MonoBehaviour
 
         return (leftBottom, rightTop);
     }
+}
+
+/// <summary>
+/// 敵の出現座標の抽選[仕様変更済]
+/// </summary>
+public static Vector2 RandEnemySpawnPos()
+{
+    //ワールド座標の取得.
+    var (lb, rt) = GetWorldWindowSize();
+
+    //距離の抽選.
+    var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
+    var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
+    //プラスかマイナスかの抽選.
+    var randMoveX = Random.Range(randX, -randX);
+    var randMoveY = Random.Range(randY, -randY);
+
+    //座標の抽選結果を返す.
+    return new Vector2(randMoveX, randMoveY);
 }
 #endif

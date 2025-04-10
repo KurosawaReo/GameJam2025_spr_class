@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviour
         {
             InputMove();
             PlayerMove();
-            //CameraMove();
+            CameraMove();
         }
     }
 
@@ -207,6 +207,7 @@ public class PlayerManager : MonoBehaviour
         scptBrdMng.UpdateBoard(); //”Õ–ÊXV.
         scptGameMng.PlayerDead(); //€–Sˆ—.
 
-        gameObject.SetActive(false); //–³Œø‚É‚·‚é.
+        //“§–¾‰».
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0 ,0);
     }
 }

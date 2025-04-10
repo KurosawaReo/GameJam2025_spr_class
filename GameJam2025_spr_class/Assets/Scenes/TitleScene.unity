@@ -11992,6 +11992,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 463700703461102612, guid: 22231c309ed887d48a55bc0c259faea6, type: 3}
+      propertyPath: onBool
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3281051036961757643, guid: 22231c309ed887d48a55bc0c259faea6, type: 3}
       propertyPath: scptSceneTrans
       value: 

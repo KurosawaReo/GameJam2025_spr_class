@@ -14,6 +14,9 @@ public class EnemyGenerator : MonoBehaviour
     [Tooltip("GameManagerのscript"), SerializeField]
     GameManager scptGameMng;
 
+    [Tooltip("BoardManagerのscript"), SerializeField]
+    BoardManager scptBoardMng;
+
     void Start()
     {
         StartCoroutine(WaitStart()); 
@@ -79,10 +82,18 @@ public class EnemyGenerator : MonoBehaviour
     /// </summary>
     public void EnemySpawnExe()
     {
-        //敵出現.
-        var obj = Instantiate(prefabItem, prefabInObj.transform);
-        //座標を抽選して配置.
-        obj.transform.position = Gl_Func.RandEnemySpawnPos();
+        //出現座標抽選.
+        int rndX = UnityEngine.Random.Range(0, Gl_Const.BOARD_WID - 1);
+        int rndY = UnityEngine.Random.Range(0, Gl_Const.BOARD_HEI - 1);
+
+        //その座標が無マスなら.
+        if (scptBoardMng.Board[rndX, rndY].type == BoardType.NONE)
+        {
+            //敵出現.
+            var obj = Instantiate(prefabItem, prefabInObj.transform);
+            //座標を抽選して配置.
+            obj.transform.position = Gl_Func.BPosToWPos(new Vector2Int(rndX, rndY));
+        }
     }
 
     /// <summary>

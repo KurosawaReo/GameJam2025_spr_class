@@ -182,16 +182,20 @@ public class GameManager : MonoBehaviour
         }
 
         var rsltPos = resultPanel.transform.position;
+        var cmrPos  = mainCamera.transform.position;
 
         //resultパネルを下げる.
-        if (rsltPos.y > 0)
+        if (rsltPos.y > cmrPos.y)
         {
-            float y = rsltPos.y * resultSpeed * Time.deltaTime;     //y軸の移動量.
-            resultPanel.transform.position -= new Vector3(0, y, 0); //動かす.
+            //y軸の移動量.
+            float y = (rsltPos.y - cmrPos.y) * resultSpeed * Time.deltaTime;
+            //動かす.
+            resultPanel.transform.position -= new Vector3(0, y, 0);
         }
         else
         {
-            resultPanel.transform.position = new Vector2(0, 0);     //逆ブレしたら0に固定.
+            //逆ブレしたら固定.
+            resultPanel.transform.position = new Vector2(0, cmrPos.y);
         }
 
         //カメラをズームアウトさせる.
