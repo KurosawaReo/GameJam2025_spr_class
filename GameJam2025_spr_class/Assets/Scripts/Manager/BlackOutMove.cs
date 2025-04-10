@@ -7,6 +7,8 @@ public class BlackOutMove : MonoBehaviour
     [SerializeField]
     public GameObject[] blackOutObj;
 
+    NextStage nextStage;
+
     Animator animator;
 
     public int blackOutObjNum;  //ìÆÇ´èoÇµÇƒÇÈÇÃÇÕâΩå¬ñ⁄Ç©
@@ -22,6 +24,9 @@ public class BlackOutMove : MonoBehaviour
     void Init()
     {
         blackOutObjNum = 0;
+
+        GameObject objParent = transform.parent.gameObject;
+        nextStage = objParent.GetComponent<NextStage>();
     }
 
     public void StartButtonPush()
@@ -47,6 +52,7 @@ public class BlackOutMove : MonoBehaviour
 
     void ButtonOn()
     {
+        if(nextStage.onBool == true)
         if(Input.GetKeyDown(KeyCode.Space))
         {
             BlackOutObjOn();
