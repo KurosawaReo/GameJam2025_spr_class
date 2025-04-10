@@ -6,30 +6,37 @@ using System;
 using UnityEngine.WSA;
 using UnityEngine.UI;
 using System.ComponentModel;
+using Unity.Collections;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
     public enum ModeName
     {
-        TimeUp,
-        AllBreak
+        [InspectorName("時間制限モード")]  TimeUp,
+        [InspectorName("殲滅モード")]      AllBreak
     }
 
+        [Header("共通パラメータ")]
+    [Tooltip("ゲームモード選択")]          public ModeName gameMode = 0;
+    [Tooltip("リザルトパネル")]            public GameObject resultPanel;
+    [Tooltip("リザルト用テキスト")]        public Text resultText;
+    [Range(1, 100), Tooltip("動く速度")]   public int resultSpeed = 10;
+    [Tooltip("スタート確認用"), ReadOnly]  public bool startFlag = false;
+    [Tooltip("ゲーム終了確認"), ReadOnly]  public bool gameOverCheck = false;
+    [Tooltip("初期エネミー数"), ReadOnly]  public int pastEnemyCount;
+    [Tooltip("エネミー残数"),   ReadOnly]  public int presentEnemyCount;
 
-    [Header("パラメータ")]
-    public ModeName gameMode = 0;
-    public float startWaitTime = 3f;
-    public bool startFlag = false;
 
-    [Header("TimeUpMode")]
-    public GameObject modeTUObjects;
-    public Text timerText;
-    public float gameTime;
+    [Header("時間制限モード パラメータ")]
+    [Tooltip("時間制限用Set")]             public GameObject TimerUpSet;
+    [Tooltip("タイマー用テキスト")]        public Text timerText;
+    [Range(0, 100), Tooltip("ゲーム時間")] public float gameTime;
 
-    [Header("AllBreakMode")]
-    public GameObject modeABObjects;
-    public GameObject resultPanel;
-    public int enemyCount;
+        [Header("殲滅モード パラメータ")]
+    [Tooltip("Enemy管理用オブジェクト用")] public GameObject enemyParent;
+    [Tooltip("殲滅モード用Set")]           public GameObject AllBreakSet;
+    [Tooltip("残数用テキスト")]            public Text RemainingText;
 
 
     // Start is called before the first frame update
@@ -46,7 +53,11 @@ public class GameManager : MonoBehaviour
             switch (gameMode)
             {
                 case ModeName.TimeUp:
-                    if (gameTime > 0) { ModeTUTimeLapse(); }
+                    if (gameTime > 0) 
+                    {
+                        GameOver();
+                        ModeTUTimeLapse(); 
+                    }
                     else
                     {
                         gameTime = 0;
@@ -57,7 +68,16 @@ public class GameManager : MonoBehaviour
 
                     break;
                 case ModeName.AllBreak:
-                    if (enemyCount <= 0) { ModeABGameClear(); }
+                    if (presentEnemyCount <= 0) 
+                    {
+                        GameOver();
+                        ModeABGameClear(); 
+                    }
+                    else
+                    {
+                        pastEnemyCount = enemyParent.transform.childCount;
+                        GetEnemyCount();
+                    }
 
                     break;
             }
@@ -72,20 +92,16 @@ public class GameManager : MonoBehaviour
         switch (gameMode)
         {
             case ModeName.TimeUp:
-                modeTUObjects.SetActive(true);
+                TimerUpSet.SetActive(true);
                 timerText.text = "Time : " + Mathf.Ceil(gameTime);
-
-
-
-
-
-
                 break;
             case ModeName.AllBreak:
-                modeABObjects.SetActive(true);
-
+                AllBreakSet.SetActive(true);
+                RemainingText.text = "残数 : " + presentEnemyCount;
+                GetEnemyCount();
                 break;
         }
+        resultPanel.SetActive(false);
     }
 
     /// <summary>
@@ -98,13 +114,36 @@ public class GameManager : MonoBehaviour
         timerText.text = "Time : " + Mathf.Ceil(gameTime);
     }
 
+    /// <summary>
+    /// 敵の数把握用
+    /// </summary>
+    void GetEnemyCount()
+    {
+        presentEnemyCount = enemyParent.transform.childCount;
+        RemainingText.text = "残数 : " + presentEnemyCount;
+    }
 
 
 
+    /// <summary>
+    /// 共通ゲーム終了処理
+    /// </summary>
+    void GameOver()
+    {
+        if (gameOverCheck == false)
+        {
+            resultPanel.SetActive(true);
+        }
 
-
-
-
+        if (resultPanel.transform.position.y > 0)
+        {
+            resultPanel.transform.position -= new Vector3(0, resultSpeed * Time.deltaTime, 0);
+        }
+        else
+        {
+            resultPanel.transform.position = new Vector2(0, 0);
+        }
+    }
 
 
 
@@ -119,27 +158,8 @@ public class GameManager : MonoBehaviour
 
     void ModeABGameClear()
     {
-        print("ABkusa");
-        if (resultPanel != null)
-        {
-            print("panel Arutte!");
-            resultPanel.SetActive(true);
-            StartCoroutine(MoovResultPanel());
-        }
+        print("ABクリア");
     }
-
-    IEnumerator MoovResultPanel()
-    {
-        GetComponent<SceneTransitions>().SceneLoad(0);
-
-
-
-        yield return null;
-
-
-    }
-
-
 
 
 }
