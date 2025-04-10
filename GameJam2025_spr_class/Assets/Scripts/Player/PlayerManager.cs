@@ -22,6 +22,7 @@ public class PlayerData
 public class PlayerManager : MonoBehaviour
 {
     [Header("- script -")]
+    [SerializeField] GameManager  scptGameMng;
     [SerializeField] BoardManager scptBrdMng;
 
     [Header("- value -")]
@@ -34,8 +35,12 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        InputMove();
-        PlayerTrail();
+        //ÉQÅ[ÉÄíÜÇÃÇ›.
+        if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
+        {
+            InputMove();
+            PlayerTrail();
+        }
     }
 
     /// <summary>
@@ -113,6 +118,6 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     public void PlayerDeath()
     {
-
+        scptGameMng.PlayerDead();
     }
 }

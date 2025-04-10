@@ -14,10 +14,9 @@ public class Enemy : MonoBehaviour
     }
     
     BoardManager bm;
-    EnemyGenerator eg;
     PlayerManager pm;
-
-    
+    GameManager gm;
+    //EnemyGenerator eg;
 
     [Tooltip("状態変数"), SerializeField]
     EnemyState state = EnemyState.IDLE;
@@ -45,23 +44,28 @@ public class Enemy : MonoBehaviour
         
         bm = GameObject.Find("BoardManager").GetComponent<BoardManager>();
 
-        eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
-
         pm = GameObject.Find("Player").GetComponent<PlayerManager>();
+
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        //eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // 状態遷移処理
-        State();
-        
-        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
-        if (bm.Board[position.x, position.y].type == BoardType.PLAYER_AREA)
+        //ゲーム中のみ.
+        if (gm.startFlag && !gm.gameOverFlag)
         {
-            EnemyDeth();
+            // 状態遷移処理
+            State();
+
+            Vector2Int position = Gl_Func.WPosToBPos(transform.position);
+            if (bm.Board[position.x, position.y].type == BoardType.PLAYER_AREA)
+            {
+                EnemyDeath();
+            }
         }
-        
     }
 
     /// <summary>
@@ -131,7 +135,7 @@ public class Enemy : MonoBehaviour
         }
     }
     
-    void EnemyDeth()
+    void EnemyDeath()
     {
         Destroy(gameObject);
     }
@@ -144,28 +148,13 @@ public class Enemy : MonoBehaviour
         print("移動開始");
         state = EnemyState.MOVE;
         
-        //ワールド座標の取得
-        var (lb, rt) = Gl_Func.GetWorldWindowSize();
-
         Vector2 pos = transform.position;
         pos = Gl_Func.LimPosInBoard(pos);
         transform.position = pos;
-                
-        var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
-        var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
-
-        var randMoveX = Random.Range(randX, -randX);
-        var randMoveY = Random.Range(randY, -randY);
-
-        targetPos = new Vector3(randMoveX, randMoveY, transform.position.z);
-
+        
+        targetPos = Gl_Func.RandEnemySpawnPos();
         targetPos = Gl_Func.LimPosInBoard(targetPos);
         
-
         randMoveSpeedRatio = Random.Range(MIN_MOVE_SPEED_RATIO, MAX_MOVE_SPEED_RATIO);
-
-        
     }
-
-    
 }

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ゲーム開始前のクリックパネル.
+/// </summary>
 public class StartCheck : MonoBehaviour
 {
     public GameManager gameManager;
@@ -12,5 +15,4 @@ public class StartCheck : MonoBehaviour
         gameManager.startFlag = true;
         gameObject.SetActive(false);
     }
-
 }

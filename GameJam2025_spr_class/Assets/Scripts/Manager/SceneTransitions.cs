@@ -7,44 +7,12 @@ using UnityEngine.UI;
 public class SceneTransitions : MonoBehaviour
 {
     string[] sceneID = {"Title",
-                        "01",
-                        "Result"};
-
-    [Header("ƒpƒ‰ƒ[ƒ^")]
-    public Image fadePanel;
-    public float fadeOutTime;
-
-    void Awake()
-    {
-        Init();
-    }
-
-
-    void Init()
-    {
-
-    }
+                        "StageSelect",
+                        "Stage01"};
 
     public void SceneLoad(int sceneNumber)
     {
+        Debug.Log("num:"+sceneNumber);
         SceneManager.LoadScene(sceneID[sceneNumber]);
     }
-
-    public void FadeOutSceneLoad(int sceneNumber)
-    {
-
-
-
-
-
-        SceneManager.LoadScene(sceneID[sceneNumber]);
-
-    }
-
-
-
-
-
-
-
 }

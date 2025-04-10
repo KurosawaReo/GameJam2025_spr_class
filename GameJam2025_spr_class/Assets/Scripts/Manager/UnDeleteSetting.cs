@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManagerCreate : MonoBehaviour
+/// <summary>
+/// 
+/// </summary>
+public class UnDeleteSetting : MonoBehaviour
 {
     private static bool Loaded;
 
-    [SerializeField]
-    GameObject[] gameManagerPrefabs = null;
+    [Header("- object -")]
+    [SerializeField] GameObject[] dontDestroyObjs = null;
 
     void Awake()
     {
@@ -20,13 +23,13 @@ public class ManagerCreate : MonoBehaviour
         if (Loaded) return;
         Loaded = true;
 
-        if (gameManagerPrefabs != null)
+        if (dontDestroyObjs != null)
         {
             //プレハブをインスタンス化して、DontDestroyOnLoad
-            foreach (var prefab in gameManagerPrefabs)
+            foreach (var objs in dontDestroyObjs)
             {
-                GameObject manager = Instantiate(prefab);
-                DontDestroyOnLoad(manager);
+                GameObject prefab = Instantiate(objs);
+                DontDestroyOnLoad(prefab);
             }
         }
     }

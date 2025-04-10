@@ -39,8 +39,8 @@ namespace Gloval
 
         // アイテムの生成間隔.
         public const float INTERVAL_ITEM_GEN = 1.0f;
-        // エリア内のアイテムの最大数.
-        public const int MAX_ITEM_NUM = 5;
+        // エリア内の敵の最大数.
+        public const int   MAX_ENEMY_NUM = 5;
     }
 
     /// <summary>
@@ -200,6 +200,26 @@ namespace Gloval
             float angle = theta * 180/Mathf.PI - 90; //上が0度になるよう90度回転.
 
             return (new Vector2(cos, sin), angle);
+        }
+
+        /// <summary>
+        /// 敵の出現座標の抽選.
+        /// </summary>
+        /// <returns></returns>
+        public static Vector2 RandEnemySpawnPos()
+        {
+            //ワールド座標の取得.
+            var (lb, rt) = GetWorldWindowSize();
+
+            //距離の抽選.
+            var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
+            var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
+            //プラスかマイナスかの抽選.
+            var randMoveX = Random.Range(randX, -randX);
+            var randMoveY = Random.Range(randY, -randY);
+
+            //座標の抽選結果を返す.
+            return new Vector2(randMoveX, randMoveY);
         }
 
         /// <summary>
