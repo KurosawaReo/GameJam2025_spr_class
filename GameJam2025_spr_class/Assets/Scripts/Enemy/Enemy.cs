@@ -11,13 +11,12 @@ public class Enemy : MonoBehaviour
         MOVE,
         
     }
-
-
+    
     BoardManager bm;
-
     EnemyGenerator eg;
-
     PlayerManager pm;
+
+    
 
     [Tooltip("èÛë‘ïœêî"), SerializeField]
     EnemyState state = EnemyState.IDLE;
@@ -43,11 +42,11 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         
-        bm = GameObject.Find("BoardManager ").GetComponent<BoardManager>();
+        bm = GameObject.Find("BoardManager").GetComponent<BoardManager>();
 
         eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
 
-        pm = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+        pm = GameObject.Find("Player").GetComponent<PlayerManager>();
     }
 
     // Update is called once per frame
@@ -55,6 +54,8 @@ public class Enemy : MonoBehaviour
     {
         // èÛë‘ëJà⁄èàóù
         State();
+
+        
     }
 
     /// <summary>
@@ -102,10 +103,10 @@ public class Enemy : MonoBehaviour
         transform.position += move.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
 
         Vector2Int position = Gl_Func.WPosToBPos(transform.position);
-        if(bm.Board[position.x, position.y].type == BoardType.PLAYER_TRAIL)
-        {
-            
-        }
+        //if(bm.Board[position.x, position.y].type == BoardType.PLAYER_TRAIL)
+        //{
+        //    pm.PlayerDeath();
+        //}
 
         if ((targetPos - transform .position).magnitude < MOVE_STOP_LIM)
         {
@@ -142,10 +143,7 @@ public class Enemy : MonoBehaviour
         
         //ÉèÅ[ÉãÉhç¿ïWÇÃéÊìæ
         var (lb, rt) = Gl_Func.GetWorldWindowSize();
-
         
-        
-
         var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
         var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
@@ -155,4 +153,6 @@ public class Enemy : MonoBehaviour
 
         
     }
+
+    
 }
