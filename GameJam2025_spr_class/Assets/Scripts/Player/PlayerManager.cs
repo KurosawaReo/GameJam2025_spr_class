@@ -5,7 +5,7 @@
 using UnityEngine;
 using Gloval;
 
-public class PlayerData 
+public class PlayerData
 {
     public Vector2Int beforeBPos { get; set; }
 
@@ -75,26 +75,36 @@ public class PlayerManager : MonoBehaviour
         {
             player.beforeBPos = bPos; //座標更新.
 
-            //プレイヤーの位置を中心にループ.
-            for (int i = -Gl_Const.PLAYER_TRAIL_SIZE/2; i < Gl_Const.PLAYER_TRAIL_SIZE/2; i++) {
-                for (int j = -Gl_Const.PLAYER_TRAIL_SIZE/2; j < Gl_Const.PLAYER_TRAIL_SIZE/2; j++) {
-                
-                    var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
+            //陣地の中にいる間.
+            if (scptBrdMng.Board[bPos.x, bPos.y].type == BoardType.PLAYER_AREA)
+            {
+                scptBrdMng.FillTrail(); //痕跡をエリアにする.
+            }
+            //陣地にいない間.
+            else
+            {
+                //プレイヤーの位置を中心にループ.
+                for (int i = -Gl_Const.PLAYER_TRAIL_SIZE / 2; i < Gl_Const.PLAYER_TRAIL_SIZE / 2; i++)
+                {
+                    for (int j = -Gl_Const.PLAYER_TRAIL_SIZE / 2; j < Gl_Const.PLAYER_TRAIL_SIZE / 2; j++)
+                    {
+                        var tmpBPos = bPos + new Vector2Int(i, j); //座標仮移動.
 
-                    //盤面外ならスキップ.
-                    if (!Gl_Func.IsInBoard(tmpBPos))
-                    {
-                        continue;
-                    }
-                    //現在マスが無なら.
-                    if (scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type == BoardType.NONE)
-                    {
-                        scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
+                        //盤面外ならスキップ.
+                        if (!Gl_Func.IsInBoard(tmpBPos))
+                        {
+                            continue;
+                        }
+                        //仮移動したマスが無なら.
+                        if (scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type == BoardType.NONE)
+                        {
+                            scptBrdMng.Board[tmpBPos.x, tmpBPos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
+                        }
                     }
                 }
+
+                scptBrdMng.SurroundTrail(); //囲う処理.
             }
-            
-            scptBrdMng.SurroundTrail(); //囲う処理.
         }
     }
 
