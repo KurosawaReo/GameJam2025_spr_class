@@ -14,6 +14,7 @@ namespace Gloval
     public enum BoardType
     {
         NONE,         //無.
+        PLAYER_FOOT,  //プレイヤーの足元(現在位置)
         PLAYER_TRAIL, //プレイヤーの足跡.
         PLAYER_AREA,  //プレイヤーの陣地.
     }
@@ -24,18 +25,19 @@ namespace Gloval
     public static class Gl_Const
     {
         // 盤面(board)関係.
-        public const int   BOARD_HEI = 100;
-        public const int   BOARD_WID = 100;
-        public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
+        public const int   BOARD_HEI      = 100;
+        public const int   BOARD_WID      = 100;
+        public const float SQUARE_SIZE    = 0.1f; //マスのサイズ倍率.
+        public const int   INIT_AREA_SIZE = 3;    //初期陣地エリアのサイズ(中心から何ドット広げるか)
 
-        // 画面端の余白.
-        public const float MARGIN_TOP = -2f;
-        public const float MARGIN_RIGHT = -2f;
-        public const float MARGIN_LEFT = 1.0f;
+        // 敵生成関係.
+        public const float MARGIN_TOP    = -2f;   //↓画面の余白.
+        public const float MARGIN_RIGHT  = -2f;
+        public const float MARGIN_LEFT   = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
         // プレイヤー関係.
-        public const int   PLAYER_TRAIL_SIZE = 2; //プレイヤー足跡のサイズ(中心から何ドット広げるか)
+        public const int   PLAYER_TRAIL_SIZE = 2; //足跡のサイズ(中心から何ドット広げるか)
 
         // アイテムの生成間隔.
         public const float INTERVAL_ITEM_GEN = 1.0f;
