@@ -103,6 +103,31 @@ namespace Gloval
         }
 
         /// <summary>
+        /// 盤面より外に出ていたら座標を修正する.
+        /// </summary>
+        /// <param name="pos">元の座標</param>
+        /// <returns>変更した座標</returns>
+        public static Vector2 LimPosInBoard(Vector2 pos)
+        {
+            //どこまで移動できるか.
+            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+
+            //横の移動限度(符号はそのまま)
+            if (Mathf.Abs(pos.x) > limX)
+            {
+                pos.x = GetNumSign(pos.x) * limX;
+            }
+            //縦の移動限度(符号はそのまま)
+            if (Mathf.Abs(pos.y) > limY)
+            {
+                pos.y = GetNumSign(pos.y) * limY;
+            }
+
+            return pos; //修正した座標を返す.
+        }
+
+        /// <summary>
         /// 画面の左下と右上の座標を返す処理.
         /// </summary>
         /// <returns></returns>

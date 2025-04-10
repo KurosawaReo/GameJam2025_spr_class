@@ -32,11 +32,6 @@ public class PlayerManager : MonoBehaviour
     //    new Vector2Int(0, 0)  //boardPos.
     //);
 
-    void Start()
-    {
-
-    }
-
     void Update()
     {
         InputMove();
@@ -58,20 +53,8 @@ public class PlayerManager : MonoBehaviour
         {
             //仮移動.
             pos += input.vec * moveSpeed * Time.deltaTime;
-            //どこまで移動できるか.
-            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE/2 - Gl_Const.SQUARE_SIZE/2;
-            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE/2 - Gl_Const.SQUARE_SIZE / 2;
-
-            //横の移動限度(符号はそのまま)
-            if (Mathf.Abs(pos.x) > limX)
-            {
-                pos.x = Gl_Func.GetNumSign(pos.x) * limX;
-            }
-            //縦の移動限度(符号はそのまま)
-            if (Mathf.Abs(pos.y) > limY)
-            {
-                pos.y = Gl_Func.GetNumSign(pos.y) * limY;
-            }
+            //盤面より外に出ていたら座標を修正する.
+            pos = Gl_Func.LimPosInBoard(pos);
 
             //操作を反映.
             transform.position = pos;
