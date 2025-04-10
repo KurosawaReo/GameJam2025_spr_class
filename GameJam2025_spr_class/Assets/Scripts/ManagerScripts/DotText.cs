@@ -8,7 +8,7 @@ public class DotText : MonoBehaviour
     [SerializeField]
     int MAX_BLOCK;
 
-    [SerializeField] 
+    [SerializeField]
     bool Fixation = false;
 
     [SerializeField]
@@ -16,7 +16,7 @@ public class DotText : MonoBehaviour
     [SerializeField]
     int G;
     [SerializeField]
-    int B ;
+    int B;
 
     [SerializeField]
     Sprite dotImage;
@@ -36,13 +36,13 @@ public class DotText : MonoBehaviour
     {
         ZERO,
         ONE,
-        TWO, 
-        THREE, 
-        FOUR, 
-        FIVE, 
-        SIX, 
-        SEVEN, 
-        EIGHT, 
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SIX,
+        SEVEN,
+        EIGHT,
         NINE,
         A,
         B,
@@ -71,6 +71,8 @@ public class DotText : MonoBehaviour
         Y,
         Z,
 
+        EXCLAMATION_MARK,
+
         TEST,
     }
 
@@ -83,7 +85,7 @@ public class DotText : MonoBehaviour
         DotNum();
     }
 
-    void SetImg() 
+    void SetImg()
     {
         if (dotImage == null) return;
 
@@ -101,8 +103,8 @@ public class DotText : MonoBehaviour
     {
         // R, G, B‚ð0-1‚Ì”ÍˆÍ‚É•ÏŠ·
         Color color = new Color(R / 255f, G / 255f, B / 255f);
-        
-        for (int i = 0; i < MAX_BLOCK;i++)
+
+        for (int i = 0; i < MAX_BLOCK; i++)
         {
             Renderer renderer = Dot[i].GetComponent<Renderer>();
             renderer.material.color = color;
@@ -135,7 +137,7 @@ public class DotText : MonoBehaviour
                 ActiveDot(2, 3, 4, 5, 7, 10, 12, 13, 16, 18, 20, 23);
                 break;
             case DOT_TEXT.SEVEN:
-                ActiveDot(1, 5, 6,7, 10, 13, 15, 19, 20);
+                ActiveDot(1, 5, 6, 7, 10, 13, 15, 19, 20);
                 break;
             case DOT_TEXT.EIGHT:
                 ActiveDot(2, 4, 5, 7, 9, 12, 13, 15, 18, 20, 22, 23);
@@ -156,7 +158,7 @@ public class DotText : MonoBehaviour
                 ActiveDot(1, 2, 3, 4, 5, 6, 7, 12, 13, 18, 20, 21, 22, 23);
                 break;
             case DOT_TEXT.E:
-                ActiveDot(1, 2, 3, 4, 5, 6, 7, 9, 12, 13, 15, 18, 19 ,24);
+                ActiveDot(1, 2, 3, 4, 5, 6, 7, 9, 12, 13, 15, 18, 19, 24);
                 break;
             case DOT_TEXT.F:
                 ActiveDot(1, 2, 3, 4, 5, 6, 7, 9, 13, 15, 19);
@@ -171,7 +173,7 @@ public class DotText : MonoBehaviour
                 ActiveDot(4, 5, 12, 18, 19, 20, 21, 22, 23);
                 break;
             case DOT_TEXT.K:
-                ActiveDot(1, 2, 3, 4, 5, 6, 9, 14, 16 , 19, 23 ,24);
+                ActiveDot(1, 2, 3, 4, 5, 6, 9, 14, 16, 19, 23, 24);
                 break;
             case DOT_TEXT.L:
                 ActiveDot(1, 2, 3, 4, 5, 6, 12, 18, 24);
@@ -224,8 +226,13 @@ public class DotText : MonoBehaviour
                 ActiveDot(1, 2, 9, 16, 17, 18, 21, 25, 26);
                 break;
 
+            case DOT_TEXT.EXCLAMATION_MARK:
+                ActiveDot(1, 2, 3, 4, 6);
+                break;
+
+
             case DOT_TEXT.TEST:
-                ActiveDot(30,15,7,3,1);
+                ActiveDot(30, 15, 7, 3, 1);
                 break;
 
         }
@@ -243,11 +250,10 @@ public class DotText : MonoBehaviour
                 activeDotList.Add(-1);
                 _activeDot = activeDotList.ToArray();
 
-                for (int i = 0; i < _activeDot.Length - 1; )
+                for (int i = 0; i < _activeDot.Length - 1;)
                 {
                     for (int j = 0; j < MAX_BLOCK; j++)
                     {
-                        Debug.Log(i);
                         if ((_activeDot[i] - 1) == j)
                         {
                             Dot[j].SetActive(true);
@@ -284,15 +290,15 @@ public class DotText : MonoBehaviour
 
     int[] Sort(int[] _activeDot)
     {
-        for(int i = 0; i < _activeDot.Length - 1; i++)
+        for (int i = 0; i < _activeDot.Length - 1; i++)
         {
-            for(int j = 0; j < _activeDot.Length - 1 - i;j++)
+            for (int j = 0; j < _activeDot.Length - 1 - i; j++)
             {
-                if(_activeDot[j] > _activeDot[j+1])
+                if (_activeDot[j] > _activeDot[j + 1])
                 {
                     int memo = _activeDot[j];
-                    _activeDot[j] = _activeDot[j+1];
-                    _activeDot[j+1] = memo;
+                    _activeDot[j] = _activeDot[j + 1];
+                    _activeDot[j + 1] = memo;
                 }
             }
         }
@@ -302,7 +308,7 @@ public class DotText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Fixation == false)
+        if (Fixation == false)
         {
             if (dotTextMemo != dotText)
             {
