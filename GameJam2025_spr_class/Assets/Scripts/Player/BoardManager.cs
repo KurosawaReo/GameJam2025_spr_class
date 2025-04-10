@@ -184,7 +184,7 @@ public class BoardManager : MonoBehaviour
                 var newPos = pos + dir; //隣のマスに移動.
 
                 //盤面の中にいる and 訪れたことがないなら.
-                if (IsInBoard(newPos) && !isVisit[newPos.x, newPos.y])
+                if (Gl_Func.IsInBoard(newPos) && !isVisit[newPos.x, newPos.y])
                 {
                     TryEnqueue(queue, newPos.x, newPos.y, isVisit); //次の探索候補マス.
                 }
@@ -240,15 +240,5 @@ public class BoardManager : MonoBehaviour
             _queue.Enqueue(new Vector2Int(_x, _y)); //探索するマスに追加.
             _isVisit[_x, _y] = true;                //ここは訪れ済.
         }
-    }
-
-    /// <summary>
-    /// board配列の中かどうか.
-    /// </summary>
-    /// <returns></returns>
-    private bool IsInBoard(Vector2Int _pos)
-    {
-        return (_pos.x >= 0) && (_pos.x < Gl_Const.BOARD_WID) && 
-               (_pos.y >= 0) && (_pos.y < Gl_Const.BOARD_HEI);
     }
 }

@@ -424,7 +424,7 @@ MonoBehaviour:
   prfbSqrBack: {fileID: 2275033464550313715, guid: 5986114b2ce7fe84d971699a3a90896c, type: 3}
   prfbSqrType: {fileID: 2275033464550313715, guid: 95426e5ba4f7c5046945dfaff800faab, type: 3}
   prfbInObj: {fileID: 2137507685}
-  imgPlyTrail: {fileID: 21300000, guid: 559b0b324abb7a84dbcfa773cc6bca1f, type: 3}
+  imgPlyTrail: {fileID: 21300000, guid: 06435389a404b5e4dad920052a1708a9, type: 3}
   imgPlyArea: {fileID: 21300000, guid: 06435389a404b5e4dad920052a1708a9, type: 3}
 --- !u!4 &548676097
 Transform:
