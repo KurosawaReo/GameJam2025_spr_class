@@ -39,8 +39,12 @@ public class BoardManager : MonoBehaviour
         set => board = value; 
     }
 
+    Color areaColor; //エリア色のRGB.
+
+
     void Start()
     {
+        RandAreaColor();
         InitBoard();
         BoardGenerate();
     }
@@ -48,6 +52,19 @@ public class BoardManager : MonoBehaviour
     void Update()
     {
         UpdateBoard();
+    }
+
+    /// <summary>
+    /// 色の抽選.
+    /// </summary>
+    private void RandAreaColor()
+    {
+        //明るめの色の中で抽選.
+        float r = Random.Range(0.5f, 1f);
+        float g = Random.Range(0.5f, 1f);
+        float b = Random.Range(0.5f, 1f);
+
+        areaColor = new Color(r, g, b);
     }
 
     /// <summary>
@@ -114,11 +131,11 @@ public class BoardManager : MonoBehaviour
                         break;
                     case BoardType.PLAYER_TRAIL:
                         board[x, y].typeSR.sprite = imgPlyTrail;
-                        board[x, y].typeSR.color = new Color(0, 200, 100);
+                        board[x, y].typeSR.color  = areaColor;
                         break;
                     case BoardType.PLAYER_AREA:
                         board[x, y].typeSR.sprite = imgPlyArea; 
-                        board[x, y].typeSR.color = new Color(0, 200, 0);
+                        board[x, y].typeSR.color  = areaColor;
                         break;
                 }
             }
@@ -134,7 +151,13 @@ public class BoardManager : MonoBehaviour
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         //訪れたマスの記録用.
         bool[,] isVisit = new bool[Gl_Const.BOARD_WID, Gl_Const.BOARD_HEI];
-        //1マスでも訪れてないマスがあるかどうか.
+        //初期化.
+        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+                isVisit[x, y] = false;
+            }
+        }
+        //1つでも訪れてないマスがあるかどうか.
         bool isNoVisit = false;
 
         //boardの上端と下端.
@@ -172,15 +195,34 @@ public class BoardManager : MonoBehaviour
         for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
             for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
 
-                //プレイヤーの痕跡マス.
-                if (board[x, y].type == BoardType.PLAYER_TRAIL)
+                //訪れてない無のマスがあるなら.
+                if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
                 {
-                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    isNoVisit = true;
+                    break;
                 }
-                //訪れてない無のマス(=囲われた範囲)
-                else if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
-                {
-                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+            }
+            //見つかったら終了.
+            if (isNoVisit) { break; }
+        }
+
+        //訪れてないマスがあるなら.
+        if (isNoVisit)
+        {
+            //全マスループ.
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+                for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+
+                    //プレイヤーの痕跡マス.
+                    if (board[x, y].type == BoardType.PLAYER_TRAIL)
+                    {
+                        board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    }
+                    //訪れてない無のマス(=囲われた範囲)
+                    else if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
+                    {
+                        board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    }
                 }
             }
         }
