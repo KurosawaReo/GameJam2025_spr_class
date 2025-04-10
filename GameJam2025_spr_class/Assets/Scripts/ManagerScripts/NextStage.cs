@@ -6,4 +6,7 @@ public class NextStage : MonoBehaviour
 {
     [SerializeField]
     public int StageNum = 1;
+
+    [SerializeField]
+    public bool onBool;
 }
