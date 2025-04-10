@@ -3,7 +3,7 @@
    プレイヤーが囲ったマスを埋めるプログラム.
    (chatGPT生成、保管用)
 */
-#if true
+#if false
 using System.Collections.Generic;  // ListやQueueを使うための名前空間
 using UnityEngine;                // Unityの基本機能（ゲームオブジェクト管理など）を使うため
 
