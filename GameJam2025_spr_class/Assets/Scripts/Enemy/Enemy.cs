@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Gloval;
+using static UnityEditor.PlayerSettings;
 
 public class Enemy : MonoBehaviour
 {
@@ -54,7 +55,12 @@ public class Enemy : MonoBehaviour
     {
         // 状態遷移処理
         State();
-
+        
+        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
+        if (bm.Board[position.x, position.y].type == BoardType.PLAYER_AREA)
+        {
+            EnemyDeth();
+        }
         
     }
 
@@ -99,47 +105,35 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Move()
     {
+        var pos = transform.position;
+
         
+        var move = targetPos - pos;
+        pos += move.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
+        Vector2Int position = Gl_Func.WPosToBPos(pos);
 
-        var move = targetPos - transform.position;
-        transform.position += move.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
-
-        // 盤面外に出ないようにする処理
-        //Vector2 pos = transform.position;
-        //pos = Gl_Func.LimPosInBoard(pos);
-        //transform.position = pos;
-
-        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
-        if(bm.Board[position.x, position.y].type == BoardType.PLAYER_TRAIL)
+        switch (bm.Board[position.x, position.y].type)
         {
-            pm.PlayerDeath();
+            case BoardType.PLAYER_AREA:
+                SetMove();
+                break;
+            case BoardType.PLAYER_TRAIL:
+                pm.PlayerDeath();
+                break;
+            case BoardType.NONE:
+                transform.position = pos;
+                break;
         }
-
-
-
+        
         if ((targetPos - transform .position).magnitude < MOVE_STOP_LIM)
         {
-            print("移動終了");
-            NextMove();
+            SetMove();
         }
     }
-
-    /// <summary>
-    /// 次の動き方をランダムで決める
-    /// </summary>
-    void NextMove()
+    
+    void EnemyDeth()
     {
-        var rand = (EnemyState)Random.Range((int)EnemyState.IDLE, (int)EnemyState.MOVE + 1);
-
-        switch (rand)
-        {
-            case EnemyState.IDLE:
-                Idle();
-                break;
-            case EnemyState.MOVE:
-                Move();
-                break;
-        }
+        Destroy(gameObject);
     }
 
     /// <summary>
@@ -162,16 +156,8 @@ public class Enemy : MonoBehaviour
 
         var randMoveX = Random.Range(randX, -randX);
         var randMoveY = Random.Range(randY, -randY);
-        if (transform.position.x == randX)
-        {
-            targetPos = new Vector3(randX, randMoveY, transform.position.z);
-        }
-        else if (transform.position.x == -randX)
-        {
 
-        }
-
-        
+        targetPos = new Vector3(randMoveX, randMoveY, transform.position.z);
 
         targetPos = Gl_Func.LimPosInBoard(targetPos);
         
