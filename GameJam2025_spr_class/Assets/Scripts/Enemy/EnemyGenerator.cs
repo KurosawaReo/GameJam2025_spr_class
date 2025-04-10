@@ -45,14 +45,14 @@ public class EnemyGenerator : MonoBehaviour
                 continue;
 
             }
-
+            
             // ”ÍˆÍŽw’è
             float x = UnityEngine.Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
             float y = UnityEngine.Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
             var prefab = prefabItem;
 
-            var obj = Instantiate(prefab);
+            var obj = Instantiate(prefab, transform);
 
             obj.transform.position = new Vector3(x, y, obj.transform.position.z);
 
@@ -81,5 +81,5 @@ public class EnemyGenerator : MonoBehaviour
         return Square;
     }
 
-
+    
 }
