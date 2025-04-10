@@ -39,8 +39,8 @@ public class EnemyGenerator : MonoBehaviour
             if (cnt >= Gl_Const.MAX_ITEM_NUM)
             {
                 // ‰¼‚ÉŒÄ‚Ño‚µ‚Ä‚¢‚é
-                //GetCoordinates();
-                
+                //GetEnemyObjects();
+
                 yield return new WaitForSeconds(delay);
                 continue;
 
