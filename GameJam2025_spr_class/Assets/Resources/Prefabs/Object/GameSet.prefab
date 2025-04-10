@@ -676,7 +676,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u30AF\u30EA\u30A2\uFF01\uFF01"
+  m_Text: default
 --- !u!1 &4684575638136170030
 GameObject:
   m_ObjectHideFlags: 0
@@ -1322,8 +1322,9 @@ MonoBehaviour:
   startFlag: 0
   gameOverFlag: 0
   playerDeadCheck: 0
-  pastEnemyCount: 0
-  presentEnemyCount: 0
+  deathEnemyCnt: 0
+  presentEnemyCnt: 0
+  mainCamera: {fileID: 0}
   TimerUpSet: {fileID: 5644038256257833866}
   timerText: {fileID: 584393239796639893}
   gameTime: 28.4

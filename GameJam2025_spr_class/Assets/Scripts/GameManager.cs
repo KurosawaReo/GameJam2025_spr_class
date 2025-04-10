@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
 {
     [Header("共通パラメータ")]
         [Tooltip("ゲームモード選択")]          public ModeName   gameMode = 0;
-        [Tooltip("リザルトパネル")]            public GameObject resultPanel;
 
+        [Tooltip("リザルトパネル")]            public GameObject resultPanel;
         [Tooltip("リザルト用テキスト")]        public Text resultText;
         [Range(1, 100), Tooltip("動く速度")]   public int  resultSpeed = 10;
 
@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
 
         [Tooltip("エネミー死亡数"), ReadOnly]  public int  deathEnemyCnt;
         [Tooltip("エネミー残数"),   ReadOnly]  public int  presentEnemyCnt;
+
+        [Tooltip("main camera"), SerializeField] Camera mainCamera;
 
     [Header("時間制限モード パラメータ")]
         [ConditionalDisableInInspector("gameMode", (int)ModeName.TimeUp, conditionalInvisible: false)]
@@ -73,7 +75,7 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
-        else if (playerDeadCheck == true) 
+        else if (playerDeadCheck == true)
         {
             GameEnd(); 
             GameEndDeadPly();
@@ -100,13 +102,12 @@ public class GameManager : MonoBehaviour
                 TimerUpSet.SetActive(true);
                 timerText.text = "Time : " + Mathf.Ceil(gameTime);
                 EnemyCount();
-
                 break;
+
             case ModeName.AllBreak:
                 AllBreakSet.SetActive(true);
                 RemainingText.text = "残数 : " + presentEnemyCnt;
                 EnemyCount();
-
                 break;
         }
         resultPanel.SetActive(false);
@@ -192,5 +193,8 @@ public class GameManager : MonoBehaviour
         {
             resultPanel.transform.position = new Vector2(0, 0);     //逆ブレしたら0に固定.
         }
+
+        //カメラをズームアウトさせる.
+        //mainCamera.GetComponent<Animator>().SetTrigger("ZoomOut");
     }
 }

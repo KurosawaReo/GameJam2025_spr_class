@@ -4,7 +4,6 @@
 
 using UnityEngine;
 using Gloval;
-using System.Xml.Serialization;
 
 public class PlayerData
 {
@@ -22,6 +21,9 @@ public class PlayerData
 /// </summary>
 public class PlayerManager : MonoBehaviour
 {
+    [Header("- camera -")]
+    [SerializeField] Camera mainCamera;
+
     [Header("- script -")]
     [SerializeField] GameManager  scptGameMng;
     [SerializeField] BoardManager scptBrdMng;
@@ -41,6 +43,7 @@ public class PlayerManager : MonoBehaviour
         {
             InputMove();
             PlayerMove();
+            //CameraMove();
         }
     }
 
@@ -119,6 +122,20 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
+    /// カメラ追跡.
+    /// </summary>
+    private void CameraMove()
+    {
+        float x = transform.position.x;
+        float y = transform.position.y;
+        float z = mainCamera.transform.position.z;
+
+        //移動.
+        mainCamera.transform.position = new Vector3(x, y, z);
+        Debug.Log("cmr:"+mainCamera.transform.position);
+    }
+
+    /// <summary>
     /// プレイヤーの痕跡処理.
     /// </summary>
     /// <param name="bPos">ボード座標</param>
@@ -174,11 +191,22 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     public void PlayerDeath()
     {
-        //痕跡を無に置き換える.
-        scptBrdMng.ReplaceAllBoard(BoardType.PLAYER_TRAIL, BoardType.NONE);
-        //死亡処理.
-        scptGameMng.PlayerDead();
+        //全マスループ.
+        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+
+                //足元と痕跡を無に置き換える.
+                if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT ||
+                    scptBrdMng.Board[x, y].type == BoardType.PLAYER_TRAIL)
+                {
+                    scptBrdMng.Board[x, y].type = BoardType.NONE;
+                }
+            }
+        }
         
-        Destroy(gameObject); //自身を消滅.
+        scptBrdMng.UpdateBoard(); //盤面更新.
+        scptGameMng.PlayerDead(); //死亡処理.
+
+        gameObject.SetActive(false); //無効にする.
     }
 }

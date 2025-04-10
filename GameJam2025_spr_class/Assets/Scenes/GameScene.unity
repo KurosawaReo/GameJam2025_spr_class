@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -386,9 +387,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: -0.83, y: -0.83, z: -0.83}
+  m_LocalScale: {x: -0.82999986, y: -0.83000004, z: -0.83000004}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -414,6 +415,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &519420034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa8cf9ddce16af845aecc84e3ac15803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0.01
+  isGoCenter: 0
 --- !u!1 &548676095
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,6 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a0cb7d0a8e56c4d91d4e5d7aa7a485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scptGameMng: {fileID: 1078234025}
   prfbSqrBack: {fileID: 2275033464550313715, guid: 5986114b2ce7fe84d971699a3a90896c, type: 3}
   prfbSqrType: {fileID: 2275033464550313715, guid: 95426e5ba4f7c5046945dfaff800faab, type: 3}
   prfbInObj: {fileID: 2137507685}
@@ -561,6 +577,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db471a309d72353459c1aa156fde88e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
   scptGameMng: {fileID: 1078234025}
   scptBrdMng: {fileID: 548676096}
   moveSpeed: 4
@@ -669,6 +686,10 @@ PrefabInstance:
       propertyPath: gameTime
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 519420031}
     - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: resultSpeed
       value: 4

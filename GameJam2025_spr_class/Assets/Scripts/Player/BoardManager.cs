@@ -21,6 +21,9 @@ public class BoardData
 /// </summary>
 public class BoardManager : MonoBehaviour
 {
+    [Header("- script -")]
+    [SerializeField] GameManager scptGameMng;
+
     [Header("- prefab -")]
     [SerializeField] GameObject prfbSqrBack; //square back:マスの背景用.
     [SerializeField] GameObject prfbSqrType; //square type:マスの種類用.
@@ -52,7 +55,11 @@ public class BoardManager : MonoBehaviour
 
     void Update()
     {
-        UpdateBoard();
+        //ゲーム中のみ.
+        if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
+        {
+            UpdateBoard();
+        }
     }
 
     /// <summary>
@@ -121,7 +128,7 @@ public class BoardManager : MonoBehaviour
     /// <summary>
     /// 盤面の更新.
     /// </summary>
-    private void UpdateBoard()
+    public void UpdateBoard()
     {
         //1マスずつ.
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
@@ -233,26 +240,6 @@ public class BoardManager : MonoBehaviour
         {
             _queue.Enqueue(new Vector2Int(_x, _y)); //探索するマスに追加.
             _isVisit[_x, _y] = true;                //ここは訪れ済.
-        }
-    }
-
-    /// <summary>
-    /// 盤面の全マスのタイプを置き換え.
-    /// </summary>
-    /// <param name="_befType">元のタイプ</param>
-    /// <param name="_aftType">置き換えるタイプ</param>
-    public void ReplaceAllBoard(BoardType _befType, BoardType _aftType)
-    {
-        //全マスループ.
-        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
-            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-
-                //元のタイプ.
-                if (board[x, y].type == _befType)
-                {
-                    board[x, y].type = _aftType; //置き換える.
-                }
-            }
         }
     }
 }

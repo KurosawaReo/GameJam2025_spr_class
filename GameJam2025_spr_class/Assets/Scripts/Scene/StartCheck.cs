@@ -17,7 +17,7 @@ public class StartCheck : MonoBehaviour
     {
         //開始の合図.
         gameManager.startFlag = true;
-        //カメラアニメーション.
+        //カメラをズームインさせる.
         mainCamera.GetComponent<Animator>().SetTrigger("ZoomIn");
 
         gameObject.SetActive(false); //パネル消滅.
