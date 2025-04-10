@@ -3,7 +3,7 @@
    プレイヤーが囲ったマスを埋めるプログラムに使う.
    (chatGPT生成、保管用)
 */
-#if true
+#if false
 using UnityEngine;
 
 public enum TileType
