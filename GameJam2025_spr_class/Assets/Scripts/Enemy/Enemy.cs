@@ -28,9 +28,9 @@ public class Enemy : MonoBehaviour
     [Tooltip("移動速度乱数")]
     float randMoveSpeedRatio;
     [Tooltip("移動速度乱数の最大値")]
-    const float MAX_MOVE_SPEED_RATIO = 1.5f;
+    const float MAX_MOVE_SPEED_RATIO = 0.5f;
     [Tooltip("移動速度乱数の最小値")]
-    const float MIN_MOVE_SPEED_RATIO = 0.9f;
+    const float MIN_MOVE_SPEED_RATIO = 0.1f;
     [Tooltip("移動停止の閾値")]
     const float MOVE_STOP_LIM = 0.02f;
 
@@ -99,14 +99,23 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Move()
     {
+        
+
         var move = targetPos - transform.position;
         transform.position += move.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
 
+        // 盤面外に出ないようにする処理
+        //Vector2 pos = transform.position;
+        //pos = Gl_Func.LimPosInBoard(pos);
+        //transform.position = pos;
+
         Vector2Int position = Gl_Func.WPosToBPos(transform.position);
-        //if(bm.Board[position.x, position.y].type == BoardType.PLAYER_TRAIL)
-        //{
-        //    pm.PlayerDeath();
-        //}
+        if(bm.Board[position.x, position.y].type == BoardType.PLAYER_TRAIL)
+        {
+            pm.PlayerDeath();
+        }
+
+
 
         if ((targetPos - transform .position).magnitude < MOVE_STOP_LIM)
         {
@@ -143,11 +152,29 @@ public class Enemy : MonoBehaviour
         
         //ワールド座標の取得
         var (lb, rt) = Gl_Func.GetWorldWindowSize();
-        
-        var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
-        var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
-        targetPos = new Vector3(randX, randY, transform.position.z);
+        Vector2 pos = transform.position;
+        pos = Gl_Func.LimPosInBoard(pos);
+        transform.position = pos;
+                
+        var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
+        var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
+
+        var randMoveX = Random.Range(randX, -randX);
+        var randMoveY = Random.Range(randY, -randY);
+        if (transform.position.x == randX)
+        {
+            targetPos = new Vector3(randX, randMoveY, transform.position.z);
+        }
+        else if (transform.position.x == -randX)
+        {
+
+        }
+
+        
+
+        targetPos = Gl_Func.LimPosInBoard(targetPos);
+        
 
         randMoveSpeedRatio = Random.Range(MIN_MOVE_SPEED_RATIO, MAX_MOVE_SPEED_RATIO);
 

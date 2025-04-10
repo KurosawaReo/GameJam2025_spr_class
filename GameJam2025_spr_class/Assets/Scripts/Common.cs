@@ -29,8 +29,8 @@ namespace Gloval
         public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
 
         // 画面端の余白.
-        public const float MARGIN_TOP = 1.0f;
-        public const float MARGIN_RIGHT = 1.0f;
+        public const float MARGIN_TOP = -2f;
+        public const float MARGIN_RIGHT = -2f;
         public const float MARGIN_LEFT = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
