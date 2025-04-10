@@ -12,7 +12,12 @@ public class Enemy : MonoBehaviour
         
     }
 
+
+    BoardManager bm;
+
     EnemyGenerator eg;
+
+    PlayerManager pm;
 
     [Tooltip("èÛë‘ïœêî"), SerializeField]
     EnemyState state = EnemyState.IDLE;
@@ -37,7 +42,12 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+        bm = GameObject.Find("BoardManager ").GetComponent<BoardManager>();
+
         eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
+
+        pm = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
     }
 
     // Update is called once per frame
@@ -90,8 +100,14 @@ public class Enemy : MonoBehaviour
     {
         var move = targetPos - transform.position;
         transform.position += move.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
-    
-        if((targetPos - transform .position).magnitude < MOVE_STOP_LIM)
+
+        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
+        if(bm.Board[position.x, position.y].type == BoardType.PLAYER_TRAIL)
+        {
+            
+        }
+
+        if ((targetPos - transform .position).magnitude < MOVE_STOP_LIM)
         {
             print("à⁄ìÆèIóπ");
             NextMove();
@@ -128,8 +144,7 @@ public class Enemy : MonoBehaviour
         var (lb, rt) = Gl_Func.GetWorldWindowSize();
 
         
-        Vector2Int position = Gl_Func.WPosToBPos(transform.position);
-        Debug.Log("position:"+position);
+        
 
         var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
         var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
@@ -140,9 +155,4 @@ public class Enemy : MonoBehaviour
 
         
     }
-
-    
-
-   
-
 }
