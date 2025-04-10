@@ -1,29 +1,46 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Gloval;
-using static UnityEditor.Progress;
 
 public class EnemyGenerator : MonoBehaviour
 {
-    
     [Tooltip("生成するプレハブ"), SerializeField]
     public GameObject prefabItem;
+
+    [Tooltip("プレハブを入れるオブジェクト"), SerializeField]
+    GameObject prefabInObj;
+
+    [Tooltip("GameManagerのscript"), SerializeField]
+    GameManager scptGameMng;
 
     // 生成する数のカウント
     int cnt = 0;
 
-    // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(EnemyGeneration(Gl_Const.INTERVAL_ITEM_GEN));
+        StartCoroutine(WaitStart()); 
     }
 
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    /// <summary>
+    /// スタートするまで待機する用.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator WaitStart()
+    {
+        //スタートを押されるまでループ.
+        while (!scptGameMng.startFlag)
+        {
+            yield return null;
+        }
+
+        //実行.
+        StartCoroutine(EnemyGeneration(Gl_Const.INTERVAL_ITEM_GEN));
     }
 
     /// <summary>
@@ -31,12 +48,11 @@ public class EnemyGenerator : MonoBehaviour
     /// </summary>
     public IEnumerator EnemyGeneration(float delay)
     {
-        var (lb, rt) = Gl_Func.GetWorldWindowSize();
-
-        while (true)
+        //ゲーム終了するまでループ.
+        while (!scptGameMng.gameOverFlag)
         {
             print("動きました");
-            if (cnt >= Gl_Const.MAX_ITEM_NUM)
+            if (cnt >= Gl_Const.MAX_ENEMY_NUM)
             {
                 // 仮に呼び出している
                 //GetEnemyObjects();
@@ -46,21 +62,15 @@ public class EnemyGenerator : MonoBehaviour
 
             }
             
-            // 範囲指定
-            float x = UnityEngine.Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
-            float y = UnityEngine.Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
-
             var prefab = prefabItem;
 
-            var obj = Instantiate(prefab, transform);
+            var obj = Instantiate(prefab, prefabInObj.transform);
 
-            obj.transform.position = new Vector3(x, y, obj.transform.position.z);
+            obj.transform.position = Gl_Func.RandEnemySpawnPos();
 
             cnt++;
 
             yield return new WaitForSeconds(delay);
-            
-            
         }
     }
 
@@ -80,6 +90,4 @@ public class EnemyGenerator : MonoBehaviour
 
         return Square;
     }
-
-    
 }

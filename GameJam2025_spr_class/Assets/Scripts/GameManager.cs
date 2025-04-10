@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
         [Tooltip("リザルト用テキスト")]        public Text resultText;
         [Range(1, 100), Tooltip("動く速度")]   public int resultSpeed = 10;
         [Tooltip("スタート確認用"), ReadOnly]  public bool startFlag = false;
-        [Tooltip("ゲーム終了確認"), ReadOnly]  public bool gameOverCheck = false;
+        [Tooltip("ゲーム終了確認"), ReadOnly]  public bool gameOverFlag = false;
         [Tooltip("プレイヤー確認"), ReadOnly]  public bool playerDeadCheck = false;
         [Tooltip("初期エネミー数"), ReadOnly]  public int pastEnemyCount;
         [Tooltip("エネミー残数"),   ReadOnly]  public int presentEnemyCount;
@@ -132,10 +132,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void GameOver()
     {
-        if (gameOverCheck == false)
+        if (gameOverFlag == false)
         {
             resultPanel.SetActive(true);
-            gameOverCheck = true;
+            gameOverFlag = true;
         }
 
         if (resultPanel.transform.position.y > 0)
