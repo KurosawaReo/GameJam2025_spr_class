@@ -113,10 +113,12 @@ public class BoardManager : MonoBehaviour
                         board[x, y].typeSR.sprite = null; 
                         break;
                     case BoardType.PLAYER_TRAIL:
-                        board[x, y].typeSR.sprite = imgPlyTrail; 
+                        board[x, y].typeSR.sprite = imgPlyTrail;
+                        board[x, y].typeSR.color = new Color(0, 200, 100);
                         break;
                     case BoardType.PLAYER_AREA:
                         board[x, y].typeSR.sprite = imgPlyArea; 
+                        board[x, y].typeSR.color = new Color(0, 200, 0);
                         break;
                 }
             }
@@ -132,6 +134,8 @@ public class BoardManager : MonoBehaviour
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         //訪れたマスの記録用.
         bool[,] isVisit = new bool[Gl_Const.BOARD_WID, Gl_Const.BOARD_HEI];
+        //1マスでも訪れてないマスがあるかどうか.
+        bool isNoVisit = false;
 
         //boardの上端と下端.
         for (int x = 0; x < Gl_Const.BOARD_WID; x++)

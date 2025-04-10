@@ -28,15 +28,15 @@ namespace Gloval
         public const int   BOARD_WID = 100;
         public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
 
-        // 画面端の余白
+        // 画面端の余白.
         public const float MARGIN_TOP = 1.0f;
         public const float MARGIN_RIGHT = 1.0f;
         public const float MARGIN_LEFT = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
-        // アイテムの生成間隔
+        // アイテムの生成間隔.
         public const float INTERVAL_ITEM_GEN = 1.0f;
-        // エリア内のアイテムの最大数
+        // エリア内のアイテムの最大数.
         public const int MAX_ITEM_NUM = 5;
     }
 
