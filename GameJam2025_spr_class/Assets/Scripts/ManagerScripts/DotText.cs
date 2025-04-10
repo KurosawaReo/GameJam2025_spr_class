@@ -17,7 +17,10 @@ public class DotText : MonoBehaviour
     int G;
     [SerializeField]
     int B ;
-    
+
+    [SerializeField]
+    Sprite dotImage;
+
 
 
     [SerializeField]
@@ -76,7 +79,22 @@ public class DotText : MonoBehaviour
     void Start()
     {
         SetRGB();
+        SetImg();
         DotNum();
+    }
+
+    void SetImg() 
+    {
+        if (dotImage == null) return;
+
+        for (int i = 0; i < MAX_BLOCK; i++)
+        {
+            SpriteRenderer spriteRenderer = Dot[i].GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sprite = dotImage;
+            }
+        }
     }
 
     void SetRGB()
