@@ -146,6 +146,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9012020772635252937}
+  - component: {fileID: 463700703461102612}
   m_Layer: 0
   m_Name: BlackOutObj
   m_TagString: Untagged
@@ -172,6 +173,19 @@ Transform:
   - {fileID: 997920411694679423}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &463700703461102612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3431930837615796791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44bf80f58f96c274d817495e39288e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StageNum: 1
 --- !u!1 &3999353053711667060
 GameObject:
   m_ObjectHideFlags: 0
