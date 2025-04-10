@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Gloval;
-using static UnityEditor.PlayerSettings;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,7 +7,6 @@ public class Enemy : MonoBehaviour
     {
         IDLE,
         MOVE,
-        
     }
     
     BoardManager bm;
@@ -21,32 +17,22 @@ public class Enemy : MonoBehaviour
     [Tooltip("状態変数"), SerializeField]
     EnemyState state = EnemyState.IDLE;
 
-    [Tooltip("目標地点") ,SerializeField]
+    [Tooltip("移動の目標地点") ,SerializeField]
     Vector3 targetPos;
     [Tooltip("移動速度")]
     float moveSpeed = 3f;
     [Tooltip("移動速度乱数")]
     float randMoveSpeedRatio;
-    [Tooltip("移動速度乱数の最大値")]
-    const float MAX_MOVE_SPEED_RATIO = 0.5f;
-    [Tooltip("移動速度乱数の最小値")]
-    const float MIN_MOVE_SPEED_RATIO = 0.1f;
-    [Tooltip("移動停止の閾値")]
-    const float MOVE_STOP_LIM = 0.02f;
 
     [Tooltip("待機時間計測")]
     float stateTimer;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        
         bm = GameObject.Find("BoardManager").GetComponent<BoardManager>();
-
-        pm = GameObject.Find("Player").GetComponent<PlayerManager>();
-
-        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        pm = GameObject.Find("Player").      GetComponent<PlayerManager>();
+        gm = GameObject.Find("GameManager"). GetComponent<GameManager>();
 
         //eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
     }
@@ -77,20 +63,19 @@ public class Enemy : MonoBehaviour
         {
             case EnemyState.IDLE:
                 //待機
-                Idle();
+                EnemyIdle();
                 break;
             case EnemyState.MOVE:
                 //移動
-                Move();
+                EnemyMove();
                 break;
-
         }
     }
 
     /// <summary>
     /// 待機状態処理
     /// </summary>
-    void Idle()
+    void EnemyIdle()
     {
         if(stateTimer > 0)
         {
@@ -99,51 +84,54 @@ public class Enemy : MonoBehaviour
         else
         {
             print("待機終了");
-            SetMove();
+            SetGoalMove();
         }
     }
 
-    // todo.敵の動き
+    // todo:敵の動き
     /// <summary>
     /// 敵の移動処理  
     /// </summary>
-    void Move()
+    void EnemyMove()
     {
-        var pos = transform.position;
+        var tmpPos = transform.position; //現在座標の仮取得.
+        var dis = targetPos - tmpPos;    //目標地点までの座標差(distance)
 
+        //仮で移動したとする.
+        tmpPos += dis.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
         
-        var move = targetPos - pos;
-        pos += move.normalized * moveSpeed * randMoveSpeedRatio * Time.deltaTime;
-        Vector2Int position = Gl_Func.WPosToBPos(pos);
-
-        switch (bm.Board[position.x, position.y].type)
+        //何のマスに乗ってるかで処理を分ける.
+        Vector2Int bpos = Gl_Func.WPosToBPos(tmpPos);
+        switch (bm.Board[bpos.x, bpos.y].type)
         {
             case BoardType.PLAYER_AREA:
-                SetMove();
+                SetGoalMove();
                 break;
             case BoardType.PLAYER_TRAIL:
                 pm.PlayerDeath();
                 break;
             case BoardType.NONE:
-                transform.position = pos;
+                transform.position = tmpPos; //実際に移動する.
                 break;
         }
         
-        if ((targetPos - transform .position).magnitude < MOVE_STOP_LIM)
+        //目標地点に着いたら(一定範囲)
+        if ((targetPos - transform.position).magnitude < Gl_Const.ENEMY_GOAL_STOP_RANGE)
         {
-            SetMove();
+            SetGoalMove();
         }
     }
     
     void EnemyDeath()
     {
-        Destroy(gameObject);
+        gm.deathEnemyCnt++;  //死亡数+1.
+        Destroy(gameObject); //自身を消滅.
     }
 
     /// <summary>
-    /// 移動開始時の処理と目標座標の決定
+    /// 移動開始時の処理と、目標座標の決定
     /// </summary>
-    void SetMove()
+    void SetGoalMove()
     {
         print("移動開始");
         state = EnemyState.MOVE;
@@ -151,10 +139,22 @@ public class Enemy : MonoBehaviour
         Vector2 pos = transform.position;
         pos = Gl_Func.LimPosInBoard(pos);
         transform.position = pos;
-        
-        targetPos = Gl_Func.RandEnemySpawnPos();
-        targetPos = Gl_Func.LimPosInBoard(targetPos);
-        
-        randMoveSpeedRatio = Random.Range(MIN_MOVE_SPEED_RATIO, MAX_MOVE_SPEED_RATIO);
+
+        //目標地点の抽選.
+        {
+            int rndX = Random.Range(0, Gl_Const.BOARD_WID - 1);
+            int rndY = Random.Range(0, Gl_Const.BOARD_HEI - 1);
+
+            //その座標が無マスなら.
+            if (bm.Board[rndX, rndY].type == BoardType.NONE)
+            {
+                var wPos = Gl_Func.BPosToWPos(new Vector2Int(rndX, rndY));
+                targetPos = Gl_Func.LimPosInBoard(wPos);
+            }
+        }
+
+        randMoveSpeedRatio = Random.Range(
+            Gl_Const.ENEMY_MIN_MOVE_SPEED, Gl_Const.ENEMY_MAX_MOVE_SPEED
+        );
     }
 }

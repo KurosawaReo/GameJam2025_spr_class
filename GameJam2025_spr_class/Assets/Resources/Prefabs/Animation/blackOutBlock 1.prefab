@@ -119,4 +119,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4efdacce7a52b43a7545e3c6d96c3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transitions: {fileID: 1260624337969289501, guid: 64d44f0242c0d624aadf198fa4525174, type: 3}
+  scptSceneTrans: {fileID: 1260624337969289501, guid: 64d44f0242c0d624aadf198fa4525174, type: 3}

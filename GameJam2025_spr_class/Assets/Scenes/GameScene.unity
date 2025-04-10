@@ -386,9 +386,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: -0.83, y: -0.83, z: -0.83}
+  m_LocalScale: {x: -0.82999986, y: -0.83000004, z: -0.83000004}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -401,7 +401,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ecd2ac39e6fc5f043b76e810a241720c, type: 2}
   m_CullingMode: 0
@@ -443,6 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a0cb7d0a8e56c4d91d4e5d7aa7a485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scptGameMng: {fileID: 1078234025}
   prfbSqrBack: {fileID: 2275033464550313715, guid: 5986114b2ce7fe84d971699a3a90896c, type: 3}
   prfbSqrType: {fileID: 2275033464550313715, guid: 95426e5ba4f7c5046945dfaff800faab, type: 3}
   prfbInObj: {fileID: 2137507685}
@@ -543,7 +544,7 @@ Transform:
   m_GameObject: {fileID: 730445387}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2903, y: 0.0306, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.36, y: 0.4502734, z: 0.43737096}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -561,6 +562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db471a309d72353459c1aa156fde88e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
   scptGameMng: {fileID: 1078234025}
   scptBrdMng: {fileID: 548676096}
   moveSpeed: 4
@@ -593,6 +595,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3122889143357924898, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 519420031}
     - target: {fileID: 4361460891006851691, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: m_Name
       value: GameSet
@@ -663,7 +669,15 @@ PrefabInstance:
       objectReference: {fileID: 519420031}
     - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: gameTime
-      value: 30
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
+      propertyPath: resultSpeed
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -708,6 +722,10 @@ PrefabInstance:
       propertyPath: scptGameMng
       value: 
       objectReference: {fileID: 1078234025}
+    - target: {fileID: 4095393292200254167, guid: a4a88e4bc3e948a4d9df933de01fab08, type: 3}
+      propertyPath: scptBoardMng
+      value: 
+      objectReference: {fileID: 548676096}
     - target: {fileID: 5895400745575106954, guid: a4a88e4bc3e948a4d9df933de01fab08, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.005598572
@@ -893,6 +911,6 @@ SceneRoots:
   - {fileID: 231931913}
   - {fileID: 1225131307}
   - {fileID: 1666003589}
-  - {fileID: 548676097}
   - {fileID: 1078234024}
   - {fileID: 1174498994}
+  - {fileID: 548676097}
