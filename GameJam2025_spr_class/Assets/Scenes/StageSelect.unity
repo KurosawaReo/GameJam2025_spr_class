@@ -1133,6 +1133,10 @@ PrefabInstance:
       propertyPath: selectPosArea
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5050980198379739154, guid: fed31e575ca398146838b5536df05f34, type: 3}
+      propertyPath: scptSceneTrans
+      value: 
+      objectReference: {fileID: 1260624337969289501, guid: 64d44f0242c0d624aadf198fa4525174, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
