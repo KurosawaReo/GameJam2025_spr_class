@@ -6,7 +6,7 @@ using Gloval;
 public class GameManager : MonoBehaviour
 {
     [Header("共通パラメータ")]
-        [Tooltip("ゲームモード選択")]          public ModeName   gameMode = 0;
+        [Tooltip("選択したゲームモード")]      public GameMode gameMode = 0;
 
         [Tooltip("リザルトパネル")]            public GameObject resultPanel;
         [Tooltip("リザルト用テキスト")]        public Text resultText;
@@ -19,22 +19,24 @@ public class GameManager : MonoBehaviour
         [Tooltip("エネミー死亡数"), ReadOnly]  public int  deathEnemyCnt;
         [Tooltip("エネミー残数"),   ReadOnly]  public int  presentEnemyCnt;
 
+        [Tooltip("敵が1体でも出現したか"), ReadOnly]  public bool isEnemySpawn;
+
         [Tooltip("main camera"), SerializeField] Camera mainCamera;
 
     [Header("時間制限モード パラメータ")]
-        [ConditionalDisableInInspector("gameMode", (int)ModeName.TimeUp, conditionalInvisible: false)]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.TimeUp, conditionalInvisible: false)]
             [Tooltip("時間制限用Set")]             public GameObject TimerUpSet;
-        [ConditionalDisableInInspector("gameMode", (int)ModeName.TimeUp, conditionalInvisible: false)]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.TimeUp, conditionalInvisible: false)]
             [Tooltip("タイマー用テキスト")]        public Text timerText;
-        [ConditionalDisableInInspector("gameMode", (int)ModeName.TimeUp, conditionalInvisible: false)]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.TimeUp, conditionalInvisible: false)]
             [Range(0, 100), Tooltip("ゲーム時間")] public float gameTime;
 
     [Header("殲滅モード パラメータ")]
-        [ConditionalDisableInInspector("gameMode", (int)ModeName.AllBreak, conditionalInvisible: false)]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
             [Tooltip("Enemy管理用オブジェクト用")] public GameObject enemyParent;
-        [ConditionalDisableInInspector("gameMode", (int)ModeName.AllBreak, conditionalInvisible: false)]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
             [Tooltip("殲滅モード用Set")]           public GameObject AllBreakSet;
-        [ConditionalDisableInInspector("gameMode", (int)ModeName.AllBreak, conditionalInvisible: false)]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
             [Tooltip("残数用テキスト")]            public Text RemainingText;
 
     void Start()
@@ -48,7 +50,8 @@ public class GameManager : MonoBehaviour
         {
             switch (gameMode)
             {
-                case ModeName.TimeUp:
+                case GameMode.TimeUp:
+                    //残り時間.
                     if (gameTime > 0)
                     {
                         ModeTUTimeLapse();
@@ -62,15 +65,23 @@ public class GameManager : MonoBehaviour
                     }
                     break;
 
-                case ModeName.AllBreak:
-                    if (presentEnemyCnt > 0)
+                case GameMode.AllBreak:
+                    //1体でも敵がいれば.
+                    if (GetEnemyCount() > 0)
+                    {
+                        isEnemySpawn = true;
+                    }
+                    //1度敵が出現したなら.
+                    if (isEnemySpawn)
                     {
                         EnemyCount();
-                    }
-                    else
-                    {
-                        GameEnd();
-                        GameEndMode();
+                        
+                        //現在の敵数.
+                        if (presentEnemyCnt <= 0)
+                        {
+                            GameEnd();
+                            GameEndMode();
+                        }
                     }
                     break;
             }
@@ -83,33 +94,26 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 現在の敵の数を取得.
-    /// </summary>
-    /// <returns></returns>
-    public int GetEnemyCount()
-    {
-        return enemyParent.transform.childCount;
-    }
-
-    /// <summary>
     /// 初期化用
     /// </summary>
     void Init()
     {
         //選択したモードを取得.
-        var scptDontDestroy = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
-        gameMode = scptDontDestroy.mode;
+        var scptDontDstry = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
+        gameMode = scptDontDstry.mode;
+
+        Debug.Log("gameMode:"+gameMode);
 
         //モード別.
         switch (gameMode)
         {
-            case ModeName.TimeUp:
+            case GameMode.TimeUp:
                 TimerUpSet.SetActive(true);
                 timerText.text = "Time : " + Mathf.Ceil(gameTime);
                 EnemyCount();
                 break;
 
-            case ModeName.AllBreak:
+            case GameMode.AllBreak:
                 AllBreakSet.SetActive(true);
                 RemainingText.text = "残数 : " + presentEnemyCnt;
                 EnemyCount();
@@ -118,6 +122,16 @@ public class GameManager : MonoBehaviour
 
         //最初はresultパネルを無効に.
         resultPanel.SetActive(false);
+    }
+
+    /// <summary>
+    /// 現在の敵の数を取得.
+    /// </summary>
+    /// <returns></returns>
+    public int GetEnemyCount()
+    {
+        int cnt = enemyParent.transform.childCount;
+        return cnt;
     }
 
     /// <summary>
@@ -156,7 +170,7 @@ public class GameManager : MonoBehaviour
         //モード別.
         switch (gameMode)
         {
-            case ModeName.TimeUp:
+            case GameMode.TimeUp:
                 resultText.text = "終了！\n敵を" + deathEnemyCnt + "体倒した！";
                 //if ((pastEnemyCount - presentEnemyCnt) == pastEnemyCount)
                 //{
@@ -164,7 +178,7 @@ public class GameManager : MonoBehaviour
                 //}
                 break;
 
-            case ModeName.AllBreak:
+            case GameMode.AllBreak:
                 resultText.text = "終了！\n殲滅おめでとう！";
                 break;
         }

@@ -119,7 +119,7 @@ public class Enemy : MonoBehaviour
         }
         
         //–Ú•W’n“_‚É’…‚¢‚½‚ç(ˆê’è”ÍˆÍ)
-        if ((targetPos - transform.position).magnitude < Gl_Const.ENEMY_GOAL_STOP_RANGE)
+        if ((targetPos - transform.position).magnitude < Gl_Const.ENM_GOAL_STOP_RANGE)
         {
             SetGoalMove();
         }
@@ -161,7 +161,7 @@ public class Enemy : MonoBehaviour
         }
 
         randMoveSpeedRatio = Random.Range(
-            Gl_Const.ENEMY_MIN_MOVE_SPEED, Gl_Const.ENEMY_MAX_MOVE_SPEED
+            Gl_Const.ENM_MIN_MOVE_SPEED, Gl_Const.ENM_MAX_MOVE_SPEED
         );
     }
 }
