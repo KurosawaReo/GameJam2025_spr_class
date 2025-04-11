@@ -59,7 +59,10 @@ public class ControllerSelect : MonoBehaviour
 
     void Select(SelectPosArea selectPosArea)
     {
-        if (Input.GetJoystickNames() != null)
+        print(Input.GetJoystickNames()[1]);
+        print(Input.GetJoystickNames()[0]);
+
+        if (Input.GetJoystickNames()[0] != string.Empty)
         {
             childObject.SetActive(true);
 
