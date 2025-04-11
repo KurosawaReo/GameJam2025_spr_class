@@ -123,6 +123,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &234361585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 234361586}
+  - component: {fileID: 234361587}
+  m_Layer: 0
+  m_Name: SelectModeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &234361586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234361585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.60349, y: 1.0719383, z: -0.012177467}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &234361587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234361585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8bb36c5fa29c6458acffc857529b79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scptSceneTrans: {fileID: 1260624337969289501, guid: 64d44f0242c0d624aadf198fa4525174, type: 3}
 --- !u!1 &273228516
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c7297f51591df041905fbc5319bd9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scptSceneTrans: {fileID: 0}
   mode: 0
 --- !u!1 &400274086
 GameObject:
@@ -340,7 +384,7 @@ GameObject:
   - component: {fileID: 776661334}
   - component: {fileID: 776661333}
   m_Layer: 5
-  m_Name: Stage01
+  m_Name: ModeTimeUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -410,10 +454,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 344051822}
-        m_TargetAssemblyTypeName: SceneTransitions, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 3
+      - m_Target: {fileID: 234361587}
+        m_TargetAssemblyTypeName: SelectModeManager, Assembly-CSharp
+        m_MethodName: PushTimeUp
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -631,75 +675,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1415768884
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3178208867745511247, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_Name
-      value: UnDeleteSettingObject
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4517432968371272958, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5054187321335975635, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: dontDestroyObjs.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5054187321335975635, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: dontDestroyObjs.Array.data[0]
-      value: 
-      objectReference: {fileID: 344051822}
-    - target: {fileID: 5054187321335975635, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
-      propertyPath: gameManagerPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 344051822}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6ede93b046cd3184c9e72c44a18f52f4, type: 3}
 --- !u!1 &1578179027
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,7 +882,7 @@ GameObject:
   - component: {fileID: 1960490232}
   - component: {fileID: 1960490231}
   m_Layer: 5
-  m_Name: Stage02
+  m_Name: ModeAllBreak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -977,10 +952,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1260624337969289501, guid: 64d44f0242c0d624aadf198fa4525174, type: 3}
-        m_TargetAssemblyTypeName: SceneTransitions, Assembly-CSharp
-        m_MethodName: SceneLoad
-        m_Mode: 3
+      - m_Target: {fileID: 234361587}
+        m_TargetAssemblyTypeName: SelectModeManager, Assembly-CSharp
+        m_MethodName: PushAllBreak
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1171,6 +1146,6 @@ SceneRoots:
   - {fileID: 1760226599}
   - {fileID: 797258471}
   - {fileID: 806658908}
-  - {fileID: 1415768884}
+  - {fileID: 234361586}
   - {fileID: 344051823}
   - {fileID: 6927227117527611965}
