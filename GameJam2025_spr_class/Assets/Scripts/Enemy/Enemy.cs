@@ -24,8 +24,11 @@ public class Enemy : MonoBehaviour
     [Tooltip("移動速度乱数")]
     float randMoveSpeedRatio;
 
-    [Tooltip("待機時間計測")]
+    [Tooltip("待機時間計測")] 
     float stateTimer;
+
+    [Tooltip("消滅アニメーション"), SerializeField]
+    GameObject prfbBreakAnim;
 
     // Start is called before the first frame update
     void Start()
@@ -125,6 +128,10 @@ public class Enemy : MonoBehaviour
     void EnemyDeath()
     {
         gm.deathEnemyCnt++;  //死亡数+1.
+        
+        var obj = Instantiate(prfbBreakAnim);
+        obj.transform.position = transform.position;
+        
         Destroy(gameObject); //自身を消滅.
     }
 

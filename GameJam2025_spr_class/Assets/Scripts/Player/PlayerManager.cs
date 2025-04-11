@@ -8,11 +8,15 @@ using Gloval;
 public class PlayerData
 {
     public Vector2Int beforeBPos { get; set; }
+    public Vector2 inputVec { get; set; } //最後に操作した方向.
+    public float inputAng { get; set; } //最後に操作した角度.
 
     //初期化(コンストラクタ)
-    public PlayerData(Vector2Int _beforeBPos)
+    public PlayerData(Vector2Int _beforeBPos, Vector2 _inputVec, float _inputAng)
     {
         beforeBPos = _beforeBPos;
+        inputVec   = _inputVec;
+        inputAng   = _inputAng;
     }
 }
 
@@ -33,7 +37,9 @@ public class PlayerManager : MonoBehaviour
 
     ////プレイヤーデータ.
     PlayerData player = new PlayerData(
-        new Vector2Int(0, 0)  //beforeBPos.
+        new Vector2Int(0, 0), //beforeBPos.
+        new Vector2   (0, 1), //inputVec.
+        0                     //inputAng.
     );
 
     void Update()
@@ -54,21 +60,25 @@ public class PlayerManager : MonoBehaviour
     {
         //現在位置を取得.
         Vector2 pos = transform.position;
+
         //操作の取得.
         var input = Gl_Func.InputKey4dir();
-
         //操作があれば.
         if (input.vec != Vector2.zero)
         {
-            //仮移動.
-            pos += input.vec * moveSpeed * Time.deltaTime;
-            //盤面より外に出ていたら座標を修正する.
-            pos = Gl_Func.LimPosInBoard(pos);
-
-            //操作を反映.
-            transform.position = pos;
-            transform.eulerAngles = new Vector3(0, 0, input.ang);
+            //移動方向を保存.
+            player.inputVec = input.vec;
+            player.inputAng = input.ang;
         }
+
+        //仮移動.
+        pos += player.inputVec * moveSpeed * Time.deltaTime;
+        //盤面より外に出ていたら座標を修正する.
+        pos = Gl_Func.LimPosInBoard(pos);
+
+        //操作を反映.
+        transform.position = pos;
+        transform.eulerAngles = new Vector3(0, 0, player.inputAng);
     }
 
     /// <summary>
@@ -90,7 +100,6 @@ public class PlayerManager : MonoBehaviour
                 case BoardType.PLAYER_AREA:
                 {
                     scptBrdMng.SurroundTrail(); //囲う処理.
-
 
                     //全マスループ.
                     for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
@@ -132,7 +141,6 @@ public class PlayerManager : MonoBehaviour
 
         //移動.
         mainCamera.transform.position = new Vector3(x, y, z);
-        Debug.Log("cmr:"+mainCamera.transform.position);
     }
 
     /// <summary>
