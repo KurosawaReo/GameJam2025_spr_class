@@ -6,7 +6,7 @@ using UnityEngine;
 public class DotText : MonoBehaviour
 {
     [Header("•\Ž¦•¶Žš"), SerializeField]
-    DOT_TEXT dotText;
+    public DOT_TEXT dotText;
     DOT_TEXT dotTextMemo;
 
 
@@ -35,7 +35,7 @@ public class DotText : MonoBehaviour
     Sprite dotImage;
 
 
-    enum DOT_TEXT
+    public enum DOT_TEXT
     {
         ZERO,
         ONE,
