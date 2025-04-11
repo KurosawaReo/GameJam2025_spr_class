@@ -96,6 +96,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void Init()
     {
+        //選択したモードを取得.
+        var scptDontDestroy = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
+        gameMode = scptDontDestroy.mode;
+
+        //モード別.
         switch (gameMode)
         {
             case ModeName.TimeUp:
@@ -110,6 +115,8 @@ public class GameManager : MonoBehaviour
                 EnemyCount();
                 break;
         }
+
+        //最初はresultパネルを無効に.
         resultPanel.SetActive(false);
     }
 
