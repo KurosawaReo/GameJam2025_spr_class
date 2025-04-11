@@ -57,5 +57,11 @@ public class BlackOutMove : MonoBehaviour
         {
             BlackOutObjOn();
         }
+
+        // コントローラー
+        if (Input.GetKeyDown(KeyCode.Joystick1Button0))
+        {
+            BlackOutObjOn();
+        }
     }
 }
