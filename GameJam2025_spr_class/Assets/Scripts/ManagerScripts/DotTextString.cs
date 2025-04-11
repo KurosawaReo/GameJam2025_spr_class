@@ -21,7 +21,6 @@ public class DotTextString : MonoBehaviour
     GameObject[] minuteObj;
 
     int[] objSetInt;
-    int objSetIntMemo;
 
     [Tooltip("NUM_STRING—p")]
     GameObject[] numString;
@@ -79,15 +78,15 @@ public class DotTextString : MonoBehaviour
 
     void DotNumTime()
     {
+        ReSetNum();
         switch (UseMinute)
         {
             case true:
+
                 objSetInt[secondObj.Length] = getNumSecond / ONE_MINUTE;
-                objSetIntMemo = getNumSecond / ONE_MINUTE;
                 Calculation(SWITCH_TYPE.MINUTE);
 
                 objSetInt[0] = getNumSecond % ONE_MINUTE;
-                objSetIntMemo = getNumSecond % ONE_MINUTE;
                 Calculation(SWITCH_TYPE.SECONDS);
 
 
@@ -100,6 +99,15 @@ public class DotTextString : MonoBehaviour
         }
     }
 
+    void ReSetNum()
+    {
+        loopNum = 0;
+        for (int i = 0; i < objSetInt.Length; i++)
+        {
+            objSetInt[i] = 0;
+        }
+    }
+
     void Calculation(SWITCH_TYPE switchType)
     {
         switch (switchType)
@@ -107,11 +115,13 @@ public class DotTextString : MonoBehaviour
             case SWITCH_TYPE.MINUTE:
                 if (objSetInt[secondObj.Length + loopNum] >= 10)
                 {
-                    objSetInt[(objSetInt.Length - 1) - loopNum ] = objSetInt[secondObj.Length] / 10;
+                    Debug.Log("objSetInt[secondObj.Length + loopNum]:" + objSetInt[secondObj.Length + loopNum]);
+                    objSetInt[secondObj.Length + loopNum + 1] = objSetInt[secondObj.Length + loopNum] / 10;
+                    Debug.Log("objSetInt[secondObj.Length + loopNum + 1]:" + objSetInt[secondObj.Length + loopNum + 1]);
                     objSetInt[secondObj.Length + loopNum] = objSetInt[secondObj.Length + loopNum] % 10;
 
                     loopNum++;
-                    Calculation(SWITCH_TYPE.MINUTE);
+                     Calculation(SWITCH_TYPE.MINUTE);
                 }
 
                 break;
@@ -119,16 +129,12 @@ public class DotTextString : MonoBehaviour
             case SWITCH_TYPE.SECONDS:
                 if (objSetInt[0] >= 10)
                 {
+                    //Debug.Log("objSetInt[0]:" + objSetInt[0]);
                     objSetInt[0 + 1] = objSetInt[0] / 10;
                     objSetInt[0] = objSetInt[0] % 10;
                 }
                 break;
         }
-    }
-
-    int Power(int _a,int _b)
-    {
-
     }
 
     void DotNumString()
@@ -140,6 +146,7 @@ public class DotTextString : MonoBehaviour
     {
         for (int i = 0; i < objSetInt.Length; i++)
         {
+            
             if (stringType == STRING_TYPE.TIME)
             {
                 switch (i)
@@ -149,7 +156,7 @@ public class DotTextString : MonoBehaviour
                         DotText = secondObj[i].GetComponent<DotText>();
                         DotText.dotText = SwitchNumText(objSetInt[i]);
                         //Debug.Log(i + ":" + objSetInt[i]);
-                        //Debug.Log(i + " retrn:" + DotText.dotText);
+                        Debug.Log(i + " retrn:" + DotText.dotText);
                         //Debug.Log(i + ":" + DotText.dotText);
                         break;
 
@@ -157,7 +164,7 @@ public class DotTextString : MonoBehaviour
                         DotText = minuteObj[i - secondObj.Length].GetComponent<DotText>();
                         DotText.dotText = SwitchNumText(objSetInt[i]);
                         //Debug.Log(i + ":" + objSetInt[i]);
-                        //Debug.Log(i + " retrn:" + DotText.dotText);
+                        Debug.Log(i + " retrn:" + DotText.dotText);
                         //Debug.Log(i + ":" + DotText.dotText);
                         break;
                 }
