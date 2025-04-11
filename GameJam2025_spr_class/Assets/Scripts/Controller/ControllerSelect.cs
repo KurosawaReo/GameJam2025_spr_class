@@ -1,3 +1,4 @@
+using Gloval;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -19,13 +20,19 @@ public class ControllerSelect : MonoBehaviour
     [Tooltip("égópâ”èä")] public SelectPosArea selectPosArea = 0;
     [ReadOnly] public int selectID = 0;
 
-     GameObject childObject;
+    [ConditionalDisableInInspector("selectPosArea", (int)SelectPosArea.GameScene, conditionalInvisible: true)]
+    public GameManager gameManager;
+
+    GameObject childObject;
 
     // Select
     const float modeTUPosSelect = -7f;
     const float modeABPosSelect = 0.3f;
 
+    // Game
+    const float modeRestartSelectX = 2;
 
+    const float modeY = -3.2f;
 
 
 
@@ -64,6 +71,16 @@ public class ControllerSelect : MonoBehaviour
                             if (Input.GetKeyDown(KeyCode.JoystickButton0))
                             {
                                 print("modeTU");
+
+
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+
+
                                 sceneTransitions.SceneLoad(2);
                             }
                             break;
@@ -72,11 +89,19 @@ public class ControllerSelect : MonoBehaviour
                             if (Input.GetKeyDown(KeyCode.JoystickButton0))
                             {
                                 print("modeAB");
+
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+                                // selectâÊñ ÇÃÇ‚Ç¬Ç≈Ç∑
+
                                 sceneTransitions.SceneLoad(2);
                             }
                             break;
                     }
-
                     break;
                 case SelectPosArea.GameScene:
 
