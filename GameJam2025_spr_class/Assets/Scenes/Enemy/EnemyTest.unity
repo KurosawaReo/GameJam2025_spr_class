@@ -421,6 +421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a0cb7d0a8e56c4d91d4e5d7aa7a485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scptGameMng: {fileID: 0}
   prfbSqrBack: {fileID: 2275033464550313715, guid: 5986114b2ce7fe84d971699a3a90896c, type: 3}
   prfbSqrType: {fileID: 2275033464550313715, guid: 95426e5ba4f7c5046945dfaff800faab, type: 3}
   prfbInObj: {fileID: 2137507685}
@@ -640,6 +641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db471a309d72353459c1aa156fde88e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
   scptGameMng: {fileID: 0}
   scptBrdMng: {fileID: 548676096}
   moveSpeed: 4
@@ -808,6 +810,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyGenerator
       objectReference: {fileID: 0}
+    - target: {fileID: 4095393292200254167, guid: a4a88e4bc3e948a4d9df933de01fab08, type: 3}
+      propertyPath: scptBoardMng
+      value: 
+      objectReference: {fileID: 548676096}
     - target: {fileID: 5895400745575106954, guid: a4a88e4bc3e948a4d9df933de01fab08, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.005598572
