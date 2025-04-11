@@ -997,6 +997,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Controller
       objectReference: {fileID: 0}
+    - target: {fileID: 5050980198379739154, guid: fed31e575ca398146838b5536df05f34, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1078234025}
+    - target: {fileID: 5050980198379739154, guid: fed31e575ca398146838b5536df05f34, type: 3}
+      propertyPath: selectPosArea
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5776767651496270978, guid: fed31e575ca398146838b5536df05f34, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6788764990377557590, guid: fed31e575ca398146838b5536df05f34, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6
@@ -1007,7 +1019,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6788764990377557590, guid: fed31e575ca398146838b5536df05f34, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.875
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 6788764990377557590, guid: fed31e575ca398146838b5536df05f34, type: 3}
       propertyPath: m_LocalPosition.y

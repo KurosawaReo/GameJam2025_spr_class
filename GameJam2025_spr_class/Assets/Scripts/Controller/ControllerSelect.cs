@@ -25,13 +25,17 @@ public class ControllerSelect : MonoBehaviour
 
     GameObject childObject;
 
+    DontDestroyObj scptDontDest;
+
+
     // Select
     const float modeTUPosSelect = -7f;
     const float modeABPosSelect = 0.3f;
 
-    // Game
-    const float modeRestartSelectX = 2;
 
+    // Game
+    const float modeTitleSelectX = -2.5f;
+    const float modeRestartSelectX = 2.875f;
     const float modeY = -3.2f;
 
 
@@ -39,6 +43,10 @@ public class ControllerSelect : MonoBehaviour
     private void Start()
     {
         childObject = gameObject.transform.GetChild(0).gameObject;
+
+        //取得.
+        scptDontDest = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
+
     }
 
 
@@ -57,13 +65,11 @@ public class ControllerSelect : MonoBehaviour
 
             SelectModeController();
 
+            SelectObject();
 
             switch (selectPosArea)
             {
                 case SelectPosArea.SelectScene:
-
-                    SelectObject();
-
                     switch (selectID)
                     {
                         case 0:
@@ -72,15 +78,7 @@ public class ControllerSelect : MonoBehaviour
                             {
                                 print("modeTU");
 
-
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-
-
+                                scptDontDest.mode = GameMode.TimeUp;
                                 sceneTransitions.SceneLoad(2);
                             }
                             break;
@@ -90,26 +88,30 @@ public class ControllerSelect : MonoBehaviour
                             {
                                 print("modeAB");
 
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-                                // select画面のやつです
-
+                                scptDontDest.mode = GameMode.AllBreak;
                                 sceneTransitions.SceneLoad(2);
                             }
                             break;
                     }
                     break;
                 case SelectPosArea.GameScene:
-
-
-
-
-
-
+                    switch (selectID)
+                    {
+                        case 0:
+                            // コントローラー
+                            if (Input.GetKeyDown(KeyCode.JoystickButton0))
+                            {
+                                sceneTransitions.SceneLoad(0);
+                            }
+                            break;
+                        case 1:
+                            // コントローラー
+                            if (Input.GetKeyDown(KeyCode.JoystickButton0))
+                            {
+                                sceneTransitions.SceneLoad(2);
+                            }
+                            break;
+                    }
                     break;
             }
         }
@@ -121,13 +123,30 @@ public class ControllerSelect : MonoBehaviour
 
     void SelectObject()
     {
-        switch (selectID)
+        switch (selectPosArea)
         {
-            case 0:
-                childObject.transform.position = new Vector3(modeTUPosSelect, 0, 0);
+            case SelectPosArea.SelectScene:
+                switch (selectID)
+                {
+                    case 0:
+                        childObject.transform.position = new Vector3(modeTUPosSelect, 0, 0);
+                        break;
+                    case 1:
+                        childObject.transform.position = new Vector3(modeABPosSelect, 0, 0);
+                        break;
+                }
                 break;
-            case 1:
-                childObject.transform.position = new Vector3(modeABPosSelect, 0, 0);
+            case SelectPosArea.GameScene:
+                print("kakunin");
+                switch (selectID)
+                {
+                    case 0:
+                        childObject.transform.localPosition = new Vector3(modeTitleSelectX, modeY, 0);
+                        break;
+                    case 1:
+                        childObject.transform.localPosition = new Vector3(modeRestartSelectX, modeY, 0);
+                        break;
+                }
                 break;
         }
     }
@@ -142,14 +161,5 @@ public class ControllerSelect : MonoBehaviour
         {
             selectID = 0;
         }
-
-
-
-
-
     }
-
-
-
-
 }
