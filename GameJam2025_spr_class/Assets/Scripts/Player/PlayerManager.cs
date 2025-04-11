@@ -5,14 +5,14 @@
 using UnityEngine;
 using Gloval;
 
-public class PlayerData 
+public class PlayerData
 {
-    public Vector2Int bPos { get; set; }
+    public Vector2Int beforeBPos { get; set; }
 
     //初期化(コンストラクタ)
-    public PlayerData(Vector2Int _bPos)
+    public PlayerData(Vector2Int _beforeBPos)
     {
-        bPos = _bPos;
+        beforeBPos = _beforeBPos;
     }
 }
 
@@ -21,21 +21,30 @@ public class PlayerData
 /// </summary>
 public class PlayerManager : MonoBehaviour
 {
+    [Header("- camera -")]
+    [SerializeField] Camera mainCamera;
+
     [Header("- script -")]
+    [SerializeField] GameManager  scptGameMng;
     [SerializeField] BoardManager scptBrdMng;
 
     [Header("- value -")]
     [SerializeField] float moveSpeed;
 
     ////プレイヤーデータ.
-    //PlayerData player = new PlayerData(
-    //    new Vector2Int(0, 0)  //boardPos.
-    //);
+    PlayerData player = new PlayerData(
+        new Vector2Int(0, 0)  //beforeBPos.
+    );
 
     void Update()
     {
-        InputMove();
-        PlayerTrail();
+        //ゲーム中のみ.
+        if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
+        {
+            InputMove();
+            PlayerMove();
+            CameraMove();
+        }
     }
 
     /// <summary>
@@ -63,19 +72,118 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// プレイヤーの痕跡を残す処理.
+    /// プレイヤーの移動処理.
     /// </summary>
-    private void PlayerTrail()
+    private void PlayerMove()
     {
         //プレイヤーのいるboard座標取得.
-        var bpos = Gl_Func.WPosToBPos(transform.position);
+        var bPos = Gl_Func.WPosToBPos(transform.position);
 
-        //現在マスが無なら.
-        if(scptBrdMng.Board[bpos.x, bpos.y].type == BoardType.NONE)
+        //座標が変化した(=移動したなら)
+        if (player.beforeBPos != bPos)
         {
-            scptBrdMng.Board[bpos.x, bpos.y].type = BoardType.PLAYER_TRAIL; //痕跡にする.
-            scptBrdMng.SurroundTrail(); //囲う処理.
+            player.beforeBPos = bPos; //座標更新.
+
+            //今いるマスのタイプ別処理.
+            switch (scptBrdMng.Board[bPos.x, bPos.y].type)
+            {
+                case BoardType.PLAYER_AREA:
+                {
+                    scptBrdMng.SurroundTrail(); //囲う処理.
+
+
+                    //全マスループ.
+                    for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+                        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+
+                            //足元と痕跡をエリアで埋める.
+                            if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT ||
+                                scptBrdMng.Board[x, y].type == BoardType.PLAYER_TRAIL)
+                            {
+                                scptBrdMng.Board[x, y].type = BoardType.PLAYER_AREA;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case BoardType.PLAYER_TRAIL:
+                {
+                    PlayerDeath();     //死亡処理.
+                    break;
+                }
+                case BoardType.PLAYER_FOOT:
+                case BoardType.NONE:
+                {
+                    PlayerTrail(bPos); //痕跡処理.
+                    break;
+                }
+            }
         }
+    }
+
+    /// <summary>
+    /// カメラ追跡.
+    /// </summary>
+    private void CameraMove()
+    {
+        float x = transform.position.x;
+        float y = transform.position.y;
+        float z = mainCamera.transform.position.z;
+
+        //移動.
+        mainCamera.transform.position = new Vector3(x, y, z);
+        Debug.Log("cmr:"+mainCamera.transform.position);
+    }
+
+    /// <summary>
+    /// プレイヤーの痕跡処理.
+    /// </summary>
+    /// <param name="bPos">ボード座標</param>
+    private void PlayerTrail(Vector2Int bPos)
+    {
+        //プレイヤー周辺のマスループ.
+        for (int y = bPos.y-7; y < bPos.y+7; y++) {
+            for (int x = bPos.x-7; x < bPos.x+7; x++) {
+
+                //盤面外ならスキップ.
+                if (!Gl_Func.IsInBoard(new Vector2Int(x, y)))
+                {
+                    continue;
+                }
+
+                //足元じゃなくなるマスを変える.
+                if(x < bPos.x - Gl_Const.PLAYER_TRAIL_SIZE ||
+                   x > bPos.x + Gl_Const.PLAYER_TRAIL_SIZE ||
+                   y < bPos.y - Gl_Const.PLAYER_TRAIL_SIZE ||
+                   y > bPos.y + Gl_Const.PLAYER_TRAIL_SIZE
+                ){
+                    //足元を痕跡に置き換える.
+                    if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT)
+                    {
+                        scptBrdMng.Board[x, y].type = BoardType.PLAYER_TRAIL;
+                    }
+                }  
+            }
+        }
+
+        //一定の範囲に足元マスを塗る.
+        for (int y = bPos.y-Gl_Const.PLAYER_TRAIL_SIZE; y < bPos.y+Gl_Const.PLAYER_TRAIL_SIZE; y++) {
+            for (int x = bPos.x-Gl_Const.PLAYER_TRAIL_SIZE; x < bPos.x+Gl_Const.PLAYER_TRAIL_SIZE; x++) {
+
+                //盤面外ならスキップ.
+                if (!Gl_Func.IsInBoard(new Vector2Int(x, y)))
+                {
+                    continue;
+                }
+                //仮移動したマスが無なら.
+                if (scptBrdMng.Board[x, y].type == BoardType.NONE)
+                {
+                    scptBrdMng.Board[x, y].type = BoardType.PLAYER_FOOT; //足元にする.
+                }
+            }
+        }
+
+        //scptBrdMng.SurroundTrail(); //囲う処理.
     }
 
     /// <summary>
@@ -83,6 +191,23 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     public void PlayerDeath()
     {
+        //全マスループ.
+        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
+                //足元と痕跡を無に置き換える.
+                if (scptBrdMng.Board[x, y].type == BoardType.PLAYER_FOOT ||
+                    scptBrdMng.Board[x, y].type == BoardType.PLAYER_TRAIL)
+                {
+                    scptBrdMng.Board[x, y].type = BoardType.NONE;
+                }
+            }
+        }
+        
+        scptBrdMng.UpdateBoard(); //盤面更新.
+        scptGameMng.PlayerDead(); //死亡処理.
+
+        //透明化.
+        gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0 ,0);
     }
 }

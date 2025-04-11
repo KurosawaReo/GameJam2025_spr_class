@@ -21,6 +21,9 @@ public class BoardData
 /// </summary>
 public class BoardManager : MonoBehaviour
 {
+    [Header("- script -")]
+    [SerializeField] GameManager scptGameMng;
+
     [Header("- prefab -")]
     [SerializeField] GameObject prfbSqrBack; //square back:マスの背景用.
     [SerializeField] GameObject prfbSqrType; //square type:マスの種類用.
@@ -45,13 +48,18 @@ public class BoardManager : MonoBehaviour
     void Start()
     {
         RandAreaColor();
+
         InitBoard();
         BoardGenerate();
     }
 
     void Update()
     {
-        UpdateBoard();
+        //ゲーム中のみ.
+        if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
+        {
+            UpdateBoard();
+        }
     }
 
     /// <summary>
@@ -81,11 +89,14 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        int len = 2;
-
+        //中央の範囲.
+        int stY = Gl_Const.BOARD_HEI/2 - Gl_Const.INIT_AREA_SIZE;
+        int edY = Gl_Const.BOARD_HEI/2 + Gl_Const.INIT_AREA_SIZE;
+        int stX = Gl_Const.BOARD_WID/2 - Gl_Const.INIT_AREA_SIZE;
+        int edX = Gl_Const.BOARD_WID/2 + Gl_Const.INIT_AREA_SIZE;
         //中央あたりは初期陣地にする.
-        for (int y = Gl_Const.BOARD_HEI/2-len; y < Gl_Const.BOARD_HEI/2+len; y++) {
-            for (int x = Gl_Const.BOARD_WID/2-2; x < Gl_Const.BOARD_WID/2+2; x++) {
+        for (int y = stY; y < edY; y++) {
+            for (int x = stX; x < edX; x++) {
 
                 board[x, y].type = BoardType.PLAYER_AREA;
             }
@@ -117,7 +128,7 @@ public class BoardManager : MonoBehaviour
     /// <summary>
     /// 盤面の更新.
     /// </summary>
-    private void UpdateBoard()
+    public void UpdateBoard()
     {
         //1マスずつ.
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
@@ -129,10 +140,12 @@ public class BoardManager : MonoBehaviour
                     case BoardType.NONE:
                         board[x, y].typeSR.sprite = null; 
                         break;
+
                     case BoardType.PLAYER_TRAIL:
                         board[x, y].typeSR.sprite = imgPlyTrail;
-                        board[x, y].typeSR.color  = areaColor;
+                        board[x, y].typeSR.color  = Color.white;
                         break;
+
                     case BoardType.PLAYER_AREA:
                         board[x, y].typeSR.sprite = imgPlyArea; 
                         board[x, y].typeSR.color  = areaColor;
@@ -151,14 +164,8 @@ public class BoardManager : MonoBehaviour
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         //訪れたマスの記録用.
         bool[,] isVisit = new bool[Gl_Const.BOARD_WID, Gl_Const.BOARD_HEI];
-        //初期化.
-        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
-                isVisit[x, y] = false;
-            }
-        }
-        //1つでも訪れてないマスがあるかどうか.
-        bool isNoVisit = false;
+        //囲うのに成功したかどうか.
+        bool isSurround = false;
 
         //boardの上端と下端.
         for (int x = 0; x < Gl_Const.BOARD_WID; x++)
@@ -184,7 +191,7 @@ public class BoardManager : MonoBehaviour
                 var newPos = pos + dir; //隣のマスに移動.
 
                 //盤面の中にいる and 訪れたことがないなら.
-                if (IsInBoard(newPos) && !isVisit[newPos.x, newPos.y])
+                if (Gl_Func.IsInBoard(newPos) && !isVisit[newPos.x, newPos.y])
                 {
                     TryEnqueue(queue, newPos.x, newPos.y, isVisit); //次の探索候補マス.
                 }
@@ -192,36 +199,30 @@ public class BoardManager : MonoBehaviour
         }
 
         //全マスループ.
-        for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
                 //訪れてない無のマスがあるなら.
                 if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
                 {
-                    isNoVisit = true;
-                    break;
+                    board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    isSurround = true;
                 }
             }
-            //見つかったら終了.
-            if (isNoVisit) { break; }
         }
 
-        //訪れてないマスがあるなら.
-        if (isNoVisit)
+        //囲うのに成功したなら.
+        if (isSurround)
         {
             //全マスループ.
-            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-                for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+                for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
-                    //プレイヤーの痕跡マス.
-                    if (board[x, y].type == BoardType.PLAYER_TRAIL)
+                    //足元と痕跡をエリアで埋める.
+                    if (board[x, y].type == BoardType.PLAYER_FOOT ||
+                        board[x, y].type == BoardType.PLAYER_TRAIL)
                     {
-                        board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
-                    }
-                    //訪れてない無のマス(=囲われた範囲)
-                    else if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
-                    {
-                        board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                        board[x, y].type = BoardType.PLAYER_AREA;
                     }
                 }
             }
@@ -240,15 +241,5 @@ public class BoardManager : MonoBehaviour
             _queue.Enqueue(new Vector2Int(_x, _y)); //探索するマスに追加.
             _isVisit[_x, _y] = true;                //ここは訪れ済.
         }
-    }
-
-    /// <summary>
-    /// board配列の中かどうか.
-    /// </summary>
-    /// <returns></returns>
-    private bool IsInBoard(Vector2Int _pos)
-    {
-        return (_pos.x >= 0) && (_pos.x < Gl_Const.BOARD_WID) && 
-               (_pos.y >= 0) && (_pos.y < Gl_Const.BOARD_HEI);
     }
 }

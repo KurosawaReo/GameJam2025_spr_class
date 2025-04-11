@@ -14,8 +14,20 @@ namespace Gloval
     public enum BoardType
     {
         NONE,         //無.
-        PLAYER_TRAIL, //プレイヤーの足跡.
+        PLAYER_FOOT,  //プレイヤーの足元(現在位置)
+        PLAYER_TRAIL, //プレイヤーの痕跡.
         PLAYER_AREA,  //プレイヤーの陣地.
+    }
+
+    /// <summary>
+    /// プレイしてるゲームモード.
+    /// </summary>
+    public enum ModeName
+    {
+        [InspectorName("時間制限モード"), Tooltip("時間制限モード")] 
+        TimeUp,
+        [InspectorName("殲滅モード"),     Tooltip("殲滅モード")] 
+        AllBreak
     }
 
     /// <summary>
@@ -23,21 +35,29 @@ namespace Gloval
     /// </summary>
     public static class Gl_Const
     {
-        // 盤面(board)に関する定数.
-        public const int   BOARD_HEI = 100;
-        public const int   BOARD_WID = 100;
-        public const float SQUARE_SIZE = 0.1f; //マスのサイズ倍率.
+        //盤面(board)関係.
+        public const int   BOARD_HEI      = 100;
+        public const int   BOARD_WID      = 100;
+        public const float SQUARE_SIZE    = 0.1f; //マスのサイズ倍率.
+        public const int   INIT_AREA_SIZE = 4;    //初期陣地エリアのサイズ(中心から何ドット広げるか)
 
-        // 画面端の余白.
-        public const float MARGIN_TOP = -2f;
-        public const float MARGIN_RIGHT = -2f;
-        public const float MARGIN_LEFT = 1.0f;
+        //プレイヤー関係.
+        public const int   PLAYER_TRAIL_SIZE = 1; //痕跡のサイズ(中心から何ドット広げるか)
+
+        //敵関係.
+        public const float MARGIN_TOP    = -2f;   //↓画面の余白.
+        public const float MARGIN_RIGHT  = -2f;
+        public const float MARGIN_LEFT   = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
-        // アイテムの生成間隔.
-        public const float INTERVAL_ITEM_GEN = 1.0f;
-        // エリア内のアイテムの最大数.
-        public const int MAX_ITEM_NUM = 5;
+        public const float ENEMY_MAX_MOVE_SPEED  = 0.8f;    //移動速度乱数の最大値.
+        public const float ENEMY_MIN_MOVE_SPEED  = 0.1f;    //移動速度乱数の最小値.
+        public const float ENEMY_GOAL_STOP_RANGE = 0.02f;   //目標地点に着いたら移動停止する範囲.
+        
+        public const int   START_ENEMY_NUM = 3;              //最初の敵の出現数.
+        public const int   MAX_ENEMY_NUM  = 10;             //敵の同時最大出現数.
+        public const float ENEMY_SPAWN_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
+        public const float ENEMY_SPAWN_MIN_INTERVAL = 0.5f; //敵の生成間隔乱数の最小値.
     }
 
     /// <summary>
@@ -45,6 +65,103 @@ namespace Gloval
     /// </summary>
     public static class Gl_Func
     {
+        /// <summary>
+        /// 画面の左下と右上の座標を返す処理.
+        /// </summary>
+        /// <returns></returns>
+        public static (Vector3, Vector3) GetWorldWindowSize()
+        {
+            Vector3 leftBottom = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+            return (leftBottom, rightTop);
+        }
+
+        /// <summary>
+        /// 盤面データを元に設置.
+        /// </summary>
+        /// <param name="_obj">設置するオブジェクト</param>
+        /// <param name="_x">盤面の座標x</param>
+        /// <param name="_y">盤面の座標y</param>
+        /// <param name="_scale">サイズ倍率</param>
+        public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
+        {
+            //座標を取得.
+            Vector2 pos = BPosToWPos(new Vector2Int(_x, _y));
+            //配置.
+            _obj.transform.position = pos;
+            _obj.transform.localScale = Vector2.one * Gl_Const.SQUARE_SIZE;
+        }
+
+        /// <summary>
+        /// 盤面より外に出ていたら座標を修正する.
+        /// </summary>
+        /// <param name="pos">元の座標</param>
+        /// <returns>変更した座標</returns>
+        public static Vector2 LimPosInBoard(Vector2 pos)
+        {
+            //どこまで移動できるか.
+            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+
+            //横の移動限度(符号はそのまま)
+            if (Mathf.Abs(pos.x) > limX)
+            {
+                pos.x = GetNumSign(pos.x) * limX;
+            }
+            //縦の移動限度(符号はそのまま)
+            if (Mathf.Abs(pos.y) > limY)
+            {
+                pos.y = GetNumSign(pos.y) * limY;
+            }
+
+            return pos; //修正した座標を返す.
+        }
+
+        /// <summary>
+        /// board配列の中かどうか.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsInBoard(Vector2Int _pos)
+        {
+            return (_pos.x >= 0) && (_pos.x < Gl_Const.BOARD_WID) &&
+                   (_pos.y >= 0) && (_pos.y < Gl_Const.BOARD_HEI);
+        }
+
+        /// <summary>
+        /// world座標をboard座標に変換.
+        /// </summary>
+        public static Vector2Int WPosToBPos(Vector2 _pos)
+        {
+            //Unity上の座標から、board配列の座標にするとどこになるか計算.
+            //盤面の幅が偶数なら半マスずらす.
+            float x = (_pos.x / Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_WID % 2 == 0) ? 0.5f : 0);
+            float y = (_pos.y / Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_HEI % 2 == 0) ? 0.5f : 0);
+
+            //この地点では世界の中央が座標(0, 0)
+            Vector2Int bPos = new Vector2Int(
+                Mathf.RoundToInt(x),
+                Mathf.RoundToInt(y)
+            );
+            //盤面の左上が座標(0, 0)となるよう調整.
+            bPos.x += Gl_Const.BOARD_WID / 2;
+            bPos.y += Gl_Const.BOARD_HEI / 2;
+
+            return bPos;
+        }
+
+        /// <summary>
+        /// board座標をworld座標に変換.
+        /// </summary>
+        public static Vector2 BPosToWPos(Vector2Int _pos)
+        {
+            //board配列の座標から、Unity上の座標にするとどこになるか計算.
+            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID / 2) * Gl_Const.SQUARE_SIZE;
+            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI / 2) * Gl_Const.SQUARE_SIZE;
+
+            return new Vector2(x, y);
+        }
+
         /// <summary>
         /// プラスかマイナスかを取得.
         /// </summary>
@@ -101,110 +218,6 @@ namespace Gloval
 
             return (new Vector2(cos, sin), angle);
         }
-
-        /// <summary>
-        /// 盤面より外に出ていたら座標を修正する.
-        /// </summary>
-        /// <param name="pos">元の座標</param>
-        /// <returns>変更した座標</returns>
-        public static Vector2 LimPosInBoard(Vector2 pos)
-        {
-            //どこまで移動できるか.
-            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
-            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
-
-            //横の移動限度(符号はそのまま)
-            if (Mathf.Abs(pos.x) > limX)
-            {
-                pos.x = GetNumSign(pos.x) * limX;
-            }
-            //縦の移動限度(符号はそのまま)
-            if (Mathf.Abs(pos.y) > limY)
-            {
-                pos.y = GetNumSign(pos.y) * limY;
-            }
-
-            return pos; //修正した座標を返す.
-        }
-
-        /// <summary>
-        /// 画面の左下と右上の座標を返す処理.
-        /// </summary>
-        /// <returns></returns>
-        public static (Vector3, Vector3) GetWorldWindowSize()
-        {
-            Vector3 leftBottom = Camera.main.ScreenToWorldPoint(Vector3.zero);
-            Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
-
-            return (leftBottom, rightTop);
-        }
-
-        /// <summary>
-        /// 盤面データを元に設置.
-        /// </summary>
-        /// <param name="_obj">設置するオブジェクト</param>
-        /// <param name="_x">盤面の座標x</param>
-        /// <param name="_y">盤面の座標y</param>
-        /// <param name="_scale">サイズ倍率</param>
-        public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
-        {
-            //座標を取得.
-            Vector2 pos = BPosToWPos(new Vector2Int(_x, _y));
-            //配置.
-            _obj.transform.position   = pos;
-            _obj.transform.localScale = Vector2.one * Gl_Const.SQUARE_SIZE;
-        }
-
-        /// <summary>
-        /// world座標をboard座標に変換.
-        /// </summary>
-        public static Vector2Int WPosToBPos(Vector2 _pos)
-        {
-            //Unity上の座標から、board配列の座標にするとどこになるか計算.
-            //盤面の幅が偶数なら半マスずらす.
-            float x = (_pos.x/Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_WID % 2 == 0) ? 0.5f : 0);
-            float y = (_pos.y/Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_HEI % 2 == 0) ? 0.5f : 0);
-
-            //この地点では世界の中央が座標(0, 0)
-            Vector2Int bPos = new Vector2Int(
-                Mathf.RoundToInt(x),
-                Mathf.RoundToInt(y)
-            );
-            //盤面の左上が座標(0, 0)となるよう調整.
-            bPos.x += Gl_Const.BOARD_WID/2;
-            bPos.y += Gl_Const.BOARD_HEI/2;
-
-            return bPos;
-        }
-
-        /// <summary>
-        /// board座標をworld座標に変換.
-        /// </summary>
-        public static Vector2 BPosToWPos(Vector2Int _pos)
-        {
-            //board配列の座標から、Unity上の座標にするとどこになるか計算.
-            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID/2) * Gl_Const.SQUARE_SIZE;
-            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI/2) * Gl_Const.SQUARE_SIZE;
-
-            return new Vector2(x, y);
-        }
-
-        /// <summary>
-        /// ゲームプレイ終了.
-        /// </summary>
-        public static void QuitGame()
-        {
-            //Unityエディタ実行中.
-            if (Application.isEditor)
-            {
-                UnityEditor.EditorApplication.isPlaying = false;
-            }
-            //ビルド後.
-            else
-            {
-                Application.Quit();
-            }
-        }
     }
 }
 
@@ -237,5 +250,24 @@ public class Common : MonoBehaviour
 
         return (leftBottom, rightTop);
     }
+}
+
+/// <summary>
+/// 敵の出現座標の抽選[仕様変更済]
+/// </summary>
+public static Vector2 RandEnemySpawnPos()
+{
+    //ワールド座標の取得.
+    var (lb, rt) = GetWorldWindowSize();
+
+    //距離の抽選.
+    var randX = Random.Range(lb.x + Gl_Const.MARGIN_LEFT, Gl_Const.MARGIN_RIGHT);
+    var randY = Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM, Gl_Const.MARGIN_TOP);
+    //プラスかマイナスかの抽選.
+    var randMoveX = Random.Range(randX, -randX);
+    var randMoveY = Random.Range(randY, -randY);
+
+    //座標の抽選結果を返す.
+    return new Vector2(randMoveX, randMoveY);
 }
 #endif

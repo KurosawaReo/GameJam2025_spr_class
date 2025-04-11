@@ -1,66 +1,98 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Gloval;
-using static UnityEditor.Progress;
 
 public class EnemyGenerator : MonoBehaviour
 {
-    
     [Tooltip("生成するプレハブ"), SerializeField]
     public GameObject prefabItem;
 
-    // 生成する数のカウント
-    int cnt = 0;
+    [Tooltip("プレハブを入れるオブジェクト"), SerializeField]
+    GameObject prefabInObj;
 
-    // Start is called before the first frame update
+    [Tooltip("GameManagerのscript"), SerializeField]
+    GameManager scptGameMng;
+
+    [Tooltip("BoardManagerのscript"), SerializeField]
+    BoardManager scptBoardMng;
+
     void Start()
     {
-        StartCoroutine(EnemyGeneration(Gl_Const.INTERVAL_ITEM_GEN));
+        StartCoroutine(WaitStart()); 
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
     /// <summary>
+    /// スタートするまで待機する用.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator WaitStart()
+    {
+        //スタートを押されるまでループ.
+        while (!scptGameMng.startFlag)
+        {
+            yield return null;
+        }
+
+        //実行.
+        StartCoroutine(EnemyGeneration());
+    }
+
+    /// <summary>
     /// ランダム生成処理
     /// </summary>
-    public IEnumerator EnemyGeneration(float delay)
+    public IEnumerator EnemyGeneration()
     {
-        var (lb, rt) = Gl_Func.GetWorldWindowSize();
-
-        while (true)
+        //最初に何体か出す.
+        for (int i = 0; i < Gl_Const.START_ENEMY_NUM; i++) 
         {
-            print("動きました");
-            if (cnt >= Gl_Const.MAX_ITEM_NUM)
+            EnemySpawnExe();
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        //ゲーム終了するまでループ.
+        while (!scptGameMng.gameOverFlag)
+        {
+            //最大出現数になってるなら待機.
+            if (scptGameMng.GetEnemyCount() >= Gl_Const.MAX_ENEMY_NUM)
             {
-                // 仮に呼び出している
-                //GetEnemyObjects();
-
-                yield return new WaitForSeconds(delay);
+                yield return null;
                 continue;
-
             }
-            
-            // 範囲指定
-            float x = UnityEngine.Random.Range(lb.x + Gl_Const.MARGIN_LEFT + 2, rt.x - Gl_Const.MARGIN_RIGHT - 2);
-            float y = UnityEngine.Random.Range(lb.y + Gl_Const.MARGIN_BOTTOM + 2, rt.y - Gl_Const.MARGIN_TOP - 2);
 
-            var prefab = prefabItem;
-
-            var obj = Instantiate(prefab, transform);
-
-            obj.transform.position = new Vector3(x, y, obj.transform.position.z);
-
-            cnt++;
-
+            //遅延時間の抽選.
+            float delay = UnityEngine.Random.Range(
+                Gl_Const.ENEMY_SPAWN_MIN_INTERVAL,
+                Gl_Const.ENEMY_SPAWN_MAX_INTERVAL
+            );
             yield return new WaitForSeconds(delay);
-            
-            
+
+            //敵を追加.
+            EnemySpawnExe();
+        }
+    }
+
+    /// <summary>
+    /// 敵を出現.
+    /// </summary>
+    public void EnemySpawnExe()
+    {
+        //出現座標抽選.
+        int rndX = UnityEngine.Random.Range(0, Gl_Const.BOARD_WID - 1);
+        int rndY = UnityEngine.Random.Range(0, Gl_Const.BOARD_HEI - 1);
+
+        //その座標が無マスなら.
+        if (scptBoardMng.Board[rndX, rndY].type == BoardType.NONE)
+        {
+            //敵出現.
+            var obj = Instantiate(prefabItem, prefabInObj.transform);
+            //座標を抽選して配置.
+            obj.transform.position = Gl_Func.BPosToWPos(new Vector2Int(rndX, rndY));
         }
     }
 
@@ -72,14 +104,6 @@ public class EnemyGenerator : MonoBehaviour
         // タグ「Enemy」を持つ全てのオブジェクトの取得
         GameObject[] Square = GameObject.FindGameObjectsWithTag("Enemy");
 
-        // 取得した敵オブジェクトの名前を表示
-        //foreach (GameObject enemy in Square)
-        //{
-        //    Debug.Log("シーン内の敵: " + enemy.name);
-        //}
-
         return Square;
     }
-
-    
 }
