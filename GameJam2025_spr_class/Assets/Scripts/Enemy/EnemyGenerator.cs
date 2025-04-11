@@ -107,8 +107,8 @@ public class EnemyGenerator : MonoBehaviour
     public void EnemySpawnExe()
     {
         //出現座標抽選.
-        int rndX = UnityEngine.Random.Range(0, Gl_Const.BOARD_WID - 1);
-        int rndY = UnityEngine.Random.Range(0, Gl_Const.BOARD_HEI - 1);
+        int rndX = UnityEngine.Random.Range(10, Gl_Const.BOARD_WID - 1);
+        int rndY = UnityEngine.Random.Range(10, Gl_Const.BOARD_HEI - 1);
 
         //その座標が無マスなら.
         if (scptBoardMng.Board[rndX, rndY].type == BoardType.NONE)
