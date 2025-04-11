@@ -57,6 +57,8 @@ public class EnemyGenerator : MonoBehaviour
     /// </summary>
     public IEnumerator EnmSpawnTimeUp()
     {
+        yield return new WaitForSeconds(3); //3•b‚Ì—P—\.
+
         //Å‰‚É‰½‘Ì‚©o‚·.
         for (int i = 0; i < Gl_Const.ENM_TIMEUP_INIT_CNT; i++) 
         {
@@ -91,7 +93,7 @@ public class EnemyGenerator : MonoBehaviour
     /// </summary>
     public IEnumerator EnmSpawnAllBreak()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(3); //3•b‚Ì—P—\.
 
         //Å‰‚É‰½‘Ì‚©o‚·.
         for (int i = 0; i < Gl_Const.ENM_ALLBREAK_MAX_CNT; i++)
