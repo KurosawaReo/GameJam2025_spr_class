@@ -1,0 +1,61 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BlackOutMove : MonoBehaviour
+{
+    [SerializeField]
+    public GameObject[] blackOutObj;
+
+    NextStage nextStage;
+
+    Animator animator;
+
+    public int blackOutObjNum;  //ìÆÇ´èoÇµÇƒÇÈÇÃÇÕâΩå¬ñ⁄Ç©
+
+    public int blackOutObjEndNum;            //ìÆÇ´èIÇ¶ÇΩÇÃÇÕâΩå¬ñ⁄Ç©
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Init();
+    }
+
+    void Init()
+    {
+        blackOutObjNum = 0;
+
+        GameObject objParent = transform.parent.gameObject;
+        nextStage = objParent.GetComponent<NextStage>();
+    }
+
+    public void StartButtonPush()
+    {
+        if (blackOutObjNum == 0)
+        {
+            BlackOutObjOn();
+        }
+    }
+
+    public void BlackOutObjOn()
+    {
+        if (blackOutObj.Length <= blackOutObjNum) return;
+        animator = blackOutObj[blackOutObjNum].GetComponent<Animator>();
+        animator.SetTrigger("BlackOutOnTrigger");
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        ButtonOn();
+    }
+
+    void ButtonOn()
+    {
+        if(nextStage.onBool == true)
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            BlackOutObjOn();
+        }
+    }
+}
