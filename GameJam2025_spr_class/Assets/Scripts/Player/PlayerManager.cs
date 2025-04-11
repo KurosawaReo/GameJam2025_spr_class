@@ -9,16 +9,14 @@ public class PlayerData
 {
     public Vector2Int beforeBPos { get; set; }
     public Vector2 inputVec { get; set; } //最後に操作した方向.
-    public float inputAng { get; set; }   //最後に操作した角度.
-    public float moveVel { get; set; }    //現在の移動速度.
+    public float inputAng { get; set; } //最後に操作した角度.
 
     //初期化(コンストラクタ)
-    public PlayerData(Vector2Int _beforeBPos, Vector2 _inputVec, float _inputAng, float _moveVel)
+    public PlayerData(Vector2Int _beforeBPos, Vector2 _inputVec, float _inputAng)
     {
         beforeBPos = _beforeBPos;
         inputVec   = _inputVec;
         inputAng   = _inputAng;
-        moveVel    = _moveVel;
     }
 }
 
@@ -41,8 +39,7 @@ public class PlayerManager : MonoBehaviour
     PlayerData player = new PlayerData(
         new Vector2Int(0, 0), //beforeBPos.
         new Vector2   (0, 1), //inputVec.
-        0,                    //inputAng.
-        0                     //moveVel.
+        0                     //inputAng.
     );
 
     void Update()
@@ -50,15 +47,6 @@ public class PlayerManager : MonoBehaviour
         //ゲーム中のみ.
         if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
         {
-            //最大速度になったら.
-            if (player.moveVel >= 1)
-            {
-                player.moveVel = 1;
-            }
-            else
-            {
-                player.moveVel += 5 * Time.deltaTime;            
-            }
             InputMove();
             PlayerMove();
             CameraMove();
@@ -84,7 +72,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         //仮移動.
-        pos += player.inputVec * player.moveVel * moveSpeed * Time.deltaTime;
+        pos += player.inputVec * moveSpeed * Time.deltaTime;
         //盤面より外に出ていたら座標を修正する.
         pos = Gl_Func.LimPosInBoard(pos);
 
