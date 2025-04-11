@@ -2342,13 +2342,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6df25589dd0074409d03e89606e9673, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_BLOCK: 30
-  Fixation: 0
-  R: 255
-  G: 255
-  B: 255
-  dotImage: {fileID: 0}
   dotText: 0
+  MAX_BLOCK: 30
   Dot:
   - {fileID: 3466602665013187334}
   - {fileID: 6125246150669617092}
@@ -2380,6 +2375,12 @@ MonoBehaviour:
   - {fileID: 4316400743183133541}
   - {fileID: 1220284549946464834}
   - {fileID: 850375147978093599}
+  Fixation: 0
+  useColor: 0
+  R: 255
+  G: 255
+  B: 255
+  dotImage: {fileID: 0}
 --- !u!1 &8201371345563554798
 GameObject:
   m_ObjectHideFlags: 0
