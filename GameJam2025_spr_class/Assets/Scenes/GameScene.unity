@@ -565,7 +565,7 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   scptGameMng: {fileID: 1078234025}
   scptBrdMng: {fileID: 548676096}
-  moveSpeed: 4
+  moveSpeed: 3
 --- !u!95 &730445391
 Animator:
   serializedVersion: 5

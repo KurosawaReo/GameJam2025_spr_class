@@ -33,7 +33,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] BoardManager scptBrdMng;
 
     [Header("- value -")]
-    [SerializeField] float moveSpeed;
+    [SerializeField] float moveSpeed = 3;
 
     ////プレイヤーデータ.
     PlayerData player = new PlayerData(
