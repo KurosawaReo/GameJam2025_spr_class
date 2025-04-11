@@ -22,8 +22,10 @@ namespace Gloval
     /// <summary>
     /// プレイしてるゲームモード.
     /// </summary>
-    public enum ModeName
+    public enum GameMode
     {
+        [InspectorName("未設定"), Tooltip("未設定")]
+        None,
         [InspectorName("時間制限モード"), Tooltip("時間制限モード")] 
         TimeUp,
         [InspectorName("殲滅モード"),     Tooltip("殲滅モード")] 
@@ -50,14 +52,17 @@ namespace Gloval
         public const float MARGIN_LEFT   = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
-        public const float ENEMY_MAX_MOVE_SPEED  = 0.8f;    //移動速度乱数の最大値.
-        public const float ENEMY_MIN_MOVE_SPEED  = 0.1f;    //移動速度乱数の最小値.
-        public const float ENEMY_GOAL_STOP_RANGE = 0.02f;   //目標地点に着いたら移動停止する範囲.
+        public const float ENM_MAX_MOVE_SPEED  = 0.8f;     //移動速度乱数の最大値.
+        public const float ENM_MIN_MOVE_SPEED  = 0.1f;     //移動速度乱数の最小値.
+        public const float ENM_GOAL_STOP_RANGE = 0.02f;    //目標地点に着いたら移動停止する範囲.
         
-        public const int   START_ENEMY_NUM = 3;              //最初の敵の出現数.
-        public const int   MAX_ENEMY_NUM  = 10;             //敵の同時最大出現数.
-        public const float ENEMY_SPAWN_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
-        public const float ENEMY_SPAWN_MIN_INTERVAL = 0.5f; //敵の生成間隔乱数の最小値.
+        //TimeUpモード.
+        public const int   ENM_TIMEUP_INIT_CNT = 3;        //初回の敵の出現数.
+        public const int   ENM_TIMEUP_MAX_CNT  = 10;       //敵の同時最大出現数.
+        public const float ENM_TIMEUP_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
+        public const float ENM_TIMEUP_MIN_INTERVAL = 0.5f; //敵の生成間隔乱数の最小値.
+        //AllBreakモード.
+        public const int   ENM_ALLBREAK_MAX_CNT = 15;      //初回の敵の出現数.
     }
 
     /// <summary>

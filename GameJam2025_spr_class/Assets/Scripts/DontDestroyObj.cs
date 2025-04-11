@@ -1,30 +1,22 @@
 using Gloval;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DontDestroyObj : MonoBehaviour
 {
-    [Header("- script -")]
-    [SerializeField] SceneTransitions scptSceneTrans; //シーン移動用.
+    public static DontDestroyObj instance;
 
-    public ModeName mode; //ゲームモード.
-
-    /// <summary>
-    /// TimeUpモードボタンを押した時.
-    /// </summary>
-    public void PushTimeUp()
+    private void Awake()
     {
-        mode = ModeName.TimeUp;
-        scptSceneTrans.SceneLoad(2); //ゲームシーンへ.
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    /// <summary>
-    /// AllBreakモードボタンを押した時.
-    /// </summary>
-    public void PushAllBreak()
-    {
-        mode = ModeName.AllBreak;
-        scptSceneTrans.SceneLoad(2); //ゲームシーンへ.
-    }
+    public GameMode mode; //ゲームモード.
 }

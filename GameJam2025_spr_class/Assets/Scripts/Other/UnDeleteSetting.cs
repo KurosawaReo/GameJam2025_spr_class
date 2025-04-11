@@ -1,3 +1,7 @@
+/*
+   石井作.
+   ただ複製してるせいなのか、中身のデータが保存されてないっぽい欠陥がある.
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
