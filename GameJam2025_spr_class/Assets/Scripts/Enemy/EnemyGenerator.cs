@@ -39,17 +39,26 @@ public class EnemyGenerator : MonoBehaviour
             yield return null;
         }
 
-        //実行.
-        StartCoroutine(EnemyGeneration());
+        //モード別で出現実行.
+        switch (scptGameMng.gameMode) {
+
+            case GameMode.TimeUp:
+                StartCoroutine(EnmSpawnTimeUp());
+                break;
+        
+            case GameMode.AllBreak:
+                StartCoroutine(EnmSpawnAllBreak());
+                break;
+        }
     }
 
     /// <summary>
-    /// ランダム生成処理
+    /// ランダム生成処理(TimeUpモード)
     /// </summary>
-    public IEnumerator EnemyGeneration()
+    public IEnumerator EnmSpawnTimeUp()
     {
         //最初に何体か出す.
-        for (int i = 0; i < Gl_Const.START_ENEMY_NUM; i++) 
+        for (int i = 0; i < Gl_Const.ENM_TIMEUP_INIT_CNT; i++) 
         {
             EnemySpawnExe();
             yield return new WaitForSeconds(0.1f);
@@ -59,7 +68,7 @@ public class EnemyGenerator : MonoBehaviour
         while (!scptGameMng.gameOverFlag)
         {
             //最大出現数になってるなら待機.
-            if (scptGameMng.GetEnemyCount() >= Gl_Const.MAX_ENEMY_NUM)
+            if (scptGameMng.GetEnemyCount() >= Gl_Const.ENM_TIMEUP_MAX_CNT)
             {
                 yield return null;
                 continue;
@@ -67,13 +76,28 @@ public class EnemyGenerator : MonoBehaviour
 
             //遅延時間の抽選.
             float delay = UnityEngine.Random.Range(
-                Gl_Const.ENEMY_SPAWN_MIN_INTERVAL,
-                Gl_Const.ENEMY_SPAWN_MAX_INTERVAL
+                Gl_Const.ENM_TIMEUP_MIN_INTERVAL,
+                Gl_Const.ENM_TIMEUP_MAX_INTERVAL
             );
             yield return new WaitForSeconds(delay);
 
             //敵を追加.
             EnemySpawnExe();
+        }
+    }
+
+    /// <summary>
+    /// ランダム生成処理(AllBreakモード)
+    /// </summary>
+    public IEnumerator EnmSpawnAllBreak()
+    {
+        yield return new WaitForSeconds(3);
+
+        //最初に何体か出す.
+        for (int i = 0; i < Gl_Const.ENM_ALLBREAK_MAX_CNT; i++)
+        {
+            EnemySpawnExe();
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
