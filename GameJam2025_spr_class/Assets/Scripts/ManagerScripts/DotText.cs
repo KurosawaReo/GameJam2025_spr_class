@@ -5,11 +5,24 @@ using UnityEngine;
 
 public class DotText : MonoBehaviour
 {
-    [SerializeField]
+    [Header("表示文字"), SerializeField]
+    DOT_TEXT dotText;
+    DOT_TEXT dotTextMemo;
+
+
+    [Header("ブロック情報"), SerializeField]
     int MAX_BLOCK;
 
     [SerializeField]
+    GameObject[] Dot;
+
+    [Header("テキスト固定"), SerializeField]
     bool Fixation = false;
+
+    [Header("色設定")]
+
+    [SerializeField]
+    bool useColor;
 
     [SerializeField]
     int R;
@@ -18,19 +31,9 @@ public class DotText : MonoBehaviour
     [SerializeField]
     int B;
 
-    [SerializeField]
+    [Header("画像設定"),SerializeField]
     Sprite dotImage;
 
-
-
-    [SerializeField]
-    DOT_TEXT dotText;
-    DOT_TEXT dotTextMemo;
-
-    [SerializeField]
-    GameObject[] Dot;
-
-    List<int> numbers = new List<int>();
 
     enum DOT_TEXT
     {
@@ -72,6 +75,8 @@ public class DotText : MonoBehaviour
         Z,
 
         EXCLAMATION_MARK,
+        COLON,
+        SEMICOLON,
 
         TEST,
     }
@@ -102,6 +107,12 @@ public class DotText : MonoBehaviour
     void SetRGB()
     {
         // R, G, Bを0-1の範囲に変換
+        if(useColor == false)
+        {
+            R = 255;
+            G = 255;
+            B = 255;
+        }
         Color color = new Color(R / 255f, G / 255f, B / 255f);
 
         for (int i = 0; i < MAX_BLOCK; i++)
@@ -229,6 +240,16 @@ public class DotText : MonoBehaviour
             case DOT_TEXT.EXCLAMATION_MARK:
                 ActiveDot(1, 2, 3, 4, 6);
                 break;
+
+            case DOT_TEXT.COLON:
+                ActiveDot(2, 5);
+                break;
+
+            case DOT_TEXT.SEMICOLON:
+                ActiveDot(2, 5, 6);
+                break;
+
+
 
 
             case DOT_TEXT.TEST:
