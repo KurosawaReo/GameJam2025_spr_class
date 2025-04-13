@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Gloval;
+using Unity.VisualScripting;
 
 public class EnemyGenerator : MonoBehaviour
 {
     [Tooltip("生成するプレハブ"), SerializeField]
-    public GameObject prefabItem;
+    GameObject prefabItem;
 
     [Tooltip("プレハブを入れるオブジェクト"), SerializeField]
     GameObject prefabInObj;
@@ -17,41 +18,6 @@ public class EnemyGenerator : MonoBehaviour
     [Tooltip("BoardManagerのscript"), SerializeField]
     BoardManager scptBoardMng;
 
-    void Start()
-    {
-        StartCoroutine(WaitStart()); 
-    }
-
-    void Update()
-    {
-        
-    }
-
-    /// <summary>
-    /// スタートするまで待機する用.
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator WaitStart()
-    {
-        //スタートを押されるまでループ.
-        while (!scptGameMng.startFlag)
-        {
-            yield return null;
-        }
-
-        //モード別で出現実行.
-        switch (scptGameMng.gameMode) {
-
-            case GameMode.TimeUp:
-                StartCoroutine(EnmSpawnTimeUp());
-                break;
-        
-            case GameMode.AllBreak:
-                StartCoroutine(EnmSpawnAllBreak());
-                break;
-        }
-    }
-
     /// <summary>
     /// ランダム生成処理(TimeUpモード)
     /// </summary>
@@ -59,15 +25,18 @@ public class EnemyGenerator : MonoBehaviour
     {
         yield return new WaitForSeconds(3); //3秒の猶予.
 
-        //最初に何体か出す.
-        for (int i = 0; i < Gl_Const.ENM_TIMEUP_INIT_CNT; i++) 
+        //ゲーム終了していなければ.
+        if (!scptGameMng.isGameEnd)
         {
-            EnemySpawnExe();
-            yield return new WaitForSeconds(0.1f);
+            //最初に何体か出す.
+            for (int i = 0; i < Gl_Const.ENM_TIMEUP_INIT_CNT; i++) 
+            {
+                EnemySpawnExe();
+                yield return new WaitForSeconds(0.1f);
+            }
         }
-
         //ゲーム終了するまでループ.
-        while (!scptGameMng.gameOverFlag)
+        while (!scptGameMng.isGameEnd)
         {
             //最大出現数になってるなら待機.
             if (scptGameMng.GetEnemyCount() >= Gl_Const.ENM_TIMEUP_MAX_CNT)
@@ -94,12 +63,16 @@ public class EnemyGenerator : MonoBehaviour
     public IEnumerator EnmSpawnAllBreak()
     {
         yield return new WaitForSeconds(3); //3秒の猶予.
-
-        //最初に何体か出す.
-        for (int i = 0; i < Gl_Const.ENM_ALLBREAK_MAX_CNT; i++)
+     
+        //ゲーム終了していなければ.
+        if (!scptGameMng.isGameEnd)
         {
-            EnemySpawnExe();
-            yield return new WaitForSeconds(0.1f);
+            //一気に出す.
+            for (int i = 0; i < Gl_Const.ENM_ALLBREAK_MAX_CNT; i++)
+            {
+                EnemySpawnExe();
+                yield return new WaitForSeconds(0.05f);
+            }
         }
     }
 
@@ -108,17 +81,16 @@ public class EnemyGenerator : MonoBehaviour
     /// </summary>
     public void EnemySpawnExe()
     {
-        //出現座標抽選.
-        int rndX = UnityEngine.Random.Range(10, Gl_Const.BOARD_WID - 1);
-        int rndY = UnityEngine.Random.Range(10, Gl_Const.BOARD_HEI - 1);
+        //出現座標を抽選.
+        Vector2Int rnd = Gl_Func.RndBPosOutside(30);
 
         //その座標が無マスなら.
-        if (scptBoardMng.Board[rndX, rndY].type == BoardType.NONE)
+        if (scptBoardMng.Board[rnd.x, rnd.y].type == BoardType.NONE)
         {
             //敵出現.
             var obj = Instantiate(prefabItem, prefabInObj.transform);
             //座標を抽選して配置.
-            obj.transform.position = Gl_Func.BPosToWPos(new Vector2Int(rndX, rndY));
+            obj.transform.position = Gl_Func.BPosToWPos(new Vector2Int(rnd.x, rnd.y));
         }
     }
 

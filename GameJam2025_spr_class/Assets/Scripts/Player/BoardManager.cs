@@ -34,90 +34,33 @@ public class BoardManager : MonoBehaviour
     [SerializeField] Sprite imgPlyTrail;
     [SerializeField] Sprite imgPlyArea;
 
-    //盤面の各マスデータ.
+    //盤面データのサイズを決める.
     BoardData[,] board = new BoardData[Gl_Const.BOARD_WID, Gl_Const.BOARD_HEI];
     public BoardData[,] Board 
     { 
         get => board; 
-        set => board = value; 
+        set => board = value;
     }
 
     Color areaColor; //エリア色のRGB.
 
-
-    void Start()
-    {
-        RandAreaColor();
-
-        InitBoard();
-        BoardGenerate();
-    }
-
-    void Update()
-    {
-        //ゲーム中のみ.
-        if (scptGameMng.startFlag && !scptGameMng.gameOverFlag)
-        {
-            UpdateBoard();
-        }
-    }
-
-    /// <summary>
-    /// 色の抽選.
-    /// </summary>
-    private void RandAreaColor()
-    {
-        //明るめの色の中で抽選.
-        float r = Random.Range(0.5f, 1f);
-        float g = Random.Range(0.5f, 1f);
-        float b = Random.Range(0.5f, 1f);
-
-        areaColor = new Color(r, g, b);
-    }
-
-    /// <summary>
-    /// 盤面データの初期化.
-    /// </summary>
-    private void InitBoard()
-    {
-        //全マスループ.
-        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
-            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
-
-                board[x, y] = new BoardData();
-                board[x, y].type = BoardType.NONE; //無に設定.
-            }
-        }
-
-        //中央の範囲.
-        int stY = Gl_Const.BOARD_HEI/2 - Gl_Const.INIT_AREA_SIZE;
-        int edY = Gl_Const.BOARD_HEI/2 + Gl_Const.INIT_AREA_SIZE;
-        int stX = Gl_Const.BOARD_WID/2 - Gl_Const.INIT_AREA_SIZE;
-        int edX = Gl_Const.BOARD_WID/2 + Gl_Const.INIT_AREA_SIZE;
-        //中央あたりは初期陣地にする.
-        for (int y = stY; y < edY; y++) {
-            for (int x = stX; x < edX; x++) {
-
-                board[x, y].type = BoardType.PLAYER_AREA;
-            }
-        }
-    }
-
     /// <summary>
     /// 盤面を生成する.
     /// </summary>
-    private void BoardGenerate()
+    public void BoardGenerate()
     {
-        //1マスずつ.
+        //全マスループ.
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
             for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
 
                 var objBack = Instantiate(prfbSqrBack, prfbInObj.transform);
                 var objType = Instantiate(prfbSqrType, prfbInObj.transform);
 
+                //中身のデータを作成.
+                board[x, y] = new BoardData();
                 //各マスのsprite情報を記録.
                 board[x, y].typeSR = objType.GetComponent<SpriteRenderer>();
-                
+
                 //盤面上に設置.
                 Gl_Func.PlaceOnBoard(objBack, x, y);
                 Gl_Func.PlaceOnBoard(objType, x, y);
@@ -126,9 +69,36 @@ public class BoardManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 盤面の更新.
+    /// 盤面データの初期化.
     /// </summary>
-    public void UpdateBoard()
+    public void InitBoard()
+    {
+        RndAreaColor();
+
+        //全マスループ.
+        for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
+            for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
+
+                //中央は初期陣地にする.
+                if (x >= Gl_Const.BOARD_WID/2   - Gl_Const.INIT_AREA_SIZE/2 &&
+                    x <= Gl_Const.BOARD_WID/2-1 + Gl_Const.INIT_AREA_SIZE/2 &&
+                    y >= Gl_Const.BOARD_HEI/2   - Gl_Const.INIT_AREA_SIZE/2 &&
+                    y <= Gl_Const.BOARD_HEI/2-1 + Gl_Const.INIT_AREA_SIZE/2
+                ){
+                    board[x, y].type = BoardType.PLAYER_AREA; //エリアに設定.
+                }
+                else
+                {
+                    board[x, y].type = BoardType.NONE; //無に設定.
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 盤面の画像更新.
+    /// </summary>
+    public void DrawBoard()
     {
         //1マスずつ.
         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
@@ -153,6 +123,19 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// 色の抽選.
+    /// </summary>
+    public void RndAreaColor()
+    {
+        //明るめの色の中で抽選.
+        float r = Random.Range(0.6f, 1f);
+        float g = Random.Range(0.6f, 1f);
+        float b = Random.Range(0.6f, 1f);
+
+        areaColor = new Color(r, g, b);
     }
 
     /// <summary>

@@ -10,29 +10,25 @@ public class StartCheck : MonoBehaviour
     [Header("- script -")]
     [SerializeField] GameManager gameManager;
 
-    [Header("- camera -")]
-    [SerializeField] Camera mainCamera;
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.JoystickButton0))
         {
-            //開始の合図.
-            gameManager.startFlag = true;
-            //カメラをズームインさせる.
-            mainCamera.GetComponent<Animator>().SetTrigger("ZoomIn");
-
-            gameObject.SetActive(false); //パネル消滅.
+            PushStart();
         }
     }
 
     public void OnMouseDown()
     {
-        //開始の合図.
-        gameManager.startFlag = true;
-        //カメラをズームインさせる.
-        mainCamera.GetComponent<Animator>().SetTrigger("ZoomIn");
+        PushStart();
+    }
 
-        gameObject.SetActive(false); //パネル消滅.
+    /// <summary>
+    /// 開始アクションをしたら.
+    /// </summary>
+    private void PushStart()
+    {
+        gameManager.PushStartPanel(); //開始の合図.
+        gameObject.SetActive(false);  //パネル消滅.
     }
 }

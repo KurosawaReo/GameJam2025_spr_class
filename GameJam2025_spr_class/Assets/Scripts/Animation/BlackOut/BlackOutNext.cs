@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class BlackOutNext : MonoBehaviour
 {
     BlackOutMove blackOutMove;
-    NextStage nextStage;
-    [SerializeField] SceneTransitions scptSceneTrans;
+    //NextStage nextStage;
+
+    [Header("- script -")]
+    [SerializeField] SceneTransitions  scptSceneTrans;
 
     // Start is called before the first frame update
     void Start()
@@ -16,7 +17,7 @@ public class BlackOutNext : MonoBehaviour
         blackOutMove = objParent.GetComponent<BlackOutMove>();
 
         objParent = transform.parent.parent.gameObject;
-        nextStage = objParent.GetComponent<NextStage>();
+        //nextStage = objParent.GetComponent<NextStage>();
 
         var obj = GameObject.Find("TitleBlockPanel");
     }
@@ -38,7 +39,10 @@ public class BlackOutNext : MonoBehaviour
         //全てのブラックアウトブロックが黒くなったら.
         if (blackOutMove.blackOutObjEndNum >= blackOutMove.blackOutObj.Length)
         {
-            scptSceneTrans.SceneLoad(nextStage.NextSceneNum); //シーン移動.
+            var objSelModeMng  = GameObject.Find("SelectModeManager");
+            var scptSelModeMng = objSelModeMng.GetComponent<SelectModeManager>();
+
+            scptSelModeMng.SelectModeExe(); //モード選択へ.
         }
     }
 }

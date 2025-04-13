@@ -1,3 +1,7 @@
+/*
+   - DataManager.cs -
+   –¢Žg—p.
+*/
 using System;
 using System.Collections;
 using System.Collections.Generic;

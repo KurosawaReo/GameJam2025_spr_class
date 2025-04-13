@@ -14,9 +14,8 @@ public class Enemy : MonoBehaviour
     GameManager gm;
     //EnemyGenerator eg;
 
-    [Tooltip("状態変数"), SerializeField]
+    [Tooltip("敵の状態"), SerializeField]
     EnemyState state = EnemyState.IDLE;
-
     [Tooltip("移動の目標地点") ,SerializeField]
     Vector3 targetPos;
     [Tooltip("移動速度")]
@@ -30,7 +29,6 @@ public class Enemy : MonoBehaviour
     [Tooltip("消滅アニメーション"), SerializeField]
     GameObject prfbBreakAnim;
 
-    // Start is called before the first frame update
     void Start()
     {
         bm = GameObject.Find("BoardManager").GetComponent<BoardManager>();
@@ -40,11 +38,10 @@ public class Enemy : MonoBehaviour
         //eg = GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         //ゲーム中のみ.
-        if (gm.startFlag && !gm.gameOverFlag)
+        if (gm.isStart && !gm.isGameEnd)
         {
             // 状態遷移処理
             State();
@@ -129,8 +126,8 @@ public class Enemy : MonoBehaviour
     {
         gm.deathEnemyCnt++;  //死亡数+1.
         
-        var obj = Instantiate(prfbBreakAnim);
-        obj.transform.position = transform.position;
+        var obj = Instantiate(prfbBreakAnim);        //撃破アニメーションを召喚.
+        obj.transform.position = transform.position; //敵の位置に移動.
         
         Destroy(gameObject); //自身を消滅.
     }
@@ -140,26 +137,20 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void SetGoalMove()
     {
-        print("移動開始");
         state = EnemyState.MOVE;
         
-        Vector2 pos = transform.position;
-        pos = Gl_Func.LimPosInBoard(pos);
-        transform.position = pos;
-
-        //目標地点の抽選.
         {
-            int rndX = Random.Range(0, Gl_Const.BOARD_WID - 1);
-            int rndY = Random.Range(0, Gl_Const.BOARD_HEI - 1);
+            //目標地点を抽選.
+            Vector2Int rnd = Gl_Func.RndBPosOutside(30);
 
             //その座標が無マスなら.
-            if (bm.Board[rndX, rndY].type == BoardType.NONE)
+            if (bm.Board[rnd.x, rnd.y].type == BoardType.NONE)
             {
-                var wPos = Gl_Func.BPosToWPos(new Vector2Int(rndX, rndY));
-                targetPos = Gl_Func.LimPosInBoard(wPos);
+                targetPos = Gl_Func.BPosToWPos(new Vector2Int(rnd.x, rnd.y));
             }
         }
 
+        //移動速度の抽選.
         randMoveSpeedRatio = Random.Range(
             Gl_Const.ENM_MIN_MOVE_SPEED, Gl_Const.ENM_MAX_MOVE_SPEED
         );

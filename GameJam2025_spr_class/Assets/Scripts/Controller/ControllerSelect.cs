@@ -7,13 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class ControllerSelect : MonoBehaviour
 {
-
     public enum SelectPosArea
     {
         [InspectorName("セレクト画面")] SelectScene,
         [InspectorName("リザルト画面")] GameScene
     }
-
 
     [Header("パラメータ")]
     [SerializeField] SceneTransitions sceneTransitions;
@@ -27,18 +25,14 @@ public class ControllerSelect : MonoBehaviour
 
     DontDestroyObj scptDontDest;
 
-
     // Select
     const float modeTUPosSelect = -7f;
     const float modeABPosSelect = 0.3f;
-
 
     // Game
     const float modeTitleSelectX = -2.5f;
     const float modeRestartSelectX = 2.875f;
     const float modeY = -3.2f;
-
-
 
     private void Start()
     {
@@ -46,10 +40,7 @@ public class ControllerSelect : MonoBehaviour
 
         //取得.
         scptDontDest = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
-
     }
-
-
 
     // Update is called once per frame
     void Update()
@@ -97,6 +88,7 @@ public class ControllerSelect : MonoBehaviour
                             break;
                     }
                     break;
+
                 case SelectPosArea.GameScene:
                     switch (selectID)
                     {

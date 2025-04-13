@@ -10,14 +10,18 @@ public class GameManager : MonoBehaviour
 
         [Tooltip("リザルトパネル")]            public GameObject resultPanel;
         [Tooltip("リザルト用テキスト")]        public Text resultText;
-        [Range(1, 100), Tooltip("動く速度")]   public int  resultSpeed = 10;
+        [Tooltip("スタート確認パネル")]        public GameObject startCheckPanel;
 
-        [Tooltip("スタート確認"),   ReadOnly]  public bool startFlag = false;
-        [Tooltip("ゲーム終了確認"), ReadOnly]  public bool gameOverFlag = false;
-        [Tooltip("プレイヤー確認"), ReadOnly]  public bool playerDeadCheck = false;
+        [Range(1, 30), Tooltip("resultの動く速度")]     public int  resultSpeed;  // = 4
+        [Range(1, 30), Tooltip("zoom outの動く速度")]   public int  zoomOutSpeed; // = 5
 
-        [Tooltip("エネミー死亡数"), ReadOnly]  public int  deathEnemyCnt;
-        [Tooltip("エネミー残数"),   ReadOnly]  public int  presentEnemyCnt;
+        [Tooltip("スタートしているか"),   ReadOnly]  public bool isStart = false;
+        [Tooltip("ゲーム終了しているか"), ReadOnly]  public bool isGameEnd = false;
+
+        [Tooltip("エネミー残数"),   ReadOnly]  public int   presentEnemyCnt;
+        [Tooltip("エネミー死亡数"), ReadOnly]  public int   deathEnemyCnt;
+
+        [Tooltip("ゲーム時間"),     ReadOnly]  public float gameTimer;
 
         [Tooltip("敵が1体でも出現したか"), ReadOnly]  public bool isEnemySpawn;
 
@@ -29,7 +33,7 @@ public class GameManager : MonoBehaviour
         [ConditionalDisableInInspector("gameMode", (int)GameMode.TimeUp, conditionalInvisible: false)]
             [Tooltip("タイマー用テキスト")]        public Text timerText;
         [ConditionalDisableInInspector("gameMode", (int)GameMode.TimeUp, conditionalInvisible: false)]
-            [Range(0, 100), Tooltip("ゲーム時間")] public float gameTime;
+            [Range(0, 100), Tooltip("ゲーム時間")] public float resetGameTime;
 
     [Header("殲滅モード パラメータ")]
         [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
@@ -39,29 +43,101 @@ public class GameManager : MonoBehaviour
         [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
             [Tooltip("残数用テキスト")]            public Text RemainingText;
 
+    [Header("- script -")]
+    [SerializeField] BoardManager   scptBoardMng;
+    [SerializeField] PlayerManager  scptPlayerMng;
+    [SerializeField] EnemyGenerator scptEnemyGnr;
+
     void Start()
     {
-        Init();
+        InitGame();
     }
 
     void Update()
     {
-        if (startFlag && playerDeadCheck == false)
+        UpdateGame();
+    }
+
+    /// <summary>
+    /// ゲーム初期化.
+    /// </summary>
+    private void InitGame()
+    {
+        //選択したモードを取得.
+        var scptDontDest = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
+        gameMode = scptDontDest.mode;
+        //盤面生成.
+        scptBoardMng.BoardGenerate();
+
+        ResetGame(); //リセット.
+    }
+
+    /// <summary>
+    /// ゲームリセット.
+    /// </summary>
+    public void ResetGame()
+    {
+        //モード別リセット.
+        switch (gameMode)
         {
+            case GameMode.TimeUp:
+                TimerUpSet.SetActive(true);
+                timerText.text = "Time : " + Mathf.Ceil(resetGameTime);
+                break;
+
+            case GameMode.AllBreak:
+                AllBreakSet.SetActive(true);
+                RemainingText.text = "残数 : " + 0;
+                break;
+        }
+
+        //フラグリセット.
+        isStart      = false;
+        isGameEnd    = false;
+        isEnemySpawn = false;
+        //数値リセット.
+        presentEnemyCnt = 0;
+        deathEnemyCnt = 0;
+        gameTimer = resetGameTime;
+
+        //盤面リセット.
+        scptBoardMng.InitBoard();
+        scptBoardMng.DrawBoard();
+        //プレイヤーリセット.
+        scptPlayerMng.InitPlayer();
+        //パネルリセット.
+        startCheckPanel.SetActive(true);
+        resultPanel.SetActive(false);
+        //全ての敵を消去.
+        for (int i = 0; i < enemyParent.transform.childCount; i++)
+        {
+            Destroy(enemyParent.transform.GetChild(i).gameObject);
+        }
+    }
+
+    /// <summary>
+    /// ゲーム全体の更新処理.
+    /// </summary>
+    private void UpdateGame()
+    {
+        if (isStart && isGameEnd == false)
+        {
+            //プレイヤー更新.
+            scptPlayerMng.UpdatePlayer();
+
             switch (gameMode)
             {
                 case GameMode.TimeUp:
                     //残り時間.
-                    if (gameTime > 0)
+                    if (gameTimer > 0)
                     {
-                        ModeTUTimeLapse();
-                        EnemyCount();
+                        TimeLapse();
                     }
                     else
                     {
-                        gameTime = 0;
+                        gameTimer = 0;
                         GameEnd();
-                        GameEndMode();
+                        GameEndText();
                     }
                     break;
 
@@ -75,53 +151,55 @@ public class GameManager : MonoBehaviour
                     if (isEnemySpawn)
                     {
                         EnemyCount();
-                        
+
                         //現在の敵数.
                         if (presentEnemyCnt <= 0)
                         {
                             GameEnd();
-                            GameEndMode();
+                            GameEndText();
                         }
                     }
                     break;
             }
         }
-        else if (playerDeadCheck == true)
+        //ゲーム終了していれば.
+        else if (isGameEnd == true)
         {
-            GameEnd(); 
-            GameEndDeadPly();
+            GameEndLoop();
         }
     }
 
     /// <summary>
-    /// 初期化用
+    /// スタートパネルを押した時.
     /// </summary>
-    void Init()
+    public void PushStartPanel()
     {
-        //選択したモードを取得.
-        var scptDontDstry = GameObject.Find("DontDestroyObj").GetComponent<DontDestroyObj>();
-        gameMode = scptDontDstry.mode;
+        isStart = true;
 
-        Debug.Log("gameMode:"+gameMode);
+        //カメラをズームインさせる.
+        mainCamera.GetComponent<Animator>().SetTrigger("ZoomIn");
 
-        //モード別.
+        //モード別で出現実行.
         switch (gameMode)
         {
             case GameMode.TimeUp:
-                TimerUpSet.SetActive(true);
-                timerText.text = "Time : " + Mathf.Ceil(gameTime);
-                EnemyCount();
+                StartCoroutine(scptEnemyGnr.EnmSpawnTimeUp());
                 break;
 
             case GameMode.AllBreak:
-                AllBreakSet.SetActive(true);
-                RemainingText.text = "残数 : " + presentEnemyCnt;
-                EnemyCount();
+                StartCoroutine(scptEnemyGnr.EnmSpawnAllBreak());
                 break;
         }
+    }
 
-        //最初はresultパネルを無効に.
-        resultPanel.SetActive(false);
+    /// <summary>
+    /// 時間減少用.
+    /// </summary>
+    void TimeLapse()
+    {
+        gameTimer -= (1 * Time.deltaTime);
+        timerText.text = "Time : " + Mathf.Ceil(gameTimer);
+        //print(gameTime);
     }
 
     /// <summary>
@@ -132,16 +210,6 @@ public class GameManager : MonoBehaviour
     {
         int cnt = enemyParent.transform.childCount;
         return cnt;
-    }
-
-    /// <summary>
-    /// 時間減少用
-    /// </summary>
-    void ModeTUTimeLapse()
-    {
-        //print(gameTime);
-        gameTime -= (1 * Time.deltaTime);
-        timerText.text = "Time : " + Mathf.Ceil(gameTime);
     }
 
     /// <summary>
@@ -158,24 +226,35 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void PlayerDead()
     {
-        //playerDeadCord
-        playerDeadCheck = true;
+        resultText.text = "残念！死んでしまった！\n敵を" + deathEnemyCnt + "体倒した！";
+        isGameEnd = true;
+
+        GameEnd();
+    }
+
+    /// <summary>
+    /// ゲーム終了処理(1度のみ)
+    /// </summary>
+    void GameEnd()
+    {
+        isGameEnd = true;
+
+        //resultパネルを表示.
+        resultPanel.SetActive(true);
+        //カメラをズームアウトさせる.
+        mainCamera.GetComponent<Animator>().SetTrigger("ZoomOut");
     }
 
     /// <summary>
     /// モード別のゲーム終了処理.
     /// </summary>
-    void GameEndMode()
+    void GameEndText()
     {
         //モード別.
         switch (gameMode)
         {
             case GameMode.TimeUp:
                 resultText.text = "終了！\n敵を" + deathEnemyCnt + "体倒した！";
-                //if ((pastEnemyCount - presentEnemyCnt) == pastEnemyCount)
-                //{
-                //    resultText.text += "\n殲滅おめでとう！";
-                //}
                 break;
 
             case GameMode.AllBreak:
@@ -183,27 +262,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-    /// <summary>
-    /// プレイヤー死亡のゲーム終了処理.
-    /// </summary>
-    void GameEndDeadPly()
-    {
-        resultText.text = "残念！死んでしまった！\n敵を" + deathEnemyCnt + "体倒した！";
-    }
-    /// <summary>
-    /// ゲーム終了処理.
-    /// </summary>
-    void GameEnd()
-    {
-        //1度のみ.
-        if (gameOverFlag == false)
-        {
-            resultPanel.SetActive(true); //resultパネルを表示.
-            gameOverFlag = true;
-        }
 
+    /// <summary>
+    /// ゲーム終了処理(ループ)
+    /// </summary>
+    void GameEndLoop()
+    {
         var rsltPos = resultPanel.transform.position;
-        var cmrPos  = mainCamera.transform.position;
+        var cmrPos = mainCamera.transform.position;
 
         //resultパネルを下げる.
         if (rsltPos.y > cmrPos.y)
@@ -219,7 +285,12 @@ public class GameManager : MonoBehaviour
             resultPanel.transform.position = new Vector2(0, cmrPos.y);
         }
 
-        //カメラをズームアウトさせる.
-        //mainCamera.GetComponent<Animator>().SetTrigger("ZoomOut");
+        //cameraを中央に動かす.
+        {
+            //y軸の移動量.
+            Vector3 pos = (cmrPos - Vector3.zero) * zoomOutSpeed * Time.deltaTime;
+            //動かす.
+            mainCamera.transform.position -= pos;
+        }
     }
 }

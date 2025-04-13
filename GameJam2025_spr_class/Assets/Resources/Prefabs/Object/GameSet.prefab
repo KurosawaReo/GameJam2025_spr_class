@@ -828,7 +828,7 @@ GameObject:
   - component: {fileID: 3824788281532254865}
   - component: {fileID: 2646987659603851277}
   m_Layer: 5
-  m_Name: Button01 (Legacy)
+  m_Name: ButtonToTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1040,7 +1040,7 @@ GameObject:
   - component: {fileID: 6262826349084671093}
   - component: {fileID: 332382816204069876}
   m_Layer: 5
-  m_Name: Button02 (Legacy)
+  m_Name: ButtonRestart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,10 +1148,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1260624337969289501, guid: 64d44f0242c0d624aadf198fa4525174, type: 3}
-        m_TargetAssemblyTypeName: SceneTransitions, Assembly-CSharp
-        m_MethodName: SceneLoad
-        m_Mode: 3
+      - m_Target: {fileID: 8929622810741060697}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ResetGame
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1318,12 +1318,14 @@ MonoBehaviour:
   gameMode: 0
   resultPanel: {fileID: 8556130167714960019}
   resultText: {fileID: 3736439078188145178}
+  startCheckPanel: {fileID: 4469215422709918964}
   resultSpeed: 10
-  startFlag: 0
-  gameOverFlag: 0
-  playerDeadCheck: 0
+  zoomOutSpeed: 0
+  isStart: 0
+  isGameEnd: 0
   deathEnemyCnt: 0
   presentEnemyCnt: 0
+  isEnemySpawn: 0
   mainCamera: {fileID: 0}
   TimerUpSet: {fileID: 5644038256257833866}
   timerText: {fileID: 584393239796639893}
@@ -1331,6 +1333,8 @@ MonoBehaviour:
   enemyParent: {fileID: 5290565335730135885}
   AllBreakSet: {fileID: 8428229483919432348}
   RemainingText: {fileID: 5596948356908828731}
+  scptBoardMng: {fileID: 0}
+  scptPlayerMng: {fileID: 0}
 --- !u!1 &8556130167714960019
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,6 @@ using UnityEngine.SceneManagement;
 public class SceneTransitions : MonoBehaviour
 {
     string[] sceneID = {"TitleScene",
-                        "StageSelect",
                         "GameScene"};
 
     public void SceneLoad(int sceneNumber)

@@ -24,12 +24,14 @@ namespace Gloval
     /// </summary>
     public enum GameMode
     {
-        [InspectorName("未設定"), Tooltip("未設定")]
+        [InspectorName("未設定"),         Tooltip("未設定")]
         None,
         [InspectorName("時間制限モード"), Tooltip("時間制限モード")] 
         TimeUp,
-        [InspectorName("殲滅モード"),     Tooltip("殲滅モード")] 
-        AllBreak
+        [InspectorName("殲滅モード"),     Tooltip("殲滅モード")]
+        AllBreak,
+        [InspectorName("全埋めモード"),   Tooltip("全埋めモード")]
+        AllFill
     }
 
     /// <summary>
@@ -38,13 +40,13 @@ namespace Gloval
     public static class Gl_Const
     {
         //盤面(board)関係.
-        public const int   BOARD_HEI      = 100;
-        public const int   BOARD_WID      = 100;
-        public const float SQUARE_SIZE    = 0.1f; //マスのサイズ倍率.
-        public const int   INIT_AREA_SIZE = 4;    //初期陣地エリアのサイズ(中心から何ドット広げるか)
+        public const int   BOARD_HEI      = 200;
+        public const int   BOARD_WID      = 200;
+        public const float SQUARE_SIZE    = 0.1f; //各マスのサイズ倍率(scale)
+        public const int   INIT_AREA_SIZE = 10;   //初期陣地エリアのサイズ.
 
         //プレイヤー関係.
-        public const int   PLAYER_TRAIL_SIZE = 1; //痕跡のサイズ(中心から何ドット広げるか)
+        //public const int   PLAYER_TRAIL_SIZE = 1; //痕跡のサイズ(中心から何マス広げるか)
 
         //敵関係.
         public const float MARGIN_TOP    = -2f;   //↓画面の余白.
@@ -52,17 +54,17 @@ namespace Gloval
         public const float MARGIN_LEFT   = 1.0f;
         public const float MARGIN_BOTTOM = 1.0f;
 
-        public const float ENM_MAX_MOVE_SPEED  = 0.8f;     //移動速度乱数の最大値.
-        public const float ENM_MIN_MOVE_SPEED  = 0.1f;     //移動速度乱数の最小値.
+        public const float ENM_MAX_MOVE_SPEED  = 0.7f;     //移動速度乱数の最大値.
+        public const float ENM_MIN_MOVE_SPEED  = 0.15f;    //移動速度乱数の最小値.
         public const float ENM_GOAL_STOP_RANGE = 0.02f;    //目標地点に着いたら移動停止する範囲.
         
         //TimeUpモード.
         public const int   ENM_TIMEUP_INIT_CNT = 3;        //初回の敵の出現数.
-        public const int   ENM_TIMEUP_MAX_CNT  = 10;       //敵の同時最大出現数.
+        public const int   ENM_TIMEUP_MAX_CNT  = 20;       //敵の同時最大出現数.
         public const float ENM_TIMEUP_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
         public const float ENM_TIMEUP_MIN_INTERVAL = 0.5f; //敵の生成間隔乱数の最小値.
         //AllBreakモード.
-        public const int   ENM_ALLBREAK_MAX_CNT = 15;      //初回の敵の出現数.
+        public const int   ENM_ALLBREAK_MAX_CNT = 30;      //初回の敵の出現数.
     }
 
     /// <summary>
@@ -88,7 +90,6 @@ namespace Gloval
         /// <param name="_obj">設置するオブジェクト</param>
         /// <param name="_x">盤面の座標x</param>
         /// <param name="_y">盤面の座標y</param>
-        /// <param name="_scale">サイズ倍率</param>
         public static void PlaceOnBoard(GameObject _obj, int _x, int _y)
         {
             //座標を取得.
@@ -105,9 +106,12 @@ namespace Gloval
         /// <returns>変更した座標</returns>
         public static Vector2 LimPosInBoard(Vector2 pos)
         {
+            //盤面の幅.
+            int wid = Gl_Const.BOARD_WID;
+            int hei = Gl_Const.BOARD_HEI;
             //どこまで移動できるか.
-            var limX = Gl_Const.BOARD_WID * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
-            var limY = Gl_Const.BOARD_HEI * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE / 2;
+            var limX = wid * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE;
+            var limY = hei * Gl_Const.SQUARE_SIZE / 2 - Gl_Const.SQUARE_SIZE;
 
             //横の移動限度(符号はそのまま)
             if (Mathf.Abs(pos.x) > limX)
@@ -126,7 +130,6 @@ namespace Gloval
         /// <summary>
         /// board配列の中かどうか.
         /// </summary>
-        /// <returns></returns>
         public static bool IsInBoard(Vector2Int _pos)
         {
             return (_pos.x >= 0) && (_pos.x < Gl_Const.BOARD_WID) &&
@@ -138,10 +141,13 @@ namespace Gloval
         /// </summary>
         public static Vector2Int WPosToBPos(Vector2 _pos)
         {
+            //盤面の幅.
+            int wid = Gl_Const.BOARD_WID;
+            int hei = Gl_Const.BOARD_HEI;
             //Unity上の座標から、board配列の座標にするとどこになるか計算.
             //盤面の幅が偶数なら半マスずらす.
-            float x = (_pos.x / Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_WID % 2 == 0) ? 0.5f : 0);
-            float y = (_pos.y / Gl_Const.SQUARE_SIZE) - ((Gl_Const.BOARD_HEI % 2 == 0) ? 0.5f : 0);
+            float x = (_pos.x / Gl_Const.SQUARE_SIZE) - ((wid % 2 == 0) ? 0.5f : 0);
+            float y = (_pos.y / Gl_Const.SQUARE_SIZE) - ((hei % 2 == 0) ? 0.5f : 0);
 
             //この地点では世界の中央が座標(0, 0)
             Vector2Int bPos = new Vector2Int(
@@ -149,8 +155,8 @@ namespace Gloval
                 Mathf.RoundToInt(y)
             );
             //盤面の左上が座標(0, 0)となるよう調整.
-            bPos.x += Gl_Const.BOARD_WID / 2;
-            bPos.y += Gl_Const.BOARD_HEI / 2;
+            bPos.x += wid / 2;
+            bPos.y += hei / 2;
 
             return bPos;
         }
@@ -160,11 +166,43 @@ namespace Gloval
         /// </summary>
         public static Vector2 BPosToWPos(Vector2Int _pos)
         {
+            //盤面の幅.
+            int wid = Gl_Const.BOARD_WID;
+            int hei = Gl_Const.BOARD_HEI;
             //board配列の座標から、Unity上の座標にするとどこになるか計算.
-            float x = (_pos.x + 0.5f - (float)Gl_Const.BOARD_WID / 2) * Gl_Const.SQUARE_SIZE;
-            float y = (_pos.y + 0.5f - (float)Gl_Const.BOARD_HEI / 2) * Gl_Const.SQUARE_SIZE;
+            float x = (_pos.x + 0.5f - (float)wid / 2) * Gl_Const.SQUARE_SIZE;
+            float y = (_pos.y + 0.5f - (float)hei / 2) * Gl_Const.SQUARE_SIZE;
 
             return new Vector2(x, y);
+        }
+
+        /// <summary>
+        /// board座標をランダムで決める(中央を除く)
+        /// </summary>
+        /// <param name="_exceptArea">除く範囲</param>
+        public static Vector2Int RndBPosOutside(int _exceptArea)
+        {
+            int rndX, rndY;
+
+            //モード別盤面の幅.
+            int wid = Gl_Const.BOARD_WID;
+            int hei = Gl_Const.BOARD_HEI;
+
+            while (true)
+            {
+                //盤面全体のランダム.
+                rndX = Random.Range(0, wid);
+                rndY = Random.Range(0, hei);
+
+                //もし中央付近じゃないなら.
+                if (Mathf.Abs(rndX - wid/2) >= _exceptArea/2 ||
+                    Mathf.Abs(rndY - hei/2) >= _exceptArea/2)
+                {
+                    break; //抽選終了.
+                }
+            }
+
+            return new Vector2Int(rndX, rndY);
         }
 
         /// <summary>
@@ -176,6 +214,15 @@ namespace Gloval
         {
             //0なら0、それ以外は符号を返す.
             return (_num == 0) ? 0 : (_num > 0) ? +1 : -1;
+        }
+
+        /// <summary>
+        /// 0.0～99.9の乱数値を取得(確率計算用)
+        /// </summary>
+        /// <returns></returns>
+        public static float Random100()
+        {
+            return Random.Range(0.0f, 99.9f);
         }
 
         /// <summary>
