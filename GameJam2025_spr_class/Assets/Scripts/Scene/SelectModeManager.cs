@@ -31,7 +31,7 @@ public class SelectModeManager : MonoBehaviour
     public void PushTimeUp()
     {
         scptDontDest.mode = GameMode.TimeUp;
-        scptSceneTrans.SceneLoad(2); //ゲームシーンへ.
+        scptSceneTrans.SceneLoad(1); //ゲームシーンへ.
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class SelectModeManager : MonoBehaviour
     public void PushAllBreak()
     {
         scptDontDest.mode = GameMode.AllBreak;
-        scptSceneTrans.SceneLoad(2); //ゲームシーンへ.
+        scptSceneTrans.SceneLoad(1); //ゲームシーンへ.
     }
 
     /// <summary>
@@ -49,6 +49,6 @@ public class SelectModeManager : MonoBehaviour
     public void PushAllFill()
     {
         scptDontDest.mode = GameMode.AllFill;
-        scptSceneTrans.SceneLoad(2); //ゲームシーンへ.
+        scptSceneTrans.SceneLoad(1); //ゲームシーンへ.
     }
 }

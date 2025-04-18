@@ -73,7 +73,7 @@ public class ControllerSelect : MonoBehaviour
                                 print("modeTU");
 
                                 scptDontDest.mode = GameMode.TimeUp;
-                                sceneTransitions.SceneLoad(2);
+                                sceneTransitions.SceneLoad(1);
                             }
                             break;
                         case 1:
@@ -83,7 +83,7 @@ public class ControllerSelect : MonoBehaviour
                                 print("modeAB");
 
                                 scptDontDest.mode = GameMode.AllBreak;
-                                sceneTransitions.SceneLoad(2);
+                                sceneTransitions.SceneLoad(1);
                             }
                             break;
                     }
@@ -103,7 +103,7 @@ public class ControllerSelect : MonoBehaviour
                             // コントローラー
                             if (Input.GetKeyDown(KeyCode.JoystickButton0))
                             {
-                                sceneTransitions.SceneLoad(2);
+                                sceneTransitions.SceneLoad(1);
                             }
                             break;
                     }
