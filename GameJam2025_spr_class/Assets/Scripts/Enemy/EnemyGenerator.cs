@@ -21,7 +21,7 @@ public class EnemyGenerator : MonoBehaviour
     /// <summary>
     /// ƒ‰ƒ“ƒ_ƒ€¶¬ˆ—(TimeUpƒ‚[ƒh)
     /// </summary>
-    public IEnumerator EnmSpawnTimeUp()
+    public IEnumerator EnmSpawnNormal()
     {
         yield return new WaitForSeconds(3); //3•b‚Ì—P—\.
 

@@ -189,6 +189,8 @@ public class BoardManager : MonoBehaviour
                 if (!isVisit[x, y] && board[x, y].type == BoardType.NONE)
                 {
                     board[x, y].type = BoardType.PLAYER_AREA; //エリアで埋める.
+                    scptGameMng.boardNoneCnt--;               //空きマス-1.
+
                     isSurround = true;
                 }
             }
@@ -206,6 +208,7 @@ public class BoardManager : MonoBehaviour
                         board[x, y].type == BoardType.PLAYER_TRAIL)
                     {
                         board[x, y].type = BoardType.PLAYER_AREA;
+                        scptGameMng.boardNoneCnt--; //空きマス-1.
                     }
                 }
             }

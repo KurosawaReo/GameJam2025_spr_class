@@ -116,6 +116,8 @@ public class PlayerManager : MonoBehaviour
                     //もし陣地に入ったばかりなら.
                     if (player.beforeBType != BoardType.PLAYER_AREA)
                     {
+                        PlayerTrail(bPos); //痕跡処理.
+
                         //全マスループ.
                         for (int y = 0; y < Gl_Const.BOARD_HEI; y++) {
                             for (int x = 0; x < Gl_Const.BOARD_WID; x++) {
@@ -125,6 +127,7 @@ public class PlayerManager : MonoBehaviour
                                     scptBrdMng.Board[x, y].type == BoardType.PLAYER_TRAIL)
                                 {
                                     scptBrdMng.Board[x, y].type = BoardType.PLAYER_AREA;
+                                    scptGameMng.boardNoneCnt--; //空きマス-1.
                                 }
                             }
                         }

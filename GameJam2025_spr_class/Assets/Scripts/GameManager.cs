@@ -41,7 +41,15 @@ public class GameManager : MonoBehaviour
         [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
             [Tooltip("殲滅モード用Set")]           public GameObject AllBreakSet;
         [ConditionalDisableInInspector("gameMode", (int)GameMode.AllBreak, conditionalInvisible: false)]
-            [Tooltip("残数用テキスト")]            public Text RemainingText;
+            [Tooltip("残数用テキスト")]            public Text remainingText;
+
+    [Header("全埋めモード パラメータ")]
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.AllFill, conditionalInvisible: false)]
+            [Tooltip("盤面の空きマス")]            public int boardNoneCnt;
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.AllFill, conditionalInvisible: false)]
+            [Tooltip("全埋めモード用Set")]         public GameObject AllFillSet;
+        [ConditionalDisableInInspector("gameMode", (int)GameMode.AllFill, conditionalInvisible: false)]
+            [Tooltip("空きマス用テキスト")]        public Text noneCntText;
 
     [Header("- script -")]
     [SerializeField] BoardManager   scptBoardMng;
@@ -87,7 +95,12 @@ public class GameManager : MonoBehaviour
 
             case GameMode.AllBreak:
                 AllBreakSet.SetActive(true);
-                RemainingText.text = "残数 : " + 0;
+                remainingText.text = "残数 : " + 0;
+                break;
+
+            case GameMode.AllFill:
+                AllFillSet.SetActive(true);
+                noneCntText.text = "残りマス数 : " + 0;
                 break;
         }
 
@@ -99,6 +112,7 @@ public class GameManager : MonoBehaviour
         presentEnemyCnt = 0;
         deathEnemyCnt = 0;
         gameTimer = resetGameTime;
+        boardNoneCnt = Gl_Const.BOARD_WID * Gl_Const.BOARD_HEI - Gl_Const.INIT_AREA_SIZE * Gl_Const.INIT_AREA_SIZE;
 
         //盤面リセット.
         scptBoardMng.InitBoard();
@@ -124,6 +138,8 @@ public class GameManager : MonoBehaviour
         {
             //プレイヤー更新.
             scptPlayerMng.UpdatePlayer();
+            //テキスト更新.
+            UpdateText();
 
             switch (gameMode)
             {
@@ -131,7 +147,7 @@ public class GameManager : MonoBehaviour
                     //残り時間.
                     if (gameTimer > 0)
                     {
-                        TimeLapse();
+                        gameTimer -= (1 * Time.deltaTime);
                     }
                     else
                     {
@@ -150,7 +166,7 @@ public class GameManager : MonoBehaviour
                     //1度敵が出現したなら.
                     if (isEnemySpawn)
                     {
-                        EnemyCount();
+                        presentEnemyCnt = GetEnemyCount();
 
                         //現在の敵数.
                         if (presentEnemyCnt <= 0)
@@ -160,12 +176,43 @@ public class GameManager : MonoBehaviour
                         }
                     }
                     break;
+
+                case GameMode.AllFill:
+                    //空きマスがなくなれば.
+                    if(boardNoneCnt <= 0)
+                    {
+                        GameEnd();
+                        GameEndText();
+                    }
+                    break;
             }
         }
         //ゲーム終了していれば.
         else if (isGameEnd == true)
         {
             GameEndLoop();
+        }
+    }
+
+    /// <summary>
+    /// テキスト更新.
+    /// </summary>
+    private void UpdateText()
+    {
+        //モード別.
+        switch (gameMode)
+        {
+            case GameMode.TimeUp:
+                timerText.text = "Time : " + Mathf.Ceil(gameTimer);
+                break;
+
+            case GameMode.AllBreak:
+                remainingText.text = "残数 : " + presentEnemyCnt;
+                break;
+
+            case GameMode.AllFill:
+                noneCntText.text = "残りマス数 : " + boardNoneCnt;
+                break;
         }
     }
 
@@ -183,7 +230,8 @@ public class GameManager : MonoBehaviour
         switch (gameMode)
         {
             case GameMode.TimeUp:
-                StartCoroutine(scptEnemyGnr.EnmSpawnTimeUp());
+            case GameMode.AllFill:
+                StartCoroutine(scptEnemyGnr.EnmSpawnNormal());
                 break;
 
             case GameMode.AllBreak:
@@ -193,32 +241,12 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 時間減少用.
-    /// </summary>
-    void TimeLapse()
-    {
-        gameTimer -= (1 * Time.deltaTime);
-        timerText.text = "Time : " + Mathf.Ceil(gameTimer);
-        //print(gameTime);
-    }
-
-    /// <summary>
     /// 現在の敵の数を取得.
     /// </summary>
     /// <returns></returns>
     public int GetEnemyCount()
     {
-        int cnt = enemyParent.transform.childCount;
-        return cnt;
-    }
-
-    /// <summary>
-    /// 敵の数を数える.
-    /// </summary>
-    void EnemyCount()
-    {
-        presentEnemyCnt = GetEnemyCount();
-        RemainingText.text = "残数 : " + presentEnemyCnt;
+        return enemyParent.transform.childCount;
     }
 
     /// <summary>
@@ -226,7 +254,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void PlayerDead()
     {
-        resultText.text = "残念！死んでしまった！\n敵を" + deathEnemyCnt + "体倒した！";
+        if(gameMode == GameMode.AllFill)
+        {
+            resultText.text = "残念！死んでしまった！\n残り" + boardNoneCnt + "マスです";
+        }
+        else
+        {
+            resultText.text = "残念！死んでしまった！\n敵を" + deathEnemyCnt + "体倒した！";
+        }
         isGameEnd = true;
 
         GameEnd();
@@ -259,6 +294,10 @@ public class GameManager : MonoBehaviour
 
             case GameMode.AllBreak:
                 resultText.text = "終了！\n殲滅おめでとう！";
+                break;
+
+            case GameMode.AllFill:
+                resultText.text = "終了！\n全埋めおめでとう！";
                 break;
         }
     }
