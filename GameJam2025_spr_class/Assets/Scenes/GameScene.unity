@@ -677,7 +677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: gameMode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: gameTime
@@ -705,7 +705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: resetGameTime
-      value: 60
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8929622810741060697, guid: ec2f614c78d8a71409b86d8942f27e07, type: 3}
       propertyPath: scptPlayerMng
