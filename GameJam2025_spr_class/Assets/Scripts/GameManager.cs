@@ -256,7 +256,7 @@ public class GameManager : MonoBehaviour
     {
         if(gameMode == GameMode.AllFill)
         {
-            resultText.text = "残念！死んでしまった！\n残り" + boardNoneCnt + "マスです";
+            resultText.text = "残念！死んでしまった！\n残り" + boardNoneCnt + "マスでした";
         }
         else
         {

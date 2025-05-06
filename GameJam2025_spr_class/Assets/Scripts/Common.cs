@@ -57,13 +57,13 @@ namespace Gloval
         public const float ENM_MAX_MOVE_SPEED  = 0.7f;     //移動速度乱数の最大値.
         public const float ENM_MIN_MOVE_SPEED  = 0.15f;    //移動速度乱数の最小値.
         public const float ENM_GOAL_STOP_RANGE = 0.02f;    //目標地点に着いたら移動停止する範囲.
-        
-        //TimeUpモード.
-        public const int   ENM_TIMEUP_INIT_CNT = 3;        //初回の敵の出現数.
-        public const int   ENM_TIMEUP_MAX_CNT  = 20;       //敵の同時最大出現数.
-        public const float ENM_TIMEUP_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
-        public const float ENM_TIMEUP_MIN_INTERVAL = 0.5f; //敵の生成間隔乱数の最小値.
-        //AllBreakモード.
+
+        //敵出現:通常.
+        public const int   ENM_NORMAL_INIT_CNT = 5;        //初回の敵の出現数.
+        public const int   ENM_NORMAL_MAX_CNT  = 20;       //敵の同時最大出現数.
+        public const float ENM_NORMAL_MAX_INTERVAL = 3.0f; //敵の生成間隔乱数の最大値.
+        public const float ENM_NORMAL_MIN_INTERVAL = 1.0f; //敵の生成間隔乱数の最小値.
+        //敵出現:AllBreak限定.
         public const int   ENM_ALLBREAK_MAX_CNT = 30;      //初回の敵の出現数.
     }
 

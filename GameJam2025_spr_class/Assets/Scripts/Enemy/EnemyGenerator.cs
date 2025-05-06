@@ -29,7 +29,7 @@ public class EnemyGenerator : MonoBehaviour
         if (!scptGameMng.isGameEnd)
         {
             //最初に何体か出す.
-            for (int i = 0; i < Gl_Const.ENM_TIMEUP_INIT_CNT; i++) 
+            for (int i = 0; i < Gl_Const.ENM_NORMAL_INIT_CNT; i++) 
             {
                 EnemySpawnExe();
                 yield return new WaitForSeconds(0.1f);
@@ -39,7 +39,7 @@ public class EnemyGenerator : MonoBehaviour
         while (!scptGameMng.isGameEnd)
         {
             //最大出現数になってるなら待機.
-            if (scptGameMng.GetEnemyCount() >= Gl_Const.ENM_TIMEUP_MAX_CNT)
+            if (scptGameMng.GetEnemyCount() >= Gl_Const.ENM_NORMAL_MAX_CNT)
             {
                 yield return null;
                 continue;
@@ -47,8 +47,8 @@ public class EnemyGenerator : MonoBehaviour
 
             //遅延時間の抽選.
             float delay = UnityEngine.Random.Range(
-                Gl_Const.ENM_TIMEUP_MIN_INTERVAL,
-                Gl_Const.ENM_TIMEUP_MAX_INTERVAL
+                Gl_Const.ENM_NORMAL_MIN_INTERVAL,
+                Gl_Const.ENM_NORMAL_MAX_INTERVAL
             );
             yield return new WaitForSeconds(delay);
 
